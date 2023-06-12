@@ -15,6 +15,25 @@
 #define MAXDATASIZE 100
 #define HOST "www.example.com"
 
+// Handle chuncked data when using send()
+int sendAll(int s, char *buf, int *len) {
+	int total = 0; // Bytes sent
+	int bytesLeft = *len; // Bytes left to send
+	int n;
+
+	while (total < *len) {
+		n = send(s, buf + total, bytesLeft, 0);
+		if (n == -1)
+			break;
+		total += n;
+		bytesLeft -= n;
+	}
+
+	*len = total; 
+
+	return n == -1 ? -1 : 0;
+}
+
 // duplicate
 void *get_in_addr(struct sockaddr *sa) {
 	if (sa->sa_family == AF_INET) {
@@ -34,8 +53,9 @@ int main() {
 	memset(&hints, 0, sizeof(hints)); // To make sure it is empty
 	hints.ai_family = AF_UNSPEC; // either IPV4 or 6, no need to specify
 	hints.ai_socktype = SOCK_STREAM; // TCP stream socket
+	hints.ai_flags = AI_PASSIVE; // use my IP
 
-	if ((rv = getaddrinfo(HOST, PORT, &hints, &servinfo)) != 0) {
+	if ((rv = getaddrinfo(NULL, PORT, &hints, &servinfo)) != 0) {
 		std::cerr << "getaddrinfo error: " << gai_strerror(rv) << std::endl;
 		return 1;
 	}
@@ -67,14 +87,21 @@ int main() {
 
 	freeaddrinfo(servinfo);
 
-	if ((numbytes = recv(sockfd, buf, MAXDATASIZE-1, 0)) == -1) {
-		std::cerr << strerror(errno) << std::endl;
-		exit(1);
-	}
+	
 
-	buf[numbytes] = '\0';
+	// if ((numbytes = recv(sockfd, buf, MAXDATASIZE-1, 0)) == -1) {
+	// 	std::cerr << strerror(errno) << std::endl;
+	// 	exit(1);
+	// }
 
-	std::cout << "Client: received " << buf << std::endl;
+	// buf[numbytes] = '\0';
+
+	// std::cout << "Client: received " << buf << std::endl;
+
+	char msg[5] = "test";
+	int *len = new int(5);
+	
+	sendAll(sockfd, msg, len);
 	
 	close(sockfd);
 

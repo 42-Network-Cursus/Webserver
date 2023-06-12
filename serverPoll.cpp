@@ -16,29 +16,30 @@
 #define PORT "3490"
 #define BACKLOG 10 // queue of nb of connexions waiting to be accepted by listen()
 
-/*
-    POLL VERSION
-*/
+
+
+
+// https://developer.mozilla.org/en-US/docs/Learn/Server-side/First_steps/Client-Server_overview
 
 /*
-order of call:
-	getaddrinfo()
-	socket()
-	bind()
-	listen()
-	accept() ->returns new socket fd, on which we can use send() and recv(), also returns -1 on error
- 	send() / recv()
+	order of call:
+		getaddrinfo()
+		socket()
+		bind()
+		listen()
+		accept() ->returns new socket fd, on which we can use send() and recv(), also returns -1 on error
+		send() / recv()
 */
 
-void sigchld_handler(int s) {
+// void sigchld_handler(int s) {
 
-	// Waitpid might overwrite errno, so we save it and restore it below
-	int saved_errno = errno;
+// 	// Waitpid might overwrite errno, so we save it and restore it below
+// 	int saved_errno = errno;
 
-	while (waitpid(-1, NULL, WNOHANG) > 0);
+// 	while (waitpid(-1, NULL, WNOHANG) > 0);
 	
-	errno = saved_errno;
-}
+// 	errno = saved_errno;
+// }
 
 // get sockaddr object, IPv4 or 6
 void *get_in_addr(struct sockaddr *sa) {
@@ -50,6 +51,7 @@ void *get_in_addr(struct sockaddr *sa) {
 }
 
 // return a listening socket
+// ?? Pass port as argument ??
 int get_listener_socket() {
 	int listener; // socket fd
 	int yes = 1;
@@ -72,12 +74,11 @@ int get_listener_socket() {
 		if ((listener = socket(p->ai_family, p->ai_socktype, p->ai_protocol)) < 0)
 			continue;
 
-		// Makes the socket non-blocking.
-		// Potentially not needed because of poll()
-		// fcntl(sockfd, F_SETFL, O_NONBLOCK);
-
 		// If "address already in use" is a problem :
 		setsockopt(listener, SOL_SOCKET, SO_REUSEADDR, &yes, sizeof(yes));
+		
+		// Makes the socket non-blocking.
+		// fcntl(listener, F_SETFL, O_NONBLOCK);
 
 		if (bind(listener, p->ai_addr, p->ai_addrlen) < 0) {
 			close(listener);
@@ -135,12 +136,12 @@ int main() {
 	// struct sigaction sa;
 
 	int fd_count = 0;
-	int fd_size = 5;
-	// struct pollfd *pfds = new ...
+	int fd_size = 9;
+	struct pollfd *pfds = new struct pollfd[10];
 
 	listener = get_listener_socket();
 	if (listener == -1) {
-		std::cerr << strerror(errno) << std::endl;
+		std::cerr << "listen: " << strerror(errno) << std::endl;
 		exit(1);
 	}
 
@@ -163,22 +164,22 @@ int main() {
 
 		int poll_count = poll(pfds, fd_count, -1); // last argument is timeout, in millisecs. Neg value for no timeout until response
 		if (poll_count == -1) {
-			std::cerr << strerror(errno) << std::endl;
-			exit(1)
+			std::cerr << "poll: " << strerror(errno) << std::endl;
+			exit(1);
 		}
 
 		// Run through existing connections to look for data to read
 		for (int i = 0; i < fd_count; i++) {
 			
 			// check if someone is ready to read
-			if (pfds[i].revent & POLLIN) {
+			if (pfds[i].revents & POLLIN) {
 
-				if (pfds[i].fd == listener) { // weird line ?
+				if (pfds[i].fd == listener) {
 
 					addrlen = sizeof(remoteaddr);
 					new_fd = accept(listener, (struct sockaddr *)&remoteaddr, &addrlen);
 					if (new_fd == -1) {
-						std::cerr << strerror(errno) << std::endl;
+						std::cerr << "accept: " << strerror(errno) << std::endl;
 					}
 					else { 
 						add_to_pfds(&pfds, new_fd, &fd_count, &fd_size);
@@ -187,30 +188,36 @@ int main() {
 							<< " on socket " << new_fd << std::endl;
 					}
 				}
-			}
-			else { // regular client ?
-				int nbytes = recv(pfds[i].fd, buf, sizeof(buf), 0);
-				int sender_fd = pfds[i].fd;
+				else { // regular client ?
+					int nbytes = recv(pfds[i].fd, buf, sizeof(buf), 0);
+					int sender_fd = pfds[i].fd;
 
-				if (nbytes <= 0) { // error handling
-					if (nbytes == 0) {
-						std::cout << "Pollserver: socket " << sender_fd << " hung up" << std::endl;
+					if (nbytes <= 0) { // error handling
+						if (nbytes == 0) {
+							std::cout << "Pollserver: socket " << sender_fd << " hung up" << std::endl;
+						}
+						else {
+							std::cerr << "recv: " << strerror(errno) << std::endl;
+						}
+
+						close(pfds[i].fd);
+						del_from_pfds(pfds, i, &fd_count);
 					}
 					else {
-						std::cerr << strerror(errno) << std::endl;
-					}
+						std::cout << "Msg received: " << buf << std::endl;
 
-					close(pfds[i].fd);
-					del_from_pfds(pfds, i, &fd_count);
-				}
-				else {
-					for (int j = 0; j < fd_count; j++) { // sends msg to all connected clients...
-						int dest_fd = pfds[j].fd;
-
-						if (dest_fd != listener && dest_fd != sender_fd) {
-							if (send(dest_fd, buf, nbytes, 0) == -1)
-								std::cerr << strerror(errno) << std::endl;
-						}
+						char msg[20] = "{HTTP/1.1 200 OK}";
+						std::cout << "sent: " << send(pfds[i].fd, msg, strlen(msg), 0) << std::endl;
+						
+					
+						// for (int j = 0; j < fd_count; j++) { // sends msg to all connected clients...
+						// 	int dest_fd = pfds[j].fd;
+							
+						// 	if (dest_fd != listener && dest_fd != sender_fd) {
+						// 		if (send(dest_fd, buf, nbytes, 0) == -1)
+						// 			std::cerr << "send: " << strerror(errno) << std::endl;
+						// 	}
+						// }
 					}
 				}
 			}
