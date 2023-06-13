@@ -41,6 +41,32 @@
 // 	errno = saved_errno;
 // }
 
+int sendAll(int s, char *buf, int len) {
+	int total = 0; // Bytes sent
+	int bytesLeft = len; // Bytes left to send
+	int n;
+
+	while (total < len) {
+		n = send(s, buf + total, bytesLeft, 0);
+		if (n == -1)
+			break;
+		total += n;
+		bytesLeft -= n;
+	}
+
+	len = total;
+
+	return n == -1 ? -1 : 0;
+}
+
+int sendResponse(int fd) {
+
+	char msg[10000] = "HTTP/1.1 200 OK\r\nContent-Type: text/html\r\n\r\n<!DOCTYPE html><html><head><title>Hello, World!</title></head><body><h1>Hello, World!</h1></body></html>";
+
+	return sendAll(fd, msg, strlen(msg));
+}
+
+
 // get sockaddr object, IPv4 or 6
 void *get_in_addr(struct sockaddr *sa) {
 	if (sa->sa_family == AF_INET) {
@@ -78,7 +104,7 @@ int get_listener_socket() {
 		setsockopt(listener, SOL_SOCKET, SO_REUSEADDR, &yes, sizeof(yes));
 		
 		// Makes the socket non-blocking.
-		// fcntl(listener, F_SETFL, O_NONBLOCK);
+		fcntl(listener, F_SETFL, O_NONBLOCK);
 
 		if (bind(listener, p->ai_addr, p->ai_addrlen) < 0) {
 			close(listener);
@@ -131,7 +157,7 @@ int main() {
 	struct sockaddr_storage remoteaddr; // client's info, using sockaddr_storage because big enough to contain IPv4 or IPv6
 	socklen_t addrlen; // length of remoteaddr
 	
-	char buf[256]; // Buffer for client data
+	char buf[600]; // Buffer for client data
 	char remoteIP[INET6_ADDRSTRLEN];
 	// struct sigaction sa;
 
@@ -150,6 +176,7 @@ int main() {
 
 	fd_count = 1;
 
+	int return_fd = -1;
 	// sa.sa_handler = sigchld_handler;
 	// sigemptyset(&sa.sa_mask);
 	// sa.sa_flags = SA_RESTART;
@@ -205,10 +232,9 @@ int main() {
 					}
 					else {
 						std::cout << "Msg received: " << buf << std::endl;
-
-						char msg[20] = "{HTTP/1.1 200 OK}";
-						std::cout << "sent: " << send(pfds[i].fd, msg, strlen(msg), 0) << std::endl;
+						return_fd = pfds[i].fd;
 						
+						break;
 					
 						// for (int j = 0; j < fd_count; j++) { // sends msg to all connected clients...
 						// 	int dest_fd = pfds[j].fd;
@@ -222,10 +248,13 @@ int main() {
 				}
 			}
 		}
-
+		
+		if (return_fd != -1) {
+			std::cout << "response: " << sendResponse(return_fd) << std::endl;
+			break;
+		}
 
 		
-
 		
 
 		// if (!fork()) { // child process
@@ -238,5 +267,6 @@ int main() {
 		// }
 		// close(new_fd);
 	}
+	
 	return 0;
 }
