@@ -1,66 +1,101 @@
 #include "server.hpp"
 
-// int main(int argc, char **argv) {
-// 	get_conf();
-// 	// 	-> set up objects with info
-// 	// launch_server();
-// 	//  	-> open sockets
-// 	// 	-> send response if needed
-// 	// 	-> never close ?
-
-// 	std::ifstream myfile ("src/index.html");
-// 	std::string mystring;
-
-// 	if ( myfile.is_open() ) { // always check whether the file is open
-
-// 		while (myfile) {
-// 			myfile >> mystring; // pipe file's content into stream
-// 			std::cout << mystring; // pipe stream's content to standard output
-// 		}
-// 	}
-// }
-
-
-
 class Server {
 	public:
-	private:
+		Server() {
+			next = NULL;
+		}
+
+		Server(const Server &rhs) {
+			port = rhs.port;
+			server_name = rhs.server_name;
+			root = rhs.root;
+			index = rhs.index;
+			next = rhs.next;
+		}
+
+		Server&	operator= (const Server& rhs) {
+			if (this != &rhs) 
+			{
+				port = rhs.port;
+				server_name = rhs.server_name;
+				root = rhs.root;
+				index = rhs.index;
+				next = rhs.next;
+			}
+			return (*this);
+		}
+
+		// int listening_socket;
 		int port;
-		int listening_socket;
 		std::string server_name;
 		std::string root;
 		std::string index;
+		Server *next;
+
+		// Debugging
+		void print() {
+			std::cout << "port: " << port << std::endl;
+			std::cout << "server name: " << server_name << std::endl;
+			std::cout << "root: " << root << std::endl;
+			std::cout << "index: " << index << std::endl;
+		}
+	private:
+		
 };
 
 class Configuration {
 	public:
-	private:
+		Configuration() {
+			server_list = new Server;
+		}
+
+		void add_server(Server server) {
+			if (server_list->index == "") {
+				*server_list = server;
+			}
+			else {
+				Server *tmp = server_list;
+				while (tmp->next != NULL) {
+					tmp = tmp->next;
+				}
+				tmp->next = new Server(server);
+			}
+		};
+		
+		// Debugging
+		void print() {
+			Server *tmp = server_list;
+			for (;tmp != NULL; tmp = tmp->next) {
+				tmp->print();
+				std::cout << std::endl;
+			}
+		}
+
 		Server	*server_list;		
+	private:
 };
 
-// trim from left
-std::string& ltrim(std::string& s, const char* t = " \t\n\r\f\v")
-{
-    s.erase(0, s.find_first_not_of(t));
-    return s;
-}
+enum conf_param {
+	port,
+	server_name,
+	root,
+	idx,
+	error
+};
 
-// trim from right
-std::string& rtrim(std::string& s, const char* t = " \t\n\r\f\v")
-{
-    s.erase(s.find_last_not_of(t) + 1);
-    return s;
-}
-// trim from left & right
-std::string& trim(std::string& s, const char* t = " \t\n\r\f\v")
-{
-    return ltrim(rtrim(s, t), t);
+conf_param resolve_conf_param(std::string param) {
+	if (param == "listen") return port;
+	if (param == "server_name") return server_name;
+	if (param == "root") return root;
+	if (param == "index") return idx;
+	return error;
 }
 
 Configuration get_conf(int argc, char *argv[]) {
 	Configuration conf;
-	
 	std::string file_name;		
+	
 	if (argc < 2)
 		file_name = std::string("default.conf");
 	else
@@ -69,24 +104,66 @@ Configuration get_conf(int argc, char *argv[]) {
 	std::ifstream file_stream ("conf/" + file_name);
 	std::string line;
 
-	if ( file_stream.is_open() ) { // always check whether the file is open
-		while (file_stream) {	
-			std::getline(file_stream, line);
-			trim(line);
-			if (line.find_first_of("#") != std::string::npos)
-				continue;
-			if (line.length() == 0) {
-				continue;
-			}
-			std::cout << line << std::endl; // pipe stream's content to standard output
-		}
+	if (!file_stream.is_open()) {// check whether the file is open
+		std::cout << "Error reading conf file" << std::endl;
+		exit(1);
 	}
+
+	while (file_stream) {	
+		
+		std::getline(file_stream, line);
+		
+		line = trim(line);
+		if (line.find_first_of("#") != std::string::npos || line.length() == 0)
+			continue;
+
+		if (line == "server") {
+			Server server;
+			std::getline(file_stream, line); // go past '{'
+			while (1) {
+				std::getline(file_stream, line);
+
+				line = trim(line);
+				if (line.find_first_of("#") != std::string::npos || line.length() == 0)
+					continue;
+				if (line == "}") {
+					break;
+				}
+
+				std::string param = line.substr(0, line.find_first_of(" "));
+				switch (resolve_conf_param(param)) {
+					case port: {
+						server.port = atoi(line.substr(line.find_first_of(" "), line.find_first_of(";")).c_str());
+						break;
+					}
+					case server_name: {
+						server.server_name = line.substr(line.find_first_of(" "), line.find_first_of(";"));
+						break;
+					}
+					case root: {
+						server.root = line.substr(line.find_first_of(" "), line.find_first_of(";"));
+						break;
+					}
+					case idx: {
+						server.index = line.substr(line.find_first_of(" "), line.find_first_of(";"));
+						break;
+					}
+					case error: {
+						// Break stuff
+					}
+				} // End switch
+			} // while loop (server params)
+			conf.add_server(server);
+		} // End server {}
+	} // filestream while loop
 	return conf;	
 }
 
 int main(int argc, char *argv[]) {
 	Configuration conf = get_conf(argc, argv);
 	
+	conf.print();
+
 	// struct pollfd *pfds;
 	
 	return 0;

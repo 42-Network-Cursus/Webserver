@@ -1,6 +1,8 @@
 #ifndef SERVER_HPP
 # define SERVER_HPP
 
+# include "utils.hpp"
+
 #include <sys/types.h>
 #include <sys/socket.h> // sockaddr_storage, socklen_t
 #include <netdb.h>
