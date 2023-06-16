@@ -19,7 +19,10 @@
 #include <arpa/inet.h> // INET6_ADDRSTRLEN macro, 
 
 #include <fstream>
-// #define PORT "3490"
+
+#include <vector>
+
+#define PORT "3490"
 #define BACKLOG 10 // queue of nb of connexions waiting to be accepted by listen()
 
 /*
