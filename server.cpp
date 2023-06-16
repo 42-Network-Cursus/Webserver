@@ -80,6 +80,30 @@ class Configuration {
 			return _server_list[idx];
 		}
 
+		std::string getBody(int fd) {
+			std::vector<Server>::iterator it_begin = _server_list.begin();
+			std::vector<Server>::iterator it_end = _server_list.end();
+
+			for (; it_begin != it_end; it_begin++) {
+				if (it_begin->sockfd == fd)
+					break;
+			}
+			
+			std::string body;
+			std::ifstream file_stream (it_begin->root + it_begin->index);
+
+			if (!file_stream.is_open()) { // check whether the file is open
+				std::cout << "Error reading conf file" << std::endl;
+				exit(1);
+			}
+			
+			body.assign ( 	(std::istreambuf_iterator<char>(file_stream)),
+							(std::istreambuf_iterator<char>()) 
+						);
+
+			return body;
+		}
+
 		// // Debugging
 		void print() {
 			std::vector<Server>::iterator it_begin = _server_list.begin();
@@ -278,11 +302,11 @@ int sendAll(int s, const char *buf, int len) {
 	return n == -1 ? -1 : 0;
 }
 
-int sendResponse(int fd) { //, std::string body
+int sendResponse(int fd, std::string body) {
 
 	// <!DOCTYPE html><html><head><title>Hello, World!</title></head><body><h1>Hello, World!</h1></body></html>
-	std::string msg = "HTTP/1.1 200 OK\r\nContent-Type: text/html\r\nContent-length: 112\r\n\r\n<!DOCTYPE html><html><head><title>Hello, World!</title></head><body><h1>Hello, World!</h1></body></html>\r\n\r\n";
-	// std::string msg = "HTTP/1.1 200 OK\r\nContent-Type: text/html\r\n\r\n" + body;
+	// std::string msg = "HTTP/1.1 200 OK\r\nContent-Type: text/html\r\nContent-length: 112\r\n\r\n<!DOCTYPE html><html><head><title>Hello, World!</title></head><body><h1>Hello, World!</h1></body></html>\r\n\r\n";
+	std::string msg = "HTTP/1.1 200 OK\r\nContent-Type: text/html\r\n\r\n" + body;
 
 
 	return sendAll(fd, msg.c_str(), msg.length());
@@ -371,7 +395,10 @@ int main(int argc, char *argv[]) {
 					std::cout << "\n *** Msg received: *** \n" << request;
 					flush(std::cout);
 
-					std::cout << "response: " << sendResponse(pfds[i].fd) << std::endl;
+					std::cout << "response: " << sendResponse(pfds[i].fd, conf.getBody(pfds[i].fd)) << std::endl;
+					
+					// std::cout << "Body: " << conf.getBody(pfds[i].fd) << std::endl;
+
 					// request.clear();
 					// memset(&buf, 0, sizeof(buf));
 					// break;
