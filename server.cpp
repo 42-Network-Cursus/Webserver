@@ -163,19 +163,15 @@ Configuration get_conf(int argc, char *argv[]) {
 }
 
 int get_listener_socket(Configuration conf, int idx) {
+	struct addrinfo hints, *ai, *p;
 	int listener; // socket fd
 	int yes = 1;
 	int rv;
-
-	struct addrinfo hints, *ai, *p;
 
 	memset(&hints, 0, sizeof(hints)); // To make sure it is empty
 	hints.ai_family = AF_UNSPEC; // either IPV4 or 6, no need to specify
 	hints.ai_socktype = SOCK_STREAM; // TCP stream socket
 	hints.ai_flags = AI_PASSIVE; // use my IP
-
-	std::cout << "Name: " << conf[idx].server_name.c_str() << std::endl;
-	std::cout << "port: " << conf[idx].port.c_str() << std::endl;
 
 	if ((rv = getaddrinfo(conf[idx].server_name.c_str(), conf[idx].port.c_str(), &hints, &ai)) != 0) {
 		std::cerr << "getaddrinfo error " << rv << ": " << gai_strerror(rv) << std::endl;
@@ -208,7 +204,6 @@ int get_listener_socket(Configuration conf, int idx) {
 
 	if (listen(listener, 10) == -1) 
 		return -1;
-
 	return listener;
 }
 
@@ -219,6 +214,7 @@ int main(int argc, char *argv[]) {
 	int sockfd;
 	int nb_fd = conf.size();
 	struct pollfd *pfds = new struct pollfd[nb_fd];
+	int fd_count = 0;
 
 	for (int i = 0; i < nb_fd; i++) {
 		
@@ -229,9 +225,77 @@ int main(int argc, char *argv[]) {
 		}
 
 		pfds[i].fd = sockfd;
-		pfds[i].events = POLLIN; 
+		pfds[i].events = POLLIN;
+		fd_count++;
 	}
-	
-	
+
+	while(1) { // main loop
+		
+		// last argument is timeout, in millisecs. Neg value for no timeout until response
+		int poll_count = poll(pfds, fd_count, -1); 
+		if (poll_count == -1) {
+			std::cerr << "poll: " << strerror(errno) << std::endl;
+			exit(1);
+		}
+
+		// Run through existing connections to look for data to read
+		for (int i = 0; i < fd_count; i++) {
+		
+			// check if someone is ready to read
+			if (pfds[i].revents & POLLIN) {
+				
+				// WIP, needs to change
+				// if (pfds[i].fd == listener) {
+
+				// 	addrlen = sizeof(remoteaddr);
+				// 	new_fd = accept(listener, (struct sockaddr *)&remoteaddr, &addrlen);
+				// 	if (new_fd == -1) {
+				// 		std::cerr << "accept: " << strerror(errno) << std::endl;
+				// 	}
+				// 	else { 
+				// 		add_to_pfds(&pfds, new_fd, &fd_count, &fd_size);
+				// 		std::cout << "Pollserver: new connection from "
+				// 			<< inet_ntop(remoteaddr.ss_family, get_in_addr((struct sockaddr *)&remoteaddr), remoteIP, INET6_ADDRSTRLEN)
+				// 			<< " on socket " << new_fd << std::endl;
+				// 	}
+				// }
+				// else { // regular client ?
+				// 	int nbytes = recv(pfds[i].fd, buf, sizeof(buf), 0);
+				// 	int sender_fd = pfds[i].fd;
+
+				// 	if (nbytes <= 0) { // error handling
+				// 		if (nbytes == 0) {
+				// 			std::cout << "Pollserver: socket " << sender_fd << " hung up" << std::endl;
+				// 		}
+				// 		else {
+				// 			std::cerr << "recv: " << strerror(errno) << std::endl;
+				// 		}
+
+				// 		close(pfds[i].fd);
+				// 		del_from_pfds(pfds, i, &fd_count);
+				// 	}
+				// 	else {
+				// 		std::cout << "Msg received: " << buf << std::endl;
+				// 		return_fd = pfds[i].fd;
+						
+				// 		break;
+					
+				// 		// for (int j = 0; j < fd_count; j++) { // sends msg to all connected clients...
+				// 		// 	int dest_fd = pfds[j].fd;
+							
+				// 		// 	if (dest_fd != listener && dest_fd != sender_fd) {
+				// 		// 		if (send(dest_fd, buf, nbytes, 0) == -1)
+				// 		// 			std::cerr << "send: " << strerror(errno) << std::endl;
+				// 		// 	}
+				// 		// }
+				// 	}
+				// }
+			}
+		
+		}
+
+	}
+
+
 	return 0;
 }
