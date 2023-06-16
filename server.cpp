@@ -26,12 +26,16 @@ class Server {
 			return (*this);
 		}
 
+		// Getters & setters + private variables ?
+		
 		// int listening_socket;
-		int port;
+		std::string port;
 		std::string server_name;
 		std::string root;
 		std::string index;
 		Server *next;
+
+		
 
 		// Debugging
 		void print() {
@@ -46,19 +50,23 @@ class Server {
 class Configuration {
 	public:
 		int size() const {
-			return server_list.size();
+			return _server_list.size();
 		}
 
 		void push_back(const Server& val) { // const Server ?
-			server_list.push_back(val);
+			_server_list.push_back(val);
+		}
+
+		Server&	operator[] (int idx) { 
+			return _server_list[idx];
 		}
 
 		// // Debugging
 		void print() {
-			std::vector<Server>::iterator it_begin = server_list.begin();
-			std::vector<Server>::iterator it_end = server_list.end();
+			std::vector<Server>::iterator it_begin = _server_list.begin();
+			std::vector<Server>::iterator it_end = _server_list.end();
 
-			std::cout << "Number of servers: " << server_list.size() << std::endl << std::endl;
+			std::cout << "Number of servers: " << _server_list.size() << std::endl << std::endl;
 			for (; it_begin != it_end; it_begin++) {
 				it_begin->print();
 				std::cout << std::endl;
@@ -66,7 +74,7 @@ class Configuration {
 		}
 
 	private:
-		std::vector<Server>	server_list;		
+		std::vector<Server>	_server_list;		
 };
 
 enum conf_param {
@@ -124,21 +132,22 @@ Configuration get_conf(int argc, char *argv[]) {
 				}
 
 				std::string param = line.substr(0, line.find_first_of(" "));
+				std::string param_val = line.substr(line.find_first_of(" "), line.find_first_of(";") - line.find_first_of(" "));
 				switch (resolve_conf_param(param)) {
 					case port: {
-						server.port = atoi(line.substr(line.find_first_of(" "), line.find_first_of(";")).c_str());
+						server.port = trim(param_val);
 						break;
 					}
 					case server_name: {
-						server.server_name = line.substr(line.find_first_of(" "), line.find_first_of(";"));
+						server.server_name = trim(param_val);
 						break;
 					}
 					case root: {
-						server.root = line.substr(line.find_first_of(" "), line.find_first_of(";"));
+						server.root = trim(param_val);
 						break;
 					}
 					case idx: {
-						server.index = line.substr(line.find_first_of(" "), line.find_first_of(";"));
+						server.index = trim(param_val);
 						break;
 					}
 					case error: {
@@ -153,7 +162,7 @@ Configuration get_conf(int argc, char *argv[]) {
 	return conf;	
 }
 
-int get_listener_socket() {
+int get_listener_socket(Configuration conf, int idx) {
 	int listener; // socket fd
 	int yes = 1;
 	int rv;
@@ -165,8 +174,11 @@ int get_listener_socket() {
 	hints.ai_socktype = SOCK_STREAM; // TCP stream socket
 	hints.ai_flags = AI_PASSIVE; // use my IP
 
-	if ((rv = getaddrinfo(NULL, PORT, &hints, &ai)) != 0) {
-		std::cerr << "getaddrinfo error: " << gai_strerror(rv) << std::endl;
+	std::cout << "Name: " << conf[idx].server_name.c_str() << std::endl;
+	std::cout << "port: " << conf[idx].port.c_str() << std::endl;
+
+	if ((rv = getaddrinfo(conf[idx].server_name.c_str(), conf[idx].port.c_str(), &hints, &ai)) != 0) {
+		std::cerr << "getaddrinfo error " << rv << ": " << gai_strerror(rv) << std::endl;
 		exit(1);
 	}
 
@@ -208,17 +220,17 @@ int main(int argc, char *argv[]) {
 	int nb_fd = conf.size();
 	struct pollfd *pfds = new struct pollfd[nb_fd];
 
-	// for (int i = 0; i < nb_fd; i++) {
+	for (int i = 0; i < nb_fd; i++) {
 		
-	// 	sockfd = get_listener_socket();
-	// 	if (sockfd == -1) {
-	// 		std::cerr << "listen: " << strerror(errno) << std::endl;
-	// 		exit(1);
-	// 	}
+		sockfd = get_listener_socket(conf, i);
+		if (sockfd == -1) {
+			std::cerr << "listen: " << strerror(errno) << std::endl;
+			exit(1);
+		}
 
-	// 	pfds[i].fd = sockfd;
-	// 	pfds[i].events = POLLIN; 
-	// }
+		pfds[i].fd = sockfd;
+		pfds[i].events = POLLIN; 
+	}
 	
 	
 	return 0;
