@@ -28,7 +28,7 @@ class Server {
 
 		// Getters & setters + private variables ?
 		
-		// int listening_socket;
+		int sockfd;
 		std::string port;
 		std::string server_name;
 		std::string root;
@@ -207,16 +207,53 @@ int get_listener_socket(Configuration conf, int idx) {
 	return listener;
 }
 
+// Add new fd to the set
+void add_to_pfds(struct pollfd **pfds, int new_fd, int *fd_count, int *fd_size) {
+	
+	if (*fd_count == *fd_size) {
+		struct pollfd *tmp = new struct pollfd[*fd_size * 2];
+		*fd_size *= 2;
+		
+		tmp = *pfds;
+		delete *pfds;
+		*pfds = tmp;
+	}
+
+	(*pfds)[*fd_count].fd = new_fd;
+	(*pfds)[*fd_count].events = POLLIN;
+	
+	(*fd_count)++;
+}
+
+// Remove indexed fd from set
+void del_from_pfds(struct pollfd *pfds, int idx, int *fd_count) {
+
+	// Copy end one to the indexed fd
+	pfds[idx] = pfds[*fd_count - 1];
+
+	(*fd_count)--;
+}
+
+bool recv_header(std::string request) {
+	if (request.find("\r\n\r\n") == std::string::npos)
+		return true;
+	return false;
+}
+
 int main(int argc, char *argv[]) {
 	Configuration conf = get_conf(argc, argv);
 	conf.print();
 
-	int sockfd;
-	int nb_fd = conf.size();
-	struct pollfd *pfds = new struct pollfd[nb_fd];
+	int sockfd, new_fd;
+	int fd_size = conf.size();
+	struct pollfd *pfds = new struct pollfd[fd_size];
 	int fd_count = 0;
 
-	for (int i = 0; i < nb_fd; i++) {
+	struct sockaddr_storage remoteaddr; // client's info, using sockaddr_storage because big enough to contain IPv4 or IPv6
+	socklen_t addrlen; // length of remoteaddr
+	char buf[10]; // Buffer for client data
+
+	for (int i = 0; i < fd_size; i++) {
 		
 		sockfd = get_listener_socket(conf, i);
 		if (sockfd == -1) {
@@ -224,6 +261,7 @@ int main(int argc, char *argv[]) {
 			exit(1);
 		}
 
+		conf[i].sockfd = sockfd;
 		pfds[i].fd = sockfd;
 		pfds[i].events = POLLIN;
 		fd_count++;
@@ -244,58 +282,43 @@ int main(int argc, char *argv[]) {
 			// check if someone is ready to read
 			if (pfds[i].revents & POLLIN) {
 				
-				// WIP, needs to change
-				// if (pfds[i].fd == listener) {
+				if (i < conf.size() && pfds[i].fd == conf[i].sockfd) { // listening socket needs to be accepted
 
-				// 	addrlen = sizeof(remoteaddr);
-				// 	new_fd = accept(listener, (struct sockaddr *)&remoteaddr, &addrlen);
-				// 	if (new_fd == -1) {
-				// 		std::cerr << "accept: " << strerror(errno) << std::endl;
-				// 	}
-				// 	else { 
-				// 		add_to_pfds(&pfds, new_fd, &fd_count, &fd_size);
-				// 		std::cout << "Pollserver: new connection from "
-				// 			<< inet_ntop(remoteaddr.ss_family, get_in_addr((struct sockaddr *)&remoteaddr), remoteIP, INET6_ADDRSTRLEN)
-				// 			<< " on socket " << new_fd << std::endl;
-				// 	}
-				// }
-				// else { // regular client ?
-				// 	int nbytes = recv(pfds[i].fd, buf, sizeof(buf), 0);
-				// 	int sender_fd = pfds[i].fd;
-
-				// 	if (nbytes <= 0) { // error handling
-				// 		if (nbytes == 0) {
-				// 			std::cout << "Pollserver: socket " << sender_fd << " hung up" << std::endl;
-				// 		}
-				// 		else {
-				// 			std::cerr << "recv: " << strerror(errno) << std::endl;
-				// 		}
-
-				// 		close(pfds[i].fd);
-				// 		del_from_pfds(pfds, i, &fd_count);
-				// 	}
-				// 	else {
-				// 		std::cout << "Msg received: " << buf << std::endl;
-				// 		return_fd = pfds[i].fd;
-						
-				// 		break;
+					addrlen = sizeof(remoteaddr);
+					new_fd = accept(conf[i].sockfd, (struct sockaddr *)&remoteaddr, &addrlen);
+					if (new_fd == -1) {
+						std::cerr << "accept: " << strerror(errno) << std::endl;
+					}
+					else {
+						add_to_pfds(&pfds, new_fd, &fd_count, &fd_size);
+						std::cout << "Server: new connection from " << conf[i].server_name << " on socket " << new_fd << std::endl;
+					}
+				}
+				else { // Socket returned by accept(), we read the data
 					
-				// 		// for (int j = 0; j < fd_count; j++) { // sends msg to all connected clients...
-				// 		// 	int dest_fd = pfds[j].fd;
-							
-				// 		// 	if (dest_fd != listener && dest_fd != sender_fd) {
-				// 		// 		if (send(dest_fd, buf, nbytes, 0) == -1)
-				// 		// 			std::cerr << "send: " << strerror(errno) << std::endl;
-				// 		// 	}
-				// 		// }
-				// 	}
-				// }
+					std::string request;
+					while (recv_header(request)) {
+						int nbytes = recv(pfds[i].fd, buf, sizeof(buf), 0);
+						request.append(buf);
+
+						if (nbytes <= 0) { // error handling
+							if (nbytes == 0) {
+								std::cout << "Pollserver: socket " << pfds[i].fd << " hung up" << std::endl;
+							}
+							else {
+								std::cerr << "recv: " << strerror(errno) << std::endl;
+							}
+
+							close(pfds[i].fd);
+							del_from_pfds(pfds, i, &fd_count);
+						}
+					}
+						
+					std::cout << "\n *** Msg received: *** \n" << request;
+					// break;
+				}
 			}
-		
 		}
-
 	}
-
-
 	return 0;
 }
