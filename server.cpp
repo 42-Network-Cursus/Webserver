@@ -1,5 +1,16 @@
 #include "server.hpp"
 
+
+class Response {
+	public:
+
+		std::string status_code;
+		std::string content_type;
+		std::string content_lenght;
+		std::string body; // html code
+	private:
+};
+
 class Server {
 	public:
 		Server() {

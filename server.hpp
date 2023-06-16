@@ -22,7 +22,7 @@
 
 #include <vector>
 
-#define END_HEADER "\r\n"
+#define END_HEADER "\r\n\r\n"
 #define PORT "3490"
 #define BACKLOG 10 // queue of nb of connexions waiting to be accepted by listen()
 
