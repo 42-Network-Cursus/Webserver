@@ -16,15 +16,15 @@
 #include <cstring>
 #include <iostream>
 
-#include <arpa/inet.h> // INET6_ADDRSTRLEN macro, 
+#include <arpa/inet.h> // INET6_ADDRSTRLEN macro,
 
 #include <fstream>
 
 #include <vector>
 
 #define END_HEADER "\r\n\r\n"
-#define PORT "3490"
 #define BACKLOG 10 // queue of nb of connexions waiting to be accepted by listen()
+
 
 /*
 	execve, dup, dup2, pipe, strerror, gai_strerror,

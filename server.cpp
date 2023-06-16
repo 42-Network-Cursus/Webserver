@@ -1,12 +1,11 @@
-#include "server.hpp"
-
+#include "Includes/server.hpp"
 
 class Response {
 	public:
 
 		std::string status_code;
 		std::string content_type;
-		std::string content_lenght;
+		std::string content_length;
 		std::string body; // html code
 	private:
 };
@@ -16,6 +15,7 @@ class Server {
 		Server() {
 			next = NULL;
 			sockfd = -1;
+			client_max_body_size = "0M";
 		}
 
 		Server(const Server &rhs) {
@@ -24,9 +24,11 @@ class Server {
 			root = rhs.root;
 			index = rhs.index;
 			next = rhs.next;
+			client_max_body_size = rhs.client_max_body_size;
 
 			sockfd = rhs.sockfd;
 			list_sock = rhs.list_sock;
+
 		}
 
 		Server&	operator= (const Server& rhs) {
@@ -37,6 +39,7 @@ class Server {
 				root = rhs.root;
 				index = rhs.index;
 				next = rhs.next;
+				client_max_body_size = rhs.client_max_body_size;
 
 				sockfd = rhs.sockfd;
 				list_sock = rhs.list_sock;
@@ -52,6 +55,7 @@ class Server {
 		std::string server_name;
 		std::string root;
 		std::string index;
+		std::string client_max_body_size;
 		Server *next;
 
 		
@@ -62,6 +66,7 @@ class Server {
 			std::cout << "server name: " << server_name << std::endl;
 			std::cout << "root: " << root << std::endl;
 			std::cout << "index: " << index << std::endl;
+			std::cout << "client_max_body_size: " << client_max_body_size << std::endl;
 		}
 	private:	
 };
@@ -125,6 +130,7 @@ enum conf_param {
 	server_name,
 	root,
 	idx,
+	client_max_body_size,
 	error
 };
 
@@ -133,8 +139,10 @@ conf_param resolve_conf_param(std::string param) {
 	if (param == "server_name") return server_name;
 	if (param == "root") return root;
 	if (param == "index") return idx;
+	if (param == "client_max_body_size") return client_max_body_size;
 	return error;
 }
+
 
 Configuration get_conf(int argc, char *argv[]) {
 	Configuration conf;
@@ -158,7 +166,7 @@ Configuration get_conf(int argc, char *argv[]) {
 		std::getline(file_stream, line);
 		
 		line = trim(line);
-		if (line.find_first_of("#") != std::string::npos || line.length() == 0)
+		if (skip_line(line))
 			continue;
 
 		if (line == "server") {
@@ -168,7 +176,7 @@ Configuration get_conf(int argc, char *argv[]) {
 				std::getline(file_stream, line);
 
 				line = trim(line);
-				if (line.find_first_of("#") != std::string::npos || line.length() == 0)
+				if (skip_line(line))
 					continue;
 				if (line == "}") {
 					break;
@@ -191,6 +199,10 @@ Configuration get_conf(int argc, char *argv[]) {
 					}
 					case idx: {
 						server.index = trim(param_val);
+						break;
+					}
+					case client_max_body_size: {
+						server.client_max_body_size = trim(param_val);
 						break;
 					}
 					case error: {
@@ -389,6 +401,10 @@ int main(int argc, char *argv[]) {
 
 							close(pfds[i].fd);
 							del_from_pfds(pfds, i, &fd_count);
+
+							// Connection Management: HTTP 1.1 introduces persistent connections by default, 
+							// allowing multiple requests and responses to be sent over a single TCP connection. 
+							// This reduces the overhead of establishing and tearing down connections for each request, improving performance.
 						}
 					}
 						
