@@ -15,6 +15,7 @@ class Server {
 	public:
 		Server() {
 			next = NULL;
+			sockfd = -1;
 		}
 
 		Server(const Server &rhs) {
@@ -23,6 +24,9 @@ class Server {
 			root = rhs.root;
 			index = rhs.index;
 			next = rhs.next;
+
+			sockfd = rhs.sockfd;
+			list_sock = rhs.list_sock;
 		}
 
 		Server&	operator= (const Server& rhs) {
@@ -33,12 +37,16 @@ class Server {
 				root = rhs.root;
 				index = rhs.index;
 				next = rhs.next;
+
+				sockfd = rhs.sockfd;
+				list_sock = rhs.list_sock;
 			}
 			return (*this);
 		}
 
 		// Getters & setters + private variables ?
 		
+		int list_sock;
 		int sockfd;
 		std::string port;
 		std::string server_name;
@@ -167,6 +175,7 @@ Configuration get_conf(int argc, char *argv[]) {
 				} // End switch
 			} // while loop (server params)
 			// conf.add_server(server); //Old conf
+			server.sockfd = -1;
 			conf.push_back(server);
 		} // End server {}
 	} // filestream while loop
@@ -300,7 +309,7 @@ int main(int argc, char *argv[]) {
 			exit(1);
 		}
 
-		conf[i].sockfd = sockfd;
+		conf[i].list_sock = sockfd;
 		pfds[i].fd = sockfd;
 		pfds[i].events = POLLIN;
 		fd_count++;
@@ -321,16 +330,21 @@ int main(int argc, char *argv[]) {
 			// check if someone is ready to read
 			if (pfds[i].revents & POLLIN) {
 				
-				if (i < conf.size() && pfds[i].fd == conf[i].sockfd) { // listening socket needs to be accepted
+				if (i < conf.size() && pfds[i].fd == conf[i].list_sock) { // listening socket needs to be accepted
 
+					std::cout << "\n\n ACCEPT \n\n";
+					std::cout << "fd: " << conf[i].sockfd << std::endl;
+					if (conf[i].sockfd == -1) {
 					addrlen = sizeof(remoteaddr);
-					new_fd = accept(conf[i].sockfd, (struct sockaddr *)&remoteaddr, &addrlen);
+					new_fd = accept(conf[i].list_sock, (struct sockaddr *)&remoteaddr, &addrlen);
 					if (new_fd == -1) {
 						std::cerr << "accept: " << strerror(errno) << std::endl;
 					}
 					else {
+						conf[i].sockfd = new_fd;
 						add_to_pfds(&pfds, new_fd, &fd_count, &fd_size);
 						std::cout << "Server: new connection from " << conf[i].server_name << " on socket " << new_fd << std::endl;
+					}
 					}
 				}
 				else { // Socket returned by accept(), we read the data
