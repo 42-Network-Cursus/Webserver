@@ -2,6 +2,9 @@
 # define SERVER_HPP
 
 # include "utils.hpp"
+# include "class/server.hpp"
+# include "class/configuration.hpp"
+# include "class/response.hpp"
 
 #include <sys/types.h>
 #include <sys/socket.h> // sockaddr_storage, socklen_t
@@ -14,13 +17,10 @@
 
 #include <cerrno>
 #include <cstring>
-#include <iostream>
+
 
 #include <arpa/inet.h> // INET6_ADDRSTRLEN macro,
 
-#include <fstream>
-
-#include <vector>
 
 #define END_HEADER "\r\n\r\n"
 #define BACKLOG 10 // queue of nb of connexions waiting to be accepted by listen()
