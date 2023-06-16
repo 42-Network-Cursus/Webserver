@@ -40,51 +40,33 @@ class Server {
 			std::cout << "root: " << root << std::endl;
 			std::cout << "index: " << index << std::endl;
 		}
-	private:
-		
+	private:	
 };
 
 class Configuration {
 	public:
-		Configuration() {
-			server_list = new Server;
+		int size() const {
+			return server_list.size();
 		}
 
-		void add_server(Server server) {
-			if (server_list->index == "") {
-				*server_list = server;
-			}
-			else {
-				Server *tmp = server_list;
-				while (tmp->next != NULL) {
-					tmp = tmp->next;
-				}
-				tmp->next = new Server(server);
-			}
-		};
-		
-		int size() {
-			int rv = 0;
-			Server *tmp = server_list;
-			while (tmp != NULL) {
-				tmp = tmp->next;
-				rv++;
-			}
-			return rv;
+		void push_back(const Server& val) { // const Server ?
+			server_list.push_back(val);
 		}
 
-		// Debugging
+		// // Debugging
 		void print() {
-			Server *tmp = server_list;
-			std::cout << "Size: " << size() << std::endl << std::endl;
-			for (;tmp != NULL; tmp = tmp->next) {
-				tmp->print();
+			std::vector<Server>::iterator it_begin = server_list.begin();
+			std::vector<Server>::iterator it_end = server_list.end();
+
+			std::cout << "Number of servers: " << server_list.size() << std::endl << std::endl;
+			for (; it_begin != it_end; it_begin++) {
+				it_begin->print();
 				std::cout << std::endl;
 			}
 		}
 
-		Server	*server_list;		
 	private:
+		std::vector<Server>	server_list;		
 };
 
 enum conf_param {
@@ -105,8 +87,8 @@ conf_param resolve_conf_param(std::string param) {
 
 Configuration get_conf(int argc, char *argv[]) {
 	Configuration conf;
-	std::string file_name;		
-	
+	std::string file_name;
+
 	if (argc < 2)
 		file_name = std::string("default.conf");
 	else
@@ -164,7 +146,8 @@ Configuration get_conf(int argc, char *argv[]) {
 					}
 				} // End switch
 			} // while loop (server params)
-			conf.add_server(server);
+			// conf.add_server(server); //Old conf
+			conf.push_back(server);
 		} // End server {}
 	} // filestream while loop
 	return conf;	
@@ -219,25 +202,23 @@ int get_listener_socket() {
 
 int main(int argc, char *argv[]) {
 	Configuration conf = get_conf(argc, argv);
-	// -> use vector for server list ?
 	conf.print();
-	
+
 	int sockfd;
 	int nb_fd = conf.size();
 	struct pollfd *pfds = new struct pollfd[nb_fd];
 
-	for (int i = 0; i < nb_fd; i++) {
+	// for (int i = 0; i < nb_fd; i++) {
 		
-		sockfd = get_listener_socket();
-		if (sockfd == -1) {
-			std::cerr << "listen: " << strerror(errno) << std::endl;
-			exit(1);
-		}
+	// 	sockfd = get_listener_socket();
+	// 	if (sockfd == -1) {
+	// 		std::cerr << "listen: " << strerror(errno) << std::endl;
+	// 		exit(1);
+	// 	}
 
-		pfds[i].fd = sockfd;
-		pfds[i].events = POLLIN; 
-
-	}
+	// 	pfds[i].fd = sockfd;
+	// 	pfds[i].events = POLLIN; 
+	// }
 	
 	
 	return 0;

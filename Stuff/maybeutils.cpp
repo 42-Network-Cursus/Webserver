@@ -70,3 +70,51 @@
 	shutdown(sockfd, 2);
 
 	// gethostname() to get IP adress of computer being used. Not allowed in project but maybe needed for testing
+
+
+
+
+
+// Old version
+// class Configuration {
+// 	public:
+// 		Configuration() {
+// 			server_list = new Server;
+// 		}
+
+// 		void add_server(Server server) {
+// 			if (server_list->index == "") {
+// 				*server_list = server;
+// 			}
+// 			else {
+// 				Server *tmp = server_list;
+// 				while (tmp->next != NULL) {
+// 					tmp = tmp->next;
+// 				}
+// 				tmp->next = new Server(server);
+// 			}
+// 		};
+		
+// 		int size() {
+// 			int rv = 0;
+// 			Server *tmp = server_list;
+// 			while (tmp != NULL) {
+// 				tmp = tmp->next;
+// 				rv++;
+// 			}
+// 			return rv;
+// 		}
+
+// 		// Debugging
+// 		void print() {
+// 			Server *tmp = server_list;
+// 			std::cout << "Size: " << size() << std::endl << std::endl;
+// 			for (;tmp != NULL; tmp = tmp->next) {
+// 				tmp->print();
+// 				std::cout << std::endl;
+// 			}
+// 		}
+
+// 		Server	*server_list;		
+// 	private:
+// };
