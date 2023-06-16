@@ -270,7 +270,7 @@ int main(int argc, char *argv[]) {
 	while(1) { // main loop
 		
 		// last argument is timeout, in millisecs. Neg value for no timeout until response
-		int poll_count = poll(pfds, fd_count, -1); 
+		int poll_count = poll(pfds, fd_count, 1);
 		if (poll_count == -1) {
 			std::cerr << "poll: " << strerror(errno) << std::endl;
 			exit(1);
@@ -307,6 +307,7 @@ int main(int argc, char *argv[]) {
 							}
 							else {
 								std::cerr << "recv: " << strerror(errno) << std::endl;
+								break;
 							}
 
 							close(pfds[i].fd);
@@ -315,6 +316,9 @@ int main(int argc, char *argv[]) {
 					}
 						
 					std::cout << "\n *** Msg received: *** \n" << request;
+					flush(std::cout);
+					// request.clear();
+					// memset(&buf, 0, sizeof(buf));
 					// break;
 				}
 			}
