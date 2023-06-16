@@ -240,6 +240,34 @@ bool recv_header(std::string request) {
 	return false;
 }
 
+int sendAll(int s, const char *buf, int len) {
+	int total = 0; // Bytes sent
+	int bytesLeft = len; // Bytes left to send
+	int n;
+
+	while (total < len) {
+		n = send(s, buf + total, bytesLeft, 0);
+		if (n == -1)
+			break;
+		total += n;
+		bytesLeft -= n;
+	}
+
+	len = total;
+
+	return n == -1 ? -1 : 0;
+}
+
+int sendResponse(int fd) { //, std::string body
+
+	// <!DOCTYPE html><html><head><title>Hello, World!</title></head><body><h1>Hello, World!</h1></body></html>
+	std::string msg = "HTTP/1.1 200 OK\r\nContent-Type: text/html\r\nContent-length: 112\r\n\r\n<!DOCTYPE html><html><head><title>Hello, World!</title></head><body><h1>Hello, World!</h1></body></html>\r\n\r\n";
+	// std::string msg = "HTTP/1.1 200 OK\r\nContent-Type: text/html\r\n\r\n" + body;
+
+
+	return sendAll(fd, msg.c_str(), msg.length());
+}
+
 int main(int argc, char *argv[]) {
 	Configuration conf = get_conf(argc, argv);
 	conf.print();
@@ -317,6 +345,8 @@ int main(int argc, char *argv[]) {
 						
 					std::cout << "\n *** Msg received: *** \n" << request;
 					flush(std::cout);
+
+					std::cout << "response: " << sendResponse(pfds[i].fd) << std::endl;
 					// request.clear();
 					// memset(&buf, 0, sizeof(buf));
 					// break;
