@@ -1,8 +1,8 @@
-#ifndef SERVER_HPP
-# define SERVER_HPP
+#ifndef WEBSERV_HPP
+# define WEBSERV_HPP
 
 # include "utils.hpp"
-# include "class/server.hpp"
+// # include "class/server.hpp"
 # include "class/configuration.hpp"
 # include "class/response.hpp"
 
