@@ -2,9 +2,9 @@
 # define WEBSERV_HPP
 
 # include "utils.hpp"
-// # include "class/server.hpp"
-# include "class/configuration.hpp"
-# include "class/response.hpp"
+// # include "server.hpp"
+# include "configuration.class.hpp"
+# include "response.class.hpp"
 
 #include <sys/types.h>
 #include <sys/socket.h> // sockaddr_storage, socklen_t

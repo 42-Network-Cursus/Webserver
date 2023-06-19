@@ -1,97 +1,4 @@
-#include "Includes/webserv.hpp"
-
-enum conf_param {
-	port,
-	server_name,
-	root,
-	idx,
-	client_max_body_size,
-	error
-};
-
-conf_param resolve_conf_param(std::string param) {
-	if (param == "listen") return port;
-	if (param == "server_name") return server_name;
-	if (param == "root") return root;
-	if (param == "index") return idx;
-	if (param == "client_max_body_size") return client_max_body_size;
-	return error;
-}
-
-
-Configuration get_conf(int argc, char *argv[]) {
-	Configuration conf;
-	std::string file_name;
-
-	if (argc < 2)
-		file_name = std::string("default.conf");
-	else
-		file_name = std::string(argv[1]);
-	
-	std::ifstream file_stream ("conf/" + file_name);
-	std::string line;
-
-	if (!file_stream.is_open()) {// check whether the file is open
-		std::cout << "Error reading conf file" << std::endl;
-		exit(1);
-	}
-
-	while (file_stream) {	
-		
-		std::getline(file_stream, line);
-		
-		line = trim(line);
-		if (skip_line(line))
-			continue;
-
-		if (line == "server") {
-			Server server;
-			std::getline(file_stream, line); // go past '{'
-			while (1) {
-				std::getline(file_stream, line);
-
-				line = trim(line);
-				if (skip_line(line))
-					continue;
-				if (line == "}") {
-					break;
-				}
-
-				std::string param = line.substr(0, line.find_first_of(" "));
-				std::string param_val = line.substr(line.find_first_of(" "), line.find_first_of(";") - line.find_first_of(" "));
-				switch (resolve_conf_param(param)) {
-					case port: {
-						server.port = trim(param_val);
-						break;
-					}
-					case server_name: {
-						server.server_name = trim(param_val);
-						break;
-					}
-					case root: {
-						server.root = trim(param_val);
-						break;
-					}
-					case idx: {
-						server.index = trim(param_val);
-						break;
-					}
-					case client_max_body_size: {
-						server.client_max_body_size = trim(param_val);
-						break;
-					}
-					case error: {
-						// Break stuff
-					}
-				} // End switch
-			} // while loop (server params)
-			// conf.add_server(server); //Old conf
-			server.sockfd = -1;
-			conf.push_back(server);
-		} // End server {}
-	} // filestream while loop
-	return conf;	
-}
+#include "webserv.hpp"
 
 int get_listener_socket(Configuration conf, int idx) {
 	struct addrinfo hints, *ai, *p;
@@ -200,6 +107,7 @@ int sendResponse(int fd, std::string body) {
 }
 
 int main(int argc, char *argv[]) {
+	
 	Configuration conf = get_conf(argc, argv);
 	conf.print();
 
@@ -220,6 +128,7 @@ int main(int argc, char *argv[]) {
 			exit(1);
 		}
 
+		std::cout << "Listener socket nb: " << sockfd << std::endl;
 		conf[i].list_sock = sockfd;
 		pfds[i].fd = sockfd;
 		pfds[i].events = POLLIN;
@@ -283,7 +192,7 @@ int main(int argc, char *argv[]) {
 						}
 					}
 						
-					std::cout << "\n *** Msg received: *** \n" << request;
+					std::cout << "\n *** Msg received on socket : " << pfds[i].fd << ": *** \n" << request;
 					flush(std::cout);
 
 					std::cout << "response: " << sendResponse(pfds[i].fd, conf.getBody(pfds[i].fd)) << std::endl;
