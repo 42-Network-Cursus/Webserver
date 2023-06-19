@@ -107,67 +107,62 @@ int sendResponse(int fd, std::string body) {
 }
 
 int main(int argc, char *argv[]) {
-	
-	Configuration conf = get_conf(argc, argv);
-	conf.print();
+	std::vector<Server>			servers;
+	std::vector<struct pollfd> 	all_pfds;
 
+	servers = configure_servers(argc, argv);
+	print_server_list(servers);
+
+//----
 	int sockfd, new_fd;
-	int fd_size = conf.size();
-	struct pollfd *pfds = new struct pollfd[fd_size];
+	
 	int fd_count = 0;
 
 	struct sockaddr_storage remoteaddr; // client's info, using sockaddr_storage because big enough to contain IPv4 or IPv6
 	socklen_t addrlen; // length of remoteaddr
 	char buf[10]; // Buffer for client data
 
-	for (int i = 0; i < fd_size; i++) {
-		
-		sockfd = get_listener_socket(conf, i);
-		if (sockfd == -1) {
-			std::cerr << "listen: " << strerror(errno) << std::endl;
-			exit(1);
-		}
-
-		std::cout << "Listener socket nb: " << sockfd << std::endl;
-		conf[i].list_sock = sockfd;
-		pfds[i].fd = sockfd;
-		pfds[i].events = POLLIN;
-		fd_count++;
+	// Fills all_pfds with listening sockets of each server
+	for (int i; i < servers.size(); i++) {
+		all_pfds.push_back(servers[i].pfds[0]);
 	}
 
 	while(1) { // main loop
 		
 		// last argument is timeout, in millisecs. Neg value for no timeout until response
-		int poll_count = poll(pfds, fd_count, 1);
-		if (poll_count == -1) {
+		if ( (poll(all_pfds.data(), all_pfds.size(), 1)) == -1)
 			std::cerr << "poll: " << strerror(errno) << std::endl;
 			exit(1);
 		}
 
-		// Run through existing connections to look for data to read
-		for (int i = 0; i < fd_count; i++) {
-		
-			// check if someone is ready to read
-			if (pfds[i].revents & POLLIN) {
-				
-				if (i < conf.size() && pfds[i].fd == conf[i].list_sock) { // listening socket needs to be accepted
 
-					std::cout << "\n\n ACCEPT \n\n";
-					std::cout << "fd: " << conf[i].sockfd << std::endl;
-					if (conf[i].sockfd == -1) {
+		
+		// Run through existing connections to look for data to read
+		for (int i = 0; i < all_pfds.size(); i++) {
+		
+			
+			// check if someone is ready to read
+			if (all_pfds[i].revents & POLLIN) {				
+				
+				// check if listening socket received a connection
+				if (all_pfds[i].fd == servers[i].pfds[0].fd) {
+
 					addrlen = sizeof(remoteaddr);
-					new_fd = accept(conf[i].list_sock, (struct sockaddr *)&remoteaddr, &addrlen);
+					new_fd = accept(all_pfds[i].fd, (struct sockaddr *)&remoteaddr, &addrlen);
 					if (new_fd == -1) {
 						std::cerr << "accept: " << strerror(errno) << std::endl;
 					}
 					else {
-						conf[i].sockfd = new_fd;
-						add_to_pfds(&pfds, new_fd, &fd_count, &fd_size);
-						std::cout << "Server: new connection from " << conf[i].server_name << " on socket " << new_fd << std::endl;
-					}
+						struct pollfd new_pfd;
+						new_pfd.fd = new_fd;
+						new_pfd.events = POLLIN | POLLOUT;
+						all_pfds.push_back(new_pfd);
+						servers[i].pfds.push_back(new_pfd);
 					}
 				}
-				else { // Socket returned by accept(), we read the data
+				
+				// Not a listening socket, but ready to read.
+				else { 
 					
 					std::string request;
 					while (recv_header(request)) {
