@@ -114,7 +114,7 @@ int main(int argc, char *argv[]) {
 	print_server_list(servers);
 
 //----
-	int sockfd, new_fd;
+	int new_fd;
 	
 	int fd_count = 0;
 
@@ -145,7 +145,7 @@ int main(int argc, char *argv[]) {
 			if (all_pfds[i].revents & POLLIN) {				
 				
 				// check if listening socket received a connection
-				if (all_pfds[i].fd == servers[i].pfds[0].fd) {
+				if (i < servers.size() && all_pfds[i].fd == servers[i].pfds[0].fd) {
 
 					addrlen = sizeof(remoteaddr);
 					new_fd = accept(all_pfds[i].fd, (struct sockaddr *)&remoteaddr, &addrlen);
@@ -164,22 +164,26 @@ int main(int argc, char *argv[]) {
 				// Not a listening socket, but ready to read.
 				else { 
 					
+					// How do i handle reading everything ?
+					// 2nd while loop to read body if needed?
+
 					std::string request;
 					while (recv_header(request)) {
-						int nbytes = recv(pfds[i].fd, buf, sizeof(buf), 0);
+						int nbytes = recv(all_pfds[i].fd, buf, sizeof(buf), 0);
 						request.append(buf);
 
 						if (nbytes <= 0) { // error handling
 							if (nbytes == 0) {
-								std::cout << "Pollserver: socket " << pfds[i].fd << " hung up" << std::endl;
+								std::cout << "Pollserver: socket " << all_pfds[i].fd << " hung up" << std::endl;
 							}
 							else {
 								std::cerr << "recv: " << strerror(errno) << std::endl;
 								break;
 							}
 
-							close(pfds[i].fd);
-							del_from_pfds(pfds, i, &fd_count);
+							close(all_pfds[i].fd);
+							all_pfds.erase(all_pfds.begin() + i);
+							// del_from_pfds(pfds, i, &fd_count);
 
 							// Connection Management: HTTP 1.1 introduces persistent connections by default, 
 							// allowing multiple requests and responses to be sent over a single TCP connection. 
@@ -187,10 +191,10 @@ int main(int argc, char *argv[]) {
 						}
 					}
 						
-					std::cout << "\n *** Msg received on socket : " << pfds[i].fd << ": *** \n" << request;
+					std::cout << "\n *** Msg received on socket : " << all_pfds[i].fd << ": *** \n" << request;
 					flush(std::cout);
 
-					std::cout << "response: " << sendResponse(pfds[i].fd, conf.getBody(pfds[i].fd)) << std::endl;
+					// std::cout << "response: " << sendResponse(all_pfds[i].fd, conf.getBody(pfds[i].fd)) << std::endl;
 					
 					// std::cout << "Body: " << conf.getBody(pfds[i].fd) << std::endl;
 
@@ -199,7 +203,10 @@ int main(int argc, char *argv[]) {
 					// break;
 				}
 			}
+			else if (1) { // handle POLLOUT event, socket ready to write
+
+			}
 		}
 	}
 	return 0;
-}
+} 

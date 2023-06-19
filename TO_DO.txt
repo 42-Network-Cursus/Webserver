@@ -1,0 +1,3 @@
+* Client_max_body_size: change to int, remove "M" suffix
+* conf location ?
+* try with different server_name
