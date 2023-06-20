@@ -1,26 +1,26 @@
-#ifndef CONFIGURATION_CLASS_HPP
-# define CONFIGURATION_CLASS_HPP
+// #ifndef CONFIGURATION_CLASS_HPP
+// # define CONFIGURATION_CLASS_HPP
 
-# include <vector>
-# include <fstream>
-# include "server.class.hpp"
+// # include <vector>
+// # include <fstream>
+// # include "server.class.hpp"
 
-class Configuration {
-	public:
+// class Configuration {
+// 	public:
 		
-		Server&		operator[] (int idx);
+// 		Server&		operator[] (int idx);
 
-		int			size() const;
-		void		push_back(const Server& server);
-		std::string getBody(int fd);
+// 		int			size() const;
+// 		void		push_back(const Server& server);
+// 		std::string getBody(int fd);
 
-		// Debugging
-		void		print();
+// 		// Debugging
+// 		void		print();
 
-	private:
-		std::vector<Server>	_server_list;		
-};
+// 	private:
+// 		std::vector<Server>	_server_list;		
+// };
 
 
 
-#endif // CONFIGURATION_CLASS_HPP
+// #endif // CONFIGURATION_CLASS_HPP

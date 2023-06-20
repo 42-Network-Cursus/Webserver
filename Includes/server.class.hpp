@@ -1,7 +1,7 @@
 #ifndef SERVER_CLASS_HPP
 # define SERVER_CLASS_HPP
 
-# include <iostream>
+# include "std_libs.hpp"
 
 class Server {
 	public:
@@ -59,7 +59,5 @@ class Server {
 		
 		// Server *next;
 };
-
-
 
 #endif // SERVER_CLASS_HPP

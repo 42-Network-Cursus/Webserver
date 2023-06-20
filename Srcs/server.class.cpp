@@ -1,4 +1,3 @@
-#include "server.class.hpp"
 #include "webserv.hpp"
 
 // Debugging

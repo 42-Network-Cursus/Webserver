@@ -1,7 +1,7 @@
 #ifndef RESPONSE_CLASS_HPP
 # define RESPONSE_CLASS_HPP
 
-# include <iostream>
+# include "std_libs.hpp"
 
 class Response {
 	public:

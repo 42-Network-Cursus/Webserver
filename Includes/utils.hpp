@@ -1,8 +1,9 @@
 #ifndef UTILS_HPP
 # define UTILS_HPP
 
-# include <string>
-# include "configuration.class.hpp"
+# include "std_libs.hpp"
+# include "server.class.hpp"
+
 
 std::string& 		ltrim(std::string& s, const char* t = " \t\r\f\v");
 std::string& 		rtrim(std::string& s, const char* t = " \t\r\f\v");
@@ -22,7 +23,7 @@ enum conf_param {
 // Configuration 		get_conf(int argc, char *argv[]);
 
 conf_param 			resolve_conf_param(std::string param);
-std::vector<Server> configure_servers(int argc, char *argv[]);
+void configure_servers(int argc, char *argv[], std::vector<Server *> *servers);
 
 // Debugging
 void				print_server_list(std::vector<Server> servers);

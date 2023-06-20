@@ -1,50 +1,5 @@
 #include "webserv.hpp"
 
-int get_listener_socket(Configuration conf, int idx) {
-	struct addrinfo hints, *ai, *p;
-	int listener; // socket fd
-	int yes = 1;
-	int rv;
-
-	memset(&hints, 0, sizeof(hints)); // To make sure it is empty
-	hints.ai_family = AF_UNSPEC; // either IPV4 or 6, no need to specify
-	hints.ai_socktype = SOCK_STREAM; // TCP stream socket
-	hints.ai_flags = AI_PASSIVE; // use my IP
-
-	if ((rv = getaddrinfo(conf[idx].server_name.c_str(), conf[idx].port.c_str(), &hints, &ai)) != 0) {
-		std::cerr << "getaddrinfo error " << rv << ": " << gai_strerror(rv) << std::endl;
-		exit(1);
-	}
-
-	for (p = ai; p != NULL; p = p->ai_next) {
-
-		if ((listener = socket(p->ai_family, p->ai_socktype, p->ai_protocol)) < 0)
-			continue;
-
-		// If "address already in use" is a problem :
-		setsockopt(listener, SOL_SOCKET, SO_REUSEADDR, &yes, sizeof(yes));
-		
-		// Makes the socket non-blocking.
-		fcntl(listener, F_SETFL, O_NONBLOCK);
-
-		if (bind(listener, p->ai_addr, p->ai_addrlen) < 0) {
-			close(listener);
-			continue;
-		}
-
-		break;
-	}
-
-	if (p == NULL)
-		return -1;
-
-	freeaddrinfo(ai); // All done with this structure
-
-	if (listen(listener, 10) == -1) 
-		return -1;
-	return listener;
-}
-
 // Add new fd to the set
 void add_to_pfds(struct pollfd **pfds, int new_fd, int *fd_count, int *fd_size) {
 	
@@ -107,45 +62,52 @@ int sendResponse(int fd, std::string body) {
 }
 
 int main(int argc, char *argv[]) {
-	std::vector<Server>			servers;
+	std::vector<Server *>			servers;
 	std::vector<struct pollfd> 	all_pfds;
 
-	servers = configure_servers(argc, argv);
-	print_server_list(servers);
+	std::cout << servers.size() << std::endl;
 
+	// servers = configure_servers(argc, argv);
+	configure_servers(argc, argv, &servers);
+	// print_server_list(servers);
+	// std::cout << "addr " << &servers << std::endl;
+	// std::cout << " addr serv" << &servers[0] << std::endl;
+	// std::cout << " addr serv" << &servers[1] << std::endl;
 //----
 	int new_fd;
-	
-	int fd_count = 0;
 
+	
 	struct sockaddr_storage remoteaddr; // client's info, using sockaddr_storage because big enough to contain IPv4 or IPv6
 	socklen_t addrlen; // length of remoteaddr
 	char buf[10]; // Buffer for client data
 
 	// Fills all_pfds with listening sockets of each server
-	for (int i; i < servers.size(); i++) {
-		all_pfds.push_back(servers[i].pfds[0]);
+
+	for (size_t i = 0; i < servers.size(); i++) {
+		all_pfds.push_back(servers[i]->pfds[0]);
 	}
 
+	
+	
 	while(1) { // main loop
 		
 		// last argument is timeout, in millisecs. Neg value for no timeout until response
-		if ( (poll(all_pfds.data(), all_pfds.size(), 1)) == -1)
+		if ( (poll(all_pfds.data(), all_pfds.size(), 1)) == -1) {
 			std::cerr << "poll: " << strerror(errno) << std::endl;
 			exit(1);
 		}
 
-
-		
 		// Run through existing connections to look for data to read
-		for (int i = 0; i < all_pfds.size(); i++) {
+		for (size_t i = 0; i < all_pfds.size(); i++) {
 		
 			
 			// check if someone is ready to read
 			if (all_pfds[i].revents & POLLIN) {				
-				
+				std::cout << "POLLIN" << std::endl;
 				// check if listening socket received a connection
-				if (i < servers.size() && all_pfds[i].fd == servers[i].pfds[0].fd) {
+				if (i < servers.size() && all_pfds[i].fd == servers[i]->pfds[0].fd) {
+
+					std::cout << "Accept new connection" << std::endl;
 
 					addrlen = sizeof(remoteaddr);
 					new_fd = accept(all_pfds[i].fd, (struct sockaddr *)&remoteaddr, &addrlen);
@@ -157,13 +119,15 @@ int main(int argc, char *argv[]) {
 						new_pfd.fd = new_fd;
 						new_pfd.events = POLLIN | POLLOUT;
 						all_pfds.push_back(new_pfd);
-						servers[i].pfds.push_back(new_pfd);
+						servers[i]->pfds.push_back(new_pfd);
 					}
 				}
 				
 				// Not a listening socket, but ready to read.
 				else { 
 					
+					std::cout << "Read data" << std::endl;
+
 					// How do i handle reading everything ?
 					// 2nd while loop to read body if needed?
 
@@ -203,10 +167,12 @@ int main(int argc, char *argv[]) {
 					// break;
 				}
 			}
-			else if (1) { // handle POLLOUT event, socket ready to write
-
+			else if (all_pfds[i].revents & POLLOUT) { // handle POLLOUT event, socket ready to write
+				
+				std::cout << "response: " << sendResponse(all_pfds[i].fd, "<!DOCTYPE html><html><head><title>Hello, World!</title></head><body><h1>Hello, World!</h1></body></html>") << std::endl;
+				std::cout << "POLLOUT\n";
 			}
 		}
 	}
 	return 0;
-} 
+}
