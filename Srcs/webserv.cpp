@@ -1,31 +1,5 @@
 #include "webserv.hpp"
 
-// Add new fd to the set
-void add_to_pfds(struct pollfd **pfds, int new_fd, int *fd_count, int *fd_size) {
-	
-	if (*fd_count == *fd_size) {
-		struct pollfd *tmp = new struct pollfd[*fd_size * 2];
-		*fd_size *= 2;
-		
-		tmp = *pfds;
-		delete *pfds;
-		*pfds = tmp;
-	}
-
-	(*pfds)[*fd_count].fd = new_fd;
-	(*pfds)[*fd_count].events = POLLIN;
-	
-	(*fd_count)++;
-}
-
-// Remove indexed fd from set
-void del_from_pfds(struct pollfd *pfds, int idx, int *fd_count) {
-
-	// Copy end one to the indexed fd
-	pfds[idx] = pfds[*fd_count - 1];
-
-	(*fd_count)--;
-}
 
 bool recv_header(std::string request) {
 	if (request.find("\r\n\r\n") == std::string::npos)
@@ -61,34 +35,27 @@ int sendResponse(int fd, std::string body) {
 	return sendAll(fd, msg.c_str(), msg.length());
 }
 
+
+
+
+
 int main(int argc, char *argv[]) {
 	std::vector<Server *>			servers;
 	std::vector<struct pollfd> 	all_pfds;
-
-	std::cout << servers.size() << std::endl;
-
-	// servers = configure_servers(argc, argv);
-	configure_servers(argc, argv, &servers);
-	// print_server_list(servers);
-	// std::cout << "addr " << &servers << std::endl;
-	// std::cout << " addr serv" << &servers[0] << std::endl;
-	// std::cout << " addr serv" << &servers[1] << std::endl;
-//----
 	int new_fd;
 
-	
+	configure_servers(argc, argv, &servers);
+	// print_server_list(servers);
+
 	struct sockaddr_storage remoteaddr; // client's info, using sockaddr_storage because big enough to contain IPv4 or IPv6
 	socklen_t addrlen; // length of remoteaddr
 	char buf[10]; // Buffer for client data
 
 	// Fills all_pfds with listening sockets of each server
-
 	for (size_t i = 0; i < servers.size(); i++) {
 		all_pfds.push_back(servers[i]->pfds[0]);
 	}
 
-	
-	
 	while(1) { // main loop
 		
 		// last argument is timeout, in millisecs. Neg value for no timeout until response
@@ -147,7 +114,6 @@ int main(int argc, char *argv[]) {
 
 							close(all_pfds[i].fd);
 							all_pfds.erase(all_pfds.begin() + i);
-							// del_from_pfds(pfds, i, &fd_count);
 
 							// Connection Management: HTTP 1.1 introduces persistent connections by default, 
 							// allowing multiple requests and responses to be sent over a single TCP connection. 
@@ -158,13 +124,6 @@ int main(int argc, char *argv[]) {
 					std::cout << "\n *** Msg received on socket : " << all_pfds[i].fd << ": *** \n" << request;
 					flush(std::cout);
 
-					// std::cout << "response: " << sendResponse(all_pfds[i].fd, conf.getBody(pfds[i].fd)) << std::endl;
-					
-					// std::cout << "Body: " << conf.getBody(pfds[i].fd) << std::endl;
-
-					// request.clear();
-					// memset(&buf, 0, sizeof(buf));
-					// break;
 				}
 			}
 			else if (all_pfds[i].revents & POLLOUT) { // handle POLLOUT event, socket ready to write
