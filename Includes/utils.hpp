@@ -19,9 +19,6 @@ enum conf_param {
 	error
 };
 
-// Old ver, delete later
-// Configuration 		get_conf(int argc, char *argv[]);
-
 conf_param 			resolve_conf_param(std::string param);
 void configure_servers(int argc, char *argv[], std::vector<Server *> *servers);
 

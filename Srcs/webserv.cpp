@@ -40,6 +40,7 @@ int sendResponse(int fd, std::string body) {
 
 
 int main(int argc, char *argv[]) {
+	
 	std::vector<Server *>			servers;
 	std::vector<struct pollfd> 	all_pfds;
 	int new_fd;
@@ -129,6 +130,7 @@ int main(int argc, char *argv[]) {
 			}
 			else if (all_pfds[i].revents & POLLOUT) { // handle POLLOUT event, socket ready to write
 				
+
 				std::cout << "response: " << sendResponse(all_pfds[i].fd, "<!DOCTYPE html><html><head><title>Hello, World!</title></head><body><h1>Hello, World!</h1></body></html>") << std::endl;
 				std::cout << "POLLOUT\n";
 				close(all_pfds[i].fd);
