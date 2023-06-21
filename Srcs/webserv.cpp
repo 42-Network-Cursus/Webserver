@@ -108,7 +108,8 @@ int main(int argc, char *argv[]) {
 								std::cout << "Pollserver: socket " << all_pfds[i].fd << " hung up" << std::endl;
 							}
 							else {
-								std::cerr << "recv: " << strerror(errno) << std::endl;
+								// We cant use errno after read
+								// std::cerr << "recv: " << strerror(errno) << std::endl;
 								break;
 							}
 

@@ -18,7 +18,6 @@ Server::Server()
 }
 
 
-
 /*
 	int getaddrinfo(
 		const char *node, -> host name / IP address to connect to (ex: www.ex.com / IP) IF NULL, fills hints with our IP
