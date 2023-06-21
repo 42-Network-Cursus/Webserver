@@ -82,3 +82,5 @@ int main() {
 	handleRequest();
 	return 0;
 }
+
+// https://docs.python.org/3/library/cgi.html
