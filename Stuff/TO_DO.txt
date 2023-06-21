@@ -3,8 +3,16 @@
 * Bounce clients properly (Meaning, return error page correctly if necessary)
 * implement default error pages (Just some html)
 * Implement CGI handler (Use fork() !!!!)
-* How to upload files ? (Post method)
+	-> From wikipedia:
+		A typical use case occurs when a web user submits a web form on a web page that uses CGI. 
+		The form's data is sent to the web server within an HTTP request with a URL denoting a CGI script. 
+		The web server then launches the CGI script in a new computer process, passing the form data to it. 
+		The output of the CGI script, usually in the form of HTML, is returned by the script to the Web server, 
+		and the server relays it back to the browser as its response to the browser's request.
 
+
+* How to upload files ? (Post method)
+* Implement handling of GET,POST,DELETE methods
 
 Configuration
 * conf file checker ? (We exit() if we detect any issue with the conf file ? Prob better to avoid any segfaults etc if MF tries to fuck us over)
