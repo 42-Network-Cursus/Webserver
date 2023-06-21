@@ -55,7 +55,7 @@ int sendResponse(int fd, std::string body) {
 
 	// <!DOCTYPE html><html><head><title>Hello, World!</title></head><body><h1>Hello, World!</h1></body></html>
 	// std::string msg = "HTTP/1.1 200 OK\r\nContent-Type: text/html\r\nContent-length: 112\r\n\r\n<!DOCTYPE html><html><head><title>Hello, World!</title></head><body><h1>Hello, World!</h1></body></html>\r\n\r\n";
-	std::string msg = "HTTP/1.1 200 OK\r\nContent-Type: text/html\r\n\r\n" + body;
+	std::string msg = "HTTP/1.1 200 OK\r\nContent-Type: text/html\r\nContent-length: 112\r\n\r\n" + body;
 
 
 	return sendAll(fd, msg.c_str(), msg.length());
@@ -171,6 +171,8 @@ int main(int argc, char *argv[]) {
 				
 				std::cout << "response: " << sendResponse(all_pfds[i].fd, "<!DOCTYPE html><html><head><title>Hello, World!</title></head><body><h1>Hello, World!</h1></body></html>") << std::endl;
 				std::cout << "POLLOUT\n";
+				close(all_pfds[i].fd);
+				all_pfds.erase(all_pfds.begin() + i);
 			}
 		}
 	}
