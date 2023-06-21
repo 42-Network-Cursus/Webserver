@@ -4,12 +4,17 @@
 * implement default error pages (Just some html)
 * Implement CGI handler (Use fork() !!!!)
 	-> From wikipedia:
-		A typical use case occurs when a web user submits a web form on a web page that uses CGI. 
+		"A typical use case occurs when a web user submits a web form on a web page that uses CGI. 
 		The form's data is sent to the web server within an HTTP request with a URL denoting a CGI script. 
 		The web server then launches the CGI script in a new computer process, passing the form data to it. 
 		The output of the CGI script, usually in the form of HTML, is returned by the script to the Web server, 
-		and the server relays it back to the browser as its response to the browser's request.
+		and the server relays it back to the browser as its response to the browser's request."
 
+* PATH_INFO:
+	-> From wikipedia:
+	"As remarked above, the CGI specification defines how additional information passed with the request is passed to the script. 
+	For instance, if a slash and additional directory name(s) are appended to the URL immediately after the name of the script (in this example, /with/additional/path), 
+	then that path is stored in the PATH_INFO environment variable before the script is called."
 
 * How to upload files ? (Post method)
 * Implement handling of GET,POST,DELETE methods
@@ -28,15 +33,13 @@ Configuration
 	-> CGI file extension check
 
 *******
-*
-The first server for a host:port will be the default for this host:port (that means
-it will answer to all the requests that don’t belong to an other server)
-*
+-> PDF condition:
+"The first server for a host:port will be the default for this host:port (that means
+it will answer to all the requests that don’t belong to an other server)"
 
-* chat gpt response:
-Certainly! Let's break down the requirement in simpler terms.
 
-Imagine you have a computer that acts as a web server, and it has a specific address (host) and port number. 
+-> CHAT GPT response:
+"Imagine you have a computer that acts as a web server, and it has a specific address (host) and port number. 
 This computer can host multiple websites or applications. 
 Each website or application can have its own configuration with specific rules for handling incoming requests.
 
@@ -58,5 +61,5 @@ In practical terms, when setting up your web server,
 you would configure multiple virtual hosts or server blocks. 
 Each virtual host or server block would have its own rules for handling requests. 
 The first virtual host or server block defined for a specific host and port combination would serve as the default server, 
-catching any requests that don't match the rules of the subsequent virtual hosts or server blocks.
+catching any requests that don't match the rules of the subsequent virtual hosts or server blocks."
 ********
