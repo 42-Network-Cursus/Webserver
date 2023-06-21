@@ -1,4 +1,6 @@
 
+****** HOW TO INSTALL php-cgi OR php-fpm ????????
+
 * Chuncked requests ?? (CGI dependent request could be chuncked)
 * Implement body getter
 * Bounce clients properly (Meaning, return error page correctly if necessary)

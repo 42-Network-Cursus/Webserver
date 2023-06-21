@@ -20,11 +20,40 @@ Here's an example to illustrate the concept:
 
 #include <cstdlib>
 #include <cstdio>
+#include <string>
+#include <iostream>
 
-void handleRequest(const char* pathInfo) {
+// void handleRequest(const char* pathInfo) {
+//     // Construct the command to execute php-cgi
+//     char command[256];
+//     snprintf(command, sizeof(command), "/path/to/php-cgi %s", pathInfo);
+
+//     // Open a pipe to capture the output of the command
+//     FILE* pipe = popen(command, "r");
+//     if (pipe == nullptr) {
+//         // Handle the error case
+//         // ...
+//         return;
+//     }
+
+//     // Read the output of php-cgi from the pipe
+//     char buffer[4096];
+//     std::string output;
+//     while (fgets(buffer, sizeof(buffer), pipe) != nullptr) {
+//         output += buffer;
+//     }
+
+//     // Close the pipe
+//     pclose(pipe);
+
+//     // Send the output as the HTTP response
+//     // ...
+// }
+
+void handleRequest() {
     // Construct the command to execute php-cgi
     char command[256];
-    snprintf(command, sizeof(command), "/path/to/php-cgi %s", pathInfo);
+    snprintf(command, sizeof(command), "PHP/php-fpm.8 PHP/test_cgi.php");
 
     // Open a pipe to capture the output of the command
     FILE* pipe = popen(command, "r");
@@ -46,4 +75,10 @@ void handleRequest(const char* pathInfo) {
 
     // Send the output as the HTTP response
     // ...
+	std::cout << output << std::endl;
+}
+
+int main() {
+	handleRequest();
+	return 0;
 }
