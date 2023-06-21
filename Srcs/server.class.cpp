@@ -17,6 +17,28 @@ Server::Server()
 	// client_max_body_size = "0M";
 }
 
+
+
+/*
+	int getaddrinfo(
+		const char *node, -> host name / IP address to connect to (ex: www.ex.com / IP) IF NULL, fills hints with our IP
+		const char *service, -> port number
+		const struct addrinfo *hints, -> prob no need, send an empty one
+		struct addrinfo **res -> fills your given pointer with result
+	)
+
+	struct addrinfo {
+               int              ai_flags;
+               int              ai_family;
+               int              ai_socktype;
+               int              ai_protocol;
+               socklen_t        ai_addrlen;
+               struct sockaddr *ai_addr;
+               char            *ai_canonname;
+               struct addrinfo *ai_next;
+           };
+*/
+
 void Server::get_listening_socket() {
 	struct addrinfo hints, *ai, *p;
 	int yes = 1;

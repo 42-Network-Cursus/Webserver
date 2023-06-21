@@ -1,6 +1,8 @@
 #include "webserv.hpp"
 
-// Debugging
+/*******************
+	Debugging
+*******************/ 
 void		print_server_list(std::vector<Server> servers) {
 	std::vector<Server>::iterator it_begin = servers.begin();
 	std::vector<Server>::iterator it_end = servers.end();
@@ -12,26 +14,21 @@ void		print_server_list(std::vector<Server> servers) {
 	}
 }
 
-std::string& ltrim(std::string& s, const char* t) { // trim from left
-    s.erase(0, s.find_first_not_of(t));
-    return s;
+/*****************
+ Maybe used to print addresses of connected clients ?
+******************/
+// get sockaddr object, IPv4 or 6
+void *get_in_addr(struct sockaddr *sa) {
+	if (sa->sa_family == AF_INET) {
+		return &(((struct sockaddr_in *)sa)->sin_addr);
+	}
+
+	return &(((struct sockaddr_in6 *)sa)->sin6_addr);
 }
 
-std::string& rtrim(std::string& s, const char* t) { // trim from right
-    s.erase(s.find_last_not_of(t) + 1);
-    return s;
-}
-
-std::string& trim(std::string& s, const char* t) { // trim from left & right
-    return ltrim(rtrim(s, t), t);
-}
-
-// Skips comments and empty lines in configuration file
-bool skip_line(std::string line) {
-	if (line.find_first_of("#") != std::string::npos || line.length() == 0)
-		return true;
-	return false;
-}
+// std::cout << "Pollserver: new connection from "
+// 		<< inet_ntop(remoteaddr.ss_family, get_in_addr((struct sockaddr *)&remoteaddr), remoteIP, INET6_ADDRSTRLEN)
+// 		<< " on socket " << new_fd << std::endl;
 
 
 
@@ -120,91 +117,33 @@ void configure_servers(int argc, char *argv[], std::vector<Server *> *servers) {
 
 			server->get_listening_socket();
 			servers->push_back(server);
-
-			// std::cout << " addr server " << &server << std::endl;
-
-			// std::cout << "Serv " << servers[0].socklist << std::endl;
-			// std::cout << "addr " << servers << std::endl;
 		
 		} // End server {}
+
 	} // filestream while loop
-	// return *servers;	
 }
 
+/********************
+	Actual Utils
+********************/
 
+std::string& ltrim(std::string& s, const char* t) { // trim from left
+    s.erase(0, s.find_first_not_of(t));
+    return s;
+}
 
-// OLD VERSION, DELETE LATER
-// Configuration get_conf(int argc, char *argv[]) {
-// 	Configuration conf;
-// 	std::string file_name;
+std::string& rtrim(std::string& s, const char* t) { // trim from right
+    s.erase(s.find_last_not_of(t) + 1);
+    return s;
+}
 
-// 	if (argc < 2)
-// 		file_name = std::string("default.conf");
-// 	else
-// 		file_name = std::string(argv[1]);
-	
-// 	std::ifstream file_stream ("conf/" + file_name);
-// 	std::string line;
+std::string& trim(std::string& s, const char* t) { // trim from left & right
+    return ltrim(rtrim(s, t), t);
+}
 
-// 	if (!file_stream.is_open()) {// check whether the file is open
-// 		std::cout << "Error reading conf file" << std::endl;
-// 		exit(1);
-// 	}
-
-// 	while (file_stream) {	
-		
-// 		std::getline(file_stream, line);
-		
-// 		line = trim(line);
-// 		if (skip_line(line))
-// 			continue;
-
-// 		if (line == "server") {
-// 			Server server;
-			
-// 			std::getline(file_stream, line); // go past '{'
-// 			while (1) {
-// 				std::getline(file_stream, line);
-
-// 				line = trim(line);
-// 				if (skip_line(line))
-// 					continue;
-// 				if (line == "}")
-// 					break;
-
-// 				std::string param = line.substr(0, line.find_first_of(" "));
-// 				std::string param_val = line.substr(line.find_first_of(" "), line.find_first_of(";") - line.find_first_of(" "));
-// 				switch (resolve_conf_param(param)) {
-// 					case port: {
-// 						server.port = trim(param_val);
-// 						break;
-// 					}
-// 					case server_name: {
-// 						server.server_name = trim(param_val);
-// 						break;
-// 					}
-// 					case root: {
-// 						server.root = trim(param_val);
-// 						break;
-// 					}
-// 					case idx: {
-// 						server.index = trim(param_val);
-// 						break;
-// 					}
-// 					case client_max_body_size: {
-// 						server.client_max_body_size = trim(param_val);
-// 						break;
-// 					}
-// 					case error: {
-// 						// Break stuff
-// 					}
-// 				} // End switch
-// 			} // while loop (server params)
-// 			// conf.add_server(server); //Old conf
-// 			server.sockfd = -1;
-// 			conf.push_back(server);
-// 		} // End server {}
-// 	} // filestream while loop
-// 	return conf;	
-// }
-
+// Skips comments and empty lines in configuration file
+bool skip_line(std::string line) {
+	if (line.find_first_of("#") != std::string::npos || line.length() == 0)
+		return true;
+	return false;
+}
