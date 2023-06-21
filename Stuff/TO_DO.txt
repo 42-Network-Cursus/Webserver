@@ -20,10 +20,12 @@ Configuration
 	-> CGI file extension check
 
 *******
+*
 The first server for a host:port will be the default for this host:port (that means
 it will answer to all the requests that don’t belong to an other server)
+*
 
-chat gpt response:
+* chat gpt response:
 Certainly! Let's break down the requirement in simpler terms.
 
 Imagine you have a computer that acts as a web server, and it has a specific address (host) and port number. 
