@@ -1,29 +1,13 @@
 #ifndef WEBSERV_HPP
 # define WEBSERV_HPP
 
+# include "std_libs.hpp"
 # include "utils.hpp"
-// # include "server.hpp"
-# include "configuration.class.hpp"
+# include "server.class.hpp"
 # include "response.class.hpp"
 
-#include <sys/types.h>
-#include <sys/socket.h> // sockaddr_storage, socklen_t
-#include <netdb.h>
-#include <unistd.h>
-#include <signal.h>
-#include <sys/wait.h>
-#include <fcntl.h>
-#include <poll.h>
-
-#include <cerrno>
-#include <cstring>
-
-
-#include <arpa/inet.h> // INET6_ADDRSTRLEN macro,
-
-
-#define END_HEADER "\r\n\r\n"
-#define BACKLOG 10 // queue of nb of connexions waiting to be accepted by listen()
+# define END_HEADER "\r\n\r\n"
+# define BACKLOG 10 // queue of nb of connexions waiting to be accepted by listen()
 
 
 /*
@@ -37,4 +21,4 @@
 */
 
 
-#endif // SERVER_HPP
+#endif // WEBSERV_HPP

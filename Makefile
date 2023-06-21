@@ -1,10 +1,10 @@
 NAME	=	webserv
 INCL	=	-I ./Includes/
 CC		=	c++ -Wall -Wextra -Werror -std=c++98
-SRCS	=	srcs/webserv.cpp \
-			srcs/utils.cpp \
-			srcs/server.class.cpp \
-			srcs/configuration.class.cpp
+SRCS	=	Srcs/webserv.cpp \
+			Srcs/utils.cpp \
+			Srcs/server.class.cpp 
+			
 OBJS 	= 	$(SRCS:.c=.o)
 
 

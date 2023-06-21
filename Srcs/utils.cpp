@@ -1,5 +1,16 @@
-#include "utils.hpp"
 #include "webserv.hpp"
+
+// Debugging
+void		print_server_list(std::vector<Server> servers) {
+	std::vector<Server>::iterator it_begin = servers.begin();
+	std::vector<Server>::iterator it_end = servers.end();
+
+	std::cout << "Number of servers: " << servers.size() << std::endl << std::endl;
+	for (; it_begin != it_end; it_begin++) {
+		it_begin->print();
+		std::cout << std::endl;
+	}
+}
 
 std::string& ltrim(std::string& s, const char* t) { // trim from left
     s.erase(0, s.find_first_not_of(t));
@@ -37,8 +48,9 @@ conf_param resolve_conf_param(std::string param) {
 	return error;
 }
 
-Configuration get_conf(int argc, char *argv[]) {
-	Configuration conf;
+void configure_servers(int argc, char *argv[], std::vector<Server *> *servers) {
+	
+	// std::vector<Server *> servers;
 	std::string file_name;
 
 	if (argc < 2)
@@ -46,7 +58,7 @@ Configuration get_conf(int argc, char *argv[]) {
 	else
 		file_name = std::string(argv[1]);
 	
-	std::ifstream file_stream ("conf/" + file_name);
+	std::ifstream file_stream (("conf/" + file_name).c_str());
 	std::string line;
 
 	if (!file_stream.is_open()) {// check whether the file is open
@@ -54,7 +66,7 @@ Configuration get_conf(int argc, char *argv[]) {
 		exit(1);
 	}
 
-	while (file_stream) {	
+	while (file_stream) {
 		
 		std::getline(file_stream, line);
 		
@@ -63,7 +75,7 @@ Configuration get_conf(int argc, char *argv[]) {
 			continue;
 
 		if (line == "server") {
-			Server server;
+			Server *server = new Server();
 			
 			std::getline(file_stream, line); // go past '{'
 			while (1) {
@@ -77,37 +89,122 @@ Configuration get_conf(int argc, char *argv[]) {
 
 				std::string param = line.substr(0, line.find_first_of(" "));
 				std::string param_val = line.substr(line.find_first_of(" "), line.find_first_of(";") - line.find_first_of(" "));
+				
 				switch (resolve_conf_param(param)) {
 					case port: {
-						server.port = trim(param_val);
+						server->port = trim(param_val);
 						break;
 					}
 					case server_name: {
-						server.server_name = trim(param_val);
+						server->server_name = trim(param_val);
 						break;
 					}
 					case root: {
-						server.root = trim(param_val);
+						server->root = trim(param_val);
 						break;
 					}
 					case idx: {
-						server.index = trim(param_val);
+						server->index = trim(param_val);
 						break;
 					}
 					case client_max_body_size: {
-						server.client_max_body_size = trim(param_val);
+						server->client_max_body_size = trim(param_val);
 						break;
 					}
 					case error: {
 						// Break stuff
 					}
-				} // End switch
+				} // End switch 
+				
 			} // while loop (server params)
-			// conf.add_server(server); //Old conf
-			server.sockfd = -1;
-			conf.push_back(server);
+
+			server->get_listening_socket();
+			servers->push_back(server);
+
+			// std::cout << " addr server " << &server << std::endl;
+
+			// std::cout << "Serv " << servers[0].socklist << std::endl;
+			// std::cout << "addr " << servers << std::endl;
+		
 		} // End server {}
 	} // filestream while loop
-	return conf;	
+	// return *servers;	
 }
+
+
+
+// OLD VERSION, DELETE LATER
+// Configuration get_conf(int argc, char *argv[]) {
+// 	Configuration conf;
+// 	std::string file_name;
+
+// 	if (argc < 2)
+// 		file_name = std::string("default.conf");
+// 	else
+// 		file_name = std::string(argv[1]);
+	
+// 	std::ifstream file_stream ("conf/" + file_name);
+// 	std::string line;
+
+// 	if (!file_stream.is_open()) {// check whether the file is open
+// 		std::cout << "Error reading conf file" << std::endl;
+// 		exit(1);
+// 	}
+
+// 	while (file_stream) {	
+		
+// 		std::getline(file_stream, line);
+		
+// 		line = trim(line);
+// 		if (skip_line(line))
+// 			continue;
+
+// 		if (line == "server") {
+// 			Server server;
+			
+// 			std::getline(file_stream, line); // go past '{'
+// 			while (1) {
+// 				std::getline(file_stream, line);
+
+// 				line = trim(line);
+// 				if (skip_line(line))
+// 					continue;
+// 				if (line == "}")
+// 					break;
+
+// 				std::string param = line.substr(0, line.find_first_of(" "));
+// 				std::string param_val = line.substr(line.find_first_of(" "), line.find_first_of(";") - line.find_first_of(" "));
+// 				switch (resolve_conf_param(param)) {
+// 					case port: {
+// 						server.port = trim(param_val);
+// 						break;
+// 					}
+// 					case server_name: {
+// 						server.server_name = trim(param_val);
+// 						break;
+// 					}
+// 					case root: {
+// 						server.root = trim(param_val);
+// 						break;
+// 					}
+// 					case idx: {
+// 						server.index = trim(param_val);
+// 						break;
+// 					}
+// 					case client_max_body_size: {
+// 						server.client_max_body_size = trim(param_val);
+// 						break;
+// 					}
+// 					case error: {
+// 						// Break stuff
+// 					}
+// 				} // End switch
+// 			} // while loop (server params)
+// 			// conf.add_server(server); //Old conf
+// 			server.sockfd = -1;
+// 			conf.push_back(server);
+// 		} // End server {}
+// 	} // filestream while loop
+// 	return conf;	
+// }
 
