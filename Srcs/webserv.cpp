@@ -39,8 +39,31 @@ int sendResponse(int fd, std::string body) {
 }
 
 
+// ------------ FOR TESTING
+std::string fetchBody() {
+	// std::vector<Server>::iterator it_begin = _server_list.begin();
+	// std::vector<Server>::iterator it_end = _server_list.end();
 
+	// for (; it_begin != it_end; it_begin++) {
+	// 	if (it_begin->sockfd == fd)
+	// 		break;
+	// }
+	
+	std::string body;
+	std::ifstream file_stream ("htmlPages/cgi-form.html");
 
+	if (!file_stream.is_open()) { // check whether the file is open
+		std::cout << "Error reading conf file" << std::endl;
+		exit(1);
+	}
+	
+	body.assign ( 	(std::istreambuf_iterator<char>(file_stream)),
+					(std::istreambuf_iterator<char>()) 
+				);
+
+	return body;
+}
+//  --------------------------------
 
 int main(int argc, char *argv[]) {
 	
@@ -135,7 +158,23 @@ int main(int argc, char *argv[]) {
 			else if (all_pfds[i].revents & POLLOUT) { // handle POLLOUT event, socket ready to write
 				
 
-				std::cout << "response: " << sendResponse(all_pfds[i].fd, "<!DOCTYPE html><html><head><title>Hello, World!</title></head><body><h1>Hello, World!</h1></body></html>") << std::endl;
+				// std::cout << "response: " << sendResponse(all_pfds[i].fd, "<!DOCTYPE html><html><head><title>Hello, World!</title></head><body><h1>Hello, World!</h1></body></html>") << std::endl;
+				// std::cout << "response: " << sendResponse(all_pfds[i].fd, fetchBody()) << std::endl;
+
+
+				 // Execute the CGI script using the Python interpreter
+					// int result = system("python3 /cgi-bin/py-cgi.py");
+
+					// if (result == -1) {
+					// 	// Handle error executing the script
+					// 	// ...
+					// }
+					
+					// Process the result as needed
+					// ...
+
+				// std::cout << "response: " << sendResponse(all_pfds[i].fd, fetchBody()) << std::endl;
+				
 				std::cout << "POLLOUT\n";
 				close(all_pfds[i].fd);
 				all_pfds.erase(all_pfds.begin() + i);

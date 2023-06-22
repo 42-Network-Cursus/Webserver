@@ -1,2 +1,0 @@
-import cgitb
-cgitb.enable()
