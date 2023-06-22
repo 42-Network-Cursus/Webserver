@@ -3,6 +3,7 @@
 
 # include "std_libs.hpp"
 # include "utils.hpp"
+# include "configuration.hpp"
 # include "server.class.hpp"
 # include "response.class.hpp"
 
@@ -19,6 +20,5 @@
 	getaddrinfo, freeaddrinfo, setsockopt, getsockname,
 	getprotobyname, fcnt
 */
-
 
 #endif // WEBSERV_HPP

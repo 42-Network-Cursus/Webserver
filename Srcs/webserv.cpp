@@ -38,9 +38,21 @@ int sendResponse(int fd, std::string body) {
 	return sendAll(fd, msg.c_str(), msg.length());
 }
 
+int getServerByFd(int fd, std::vector<Server *> servers) {
+
+
+	for (int i = 0; servers[i] ; i++) {
+
+		for (int j = 0; servers[i]->pfds[j].fd ; j++) {
+			if (fd == servers[i]->pfds[j].fd)
+				return i;
+		}
+	}
+	return -1;
+}
 
 // ------------ FOR TESTING
-std::string fetchBody() {
+std::string fetchBody(int fd, std::vector<Server *> servers) {
 	// std::vector<Server>::iterator it_begin = _server_list.begin();
 	// std::vector<Server>::iterator it_end = _server_list.end();
 
@@ -49,8 +61,19 @@ std::string fetchBody() {
 	// 		break;
 	// }
 	
+	int id = getServerByFd(fd, servers);
+
+	std::cout << "server nb " << id << std::endl;
 	std::string body;
-	std::ifstream file_stream ("htmlPages/cgi-form.html");
+	
+	std::string htmlpage;
+
+	// if (i == 0)
+	// 	htmlpage = "index.html";
+	// else
+	// 	htmlpage = "secondServer.html";	
+	
+	std::ifstream file_stream (servers[id]->root + servers[id]->index);
 
 	if (!file_stream.is_open()) { // check whether the file is open
 		std::cout << "Error reading conf file" << std::endl;
@@ -109,9 +132,11 @@ int main(int argc, char *argv[]) {
 						std::cerr << "accept: " << strerror(errno) << std::endl;
 					}
 					else {
+						std::cout << "New socket to communicate : " << new_fd << std::endl;
 						struct pollfd new_pfd;
 						new_pfd.fd = new_fd;
 						new_pfd.events = POLLIN | POLLOUT;
+						// new_pfd.events = POLLIN;
 						all_pfds.push_back(new_pfd);
 						servers[i]->pfds.push_back(new_pfd);
 					}
@@ -142,7 +167,14 @@ int main(int argc, char *argv[]) {
 
 							close(all_pfds[i].fd);
 							all_pfds.erase(all_pfds.begin() + i);
+							
 
+							// ADD TO REQUEST CLASS 
+							
+
+
+							// all_pfds[i].events = POLLOUT;
+	
 							// Connection Management: HTTP 1.1 introduces persistent connections by default, 
 							// allowing multiple requests and responses to be sent over a single TCP connection. 
 							// This reduces the overhead of establishing and tearing down connections for each request, improving performance.
@@ -150,8 +182,9 @@ int main(int argc, char *argv[]) {
 					}
 					
 					std::cout << "\n\nCHECK REQUEST SAL -- OPE Tu lis jusqu'au bout ?\n" << request << "\n\n" << std::endl;
-					std::cout << "\n *** Msg received on socket : " << all_pfds[i].fd << ": *** \n" << request;
-					flush(std::cout);
+					// std::cout << "\n *** Msg received on socket : " << all_pfds[i].fd << ": *** \n" << request;
+					// flush(std::cout);
+					std::cout << "Read request\n";
 
 				}
 			}
@@ -159,7 +192,7 @@ int main(int argc, char *argv[]) {
 				
 
 				// std::cout << "response: " << sendResponse(all_pfds[i].fd, "<!DOCTYPE html><html><head><title>Hello, World!</title></head><body><h1>Hello, World!</h1></body></html>") << std::endl;
-				// std::cout << "response: " << sendResponse(all_pfds[i].fd, fetchBody()) << std::endl;
+				std::cout << "response: " << sendResponse(all_pfds[i].fd, fetchBody(all_pfds[i].fd, servers)) << std::endl;
 
 
 				 // Execute the CGI script using the Python interpreter
@@ -175,9 +208,14 @@ int main(int argc, char *argv[]) {
 
 				// std::cout << "response: " << sendResponse(all_pfds[i].fd, fetchBody()) << std::endl;
 				
-				std::cout << "POLLOUT\n";
-				close(all_pfds[i].fd);
+				std::cout << "POLLOUT, closing socket " << all_pfds[i].fd << std::endl;
+				
+				std::cout << "1" << std::endl;
 				all_pfds.erase(all_pfds.begin() + i);
+				std::cout << "2" << std::endl;
+				eraseFD(all_pfds[i].fd, servers);
+				std::cout << "3" << std::endl;
+				close(all_pfds[i].fd);
 			}
 		}
 	}
