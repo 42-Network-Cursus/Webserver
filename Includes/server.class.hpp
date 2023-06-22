@@ -74,6 +74,10 @@ class Server {
 		int socklist; // Listening socket, used by accept()
 		std::vector<struct pollfd> pfds;
 		
+
+
+		
+
 		// int sockfd;
 		
 		// Configuration parameters
