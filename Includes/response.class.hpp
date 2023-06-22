@@ -3,15 +3,29 @@
 
 # include "std_libs.hpp"
 
+# include "response_header.class.hpp"
+
 class Response {
 	public:
+		Response();
+		~Response();
+		Response(const Response &copy);
+		Response &operator=(const Response &other);
 
-		std::string status_code;
-		std::string content_type;
-		std::string content_length;
-		std::string body; // html code
-		
+		void	getMethod();
+		void	postMethod();
+		void	putMethod();
+		void	deleteMethod();
+
+		std::string getResponseInString();
+
+		void setBody(const std::string &body);
+
 	private:
+		int _statusCode;
+		ResponseHeader _header;
+		std::string _body;
+		std::string _path;
 };
 
 #endif // RESPONSE_CLASS_HPP

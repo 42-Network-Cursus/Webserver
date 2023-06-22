@@ -4,6 +4,8 @@
 # include "std_libs.hpp"
 # include "server.class.hpp"
 
+# include "constantes.hpp"
+# include "request.class.hpp"
 
 std::string& 		ltrim(std::string& s, const char* t = " \t\r\f\v");
 std::string& 		rtrim(std::string& s, const char* t = " \t\r\f\v");
@@ -21,6 +23,10 @@ enum conf_param {
 
 conf_param 			resolve_conf_param(std::string param);
 void configure_servers(int argc, char *argv[], std::vector<Server *> *servers);
+
+
+std::string	getTextByStatusCode(int code);
+std::string	intToString(int number);
 
 // Debugging
 void				print_server_list(std::vector<Server> servers);

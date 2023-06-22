@@ -29,8 +29,11 @@ int sendResponse(int fd, std::string body) {
 
 	// <!DOCTYPE html><html><head><title>Hello, World!</title></head><body><h1>Hello, World!</h1></body></html>
 	// std::string msg = "HTTP/1.1 200 OK\r\nContent-Type: text/html\r\nContent-length: 112\r\n\r\n<!DOCTYPE html><html><head><title>Hello, World!</title></head><body><h1>Hello, World!</h1></body></html>\r\n\r\n";
-	std::string msg = "HTTP/1.1 200 OK\r\nContent-Type: text/html\r\nContent-length: 112\r\n\r\n" + body;
+	// std::string msg = "HTTP/1.1 200 OK\r\nContent-Type: text/html\r\nContent-length: 112\r\n\r\n" + body;
+	Response response = Response();
+	response.setBody(body);
 
+	std::string msg = response.getResponseInString();
 
 	return sendAll(fd, msg.c_str(), msg.length());
 }
@@ -122,7 +125,8 @@ int main(int argc, char *argv[]) {
 							// This reduces the overhead of establishing and tearing down connections for each request, improving performance.
 						}
 					}
-						
+					
+					std::cout << "\n\nCHECK REQUEST SAL -- OPE Tu lis jusqu'au bout ?\n" << request << "\n\n" << std::endl;
 					std::cout << "\n *** Msg received on socket : " << all_pfds[i].fd << ": *** \n" << request;
 					flush(std::cout);
 

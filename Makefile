@@ -3,7 +3,9 @@ INCL	=	-I ./Includes/
 CC		=	c++ -Wall -Wextra -Werror -std=c++98
 SRCS	=	Srcs/webserv.cpp \
 			Srcs/utils.cpp \
-			Srcs/server.class.cpp 
+			Srcs/server.class.cpp \
+			Srcs/response.class.cpp \
+			Srcs/response_header.class.cpp \
 			
 OBJS 	= 	$(SRCS:.c=.o)
 

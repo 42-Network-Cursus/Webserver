@@ -19,4 +19,7 @@
 # include <vector>
 # include <iostream>
 
+
+# include <sstream>
+
 #endif // STD_LIBS_HPP

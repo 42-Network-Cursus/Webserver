@@ -147,3 +147,68 @@ bool skip_line(std::string line) {
 		return true;
 	return false;
 }
+
+/**
+ * @brief Get the text corresponding to the status code
+ * 
+ * @param code Status Code
+ * @return Status Code Text
+ */
+std::string getTextByStatusCode(int code)
+{
+	switch (code)
+	{
+		case 200:
+			return SC_200;
+		case 400:
+			return SC_400;
+		case 403:
+			return SC_403;
+		case 404:
+			return SC_404;
+		case 418:
+			return SC_418;
+		case 500:
+			return SC_500;
+		default:
+			return SC_UNKNOWN;
+	}
+}
+
+/**
+ * @brief Convert a int to a std::string
+ * 
+ * @param number Number
+ * @return Number value in std::string 
+ */
+std::string	intToString(int number)
+{
+	std::string res = "";
+	try
+	{
+		std::ostringstream oss117;
+		oss117 << number;
+		res = oss117.str();
+	}
+	catch(const std::exception& e)
+	{
+		res = ERR_CONVERSION_ITS;
+	}
+	return res;
+}
+
+Request parseRequest(std::string request)
+{
+	std::string method = "";
+	std::string path = "";
+
+	int i = 0;
+	while (i < 2)
+	{
+		if (i == 0)
+		{
+			//method += *request;
+		}
+	}
+
+}
