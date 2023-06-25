@@ -62,6 +62,7 @@ class Server {
 			return (*this);
 		}
 
+
 		void get_listening_socket();
 
 		// Debugging
@@ -74,6 +75,10 @@ class Server {
 		int socklist; // Listening socket, used by accept()
 		std::vector<struct pollfd> pfds;
 		
+
+
+		
+
 		// int sockfd;
 		
 		// Configuration parameters

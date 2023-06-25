@@ -12,17 +12,10 @@ std::string& 		rtrim(std::string& s, const char* t = " \t\r\f\v");
 std::string& 		trim(std::string& s, const char* t = " \t\r\f\v");
 bool 				skip_line(std::string line);
 
-enum conf_param {
-	port,
-	server_name,
-	root,
-	idx,
-	client_max_body_size,
-	error
-};
 
-conf_param 			resolve_conf_param(std::string param);
-void configure_servers(int argc, char *argv[], std::vector<Server *> *servers);
+
+// conf_param 			resolve_conf_param(std::string param);
+// void configure_servers(int argc, char *argv[], std::vector<Server *> *servers);
 
 
 std::string	getTextByStatusCode(int code);
@@ -30,5 +23,7 @@ std::string	intToString(int number);
 
 // Debugging
 void				print_server_list(std::vector<Server> servers);
+
+void eraseFD(int fd, std::vector<Server *> servers);
 
 #endif // UTILS_HPP
