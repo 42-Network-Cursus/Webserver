@@ -5,7 +5,7 @@
 # include "server.class.hpp"
 
 # include "constantes.hpp"
-# include "request.class.hpp"
+# include "request.hpp"
 
 std::string& 		ltrim(std::string& s, const char* t = " \t\r\f\v");
 std::string& 		rtrim(std::string& s, const char* t = " \t\r\f\v");
@@ -28,7 +28,13 @@ void configure_servers(int argc, char *argv[], std::vector<Server *> *servers);
 std::string	getTextByStatusCode(int code);
 std::string	intToString(int number);
 
+template<typename T>
+bool containsValue(const std::vector<T>& vect, const T& value);
+
+
 // Debugging
 void				print_server_list(std::vector<Server> servers);
+
+# include "utils.tpp" 
 
 #endif // UTILS_HPP

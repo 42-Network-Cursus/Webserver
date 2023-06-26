@@ -12,9 +12,9 @@ void Server::print() {
 // Default constructor
 Server::Server() 
 {
-	// next = NULL;
-	// sockfd = -1;
-	// client_max_body_size = "0M";
+	_methods.push_back(METHOD_GET);
+	_methods.push_back(METHOD_POST);
+	_methods.push_back(METHOD_DELETE);
 }
 
 
@@ -93,4 +93,15 @@ void Server::get_listening_socket() {
 	pfd.fd = socklist;
 	pfd.events = POLLIN;
 	pfds.push_back(pfd);
+}
+
+
+std::vector<std::string> Server::getAcceptedMethods()
+{
+	return _methods;
+}
+
+std::string Server::getRoot()
+{
+	return root;
 }

@@ -1,5 +1,5 @@
-#ifndef RESPONSEHEADER_HPP
-# define RESPONSEHEADER_HPP
+#ifndef RESPONSE_HEADER_HPP
+# define RESPONSE_HEADER_HPP
 
 # include "std_libs.hpp"
 # include "constantes.hpp"

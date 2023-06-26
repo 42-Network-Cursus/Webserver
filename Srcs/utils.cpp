@@ -196,19 +196,3 @@ std::string	intToString(int number)
 	}
 	return res;
 }
-
-Request parseRequest(std::string request)
-{
-	std::string method = "";
-	std::string path = "";
-
-	int i = 0;
-	while (i < 2)
-	{
-		if (i == 0)
-		{
-			//method += *request;
-		}
-	}
-
-}

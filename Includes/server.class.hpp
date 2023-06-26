@@ -34,6 +34,7 @@ class Server {
 		Server();
 
 		Server(const Server &rhs) {
+			std::cout << "COPY CONSTRUCTOR CALLED\n";
 			port = rhs.port;
 			server_name = rhs.server_name;
 			root = rhs.root;
@@ -47,6 +48,7 @@ class Server {
 		}
 
 		Server&	operator= (const Server& rhs) {
+			std::cout << "Assign CALLED\n";
 			if (this != &rhs) 
 			{
 				port = rhs.port;
@@ -63,6 +65,9 @@ class Server {
 		}
 
 		void get_listening_socket();
+
+		std::vector<std::string> getAcceptedMethods();
+		std::string		getRoot();
 
 		// Debugging
 		void print();
@@ -82,6 +87,8 @@ class Server {
 		std::string root;
 		std::string index;
 		std::string client_max_body_size;
+		
+		std::vector<std::string> _methods;
 		
 		// Server *next;
 };

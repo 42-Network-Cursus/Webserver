@@ -30,6 +30,7 @@ int sendResponse(int fd, std::string body) {
 	// <!DOCTYPE html><html><head><title>Hello, World!</title></head><body><h1>Hello, World!</h1></body></html>
 	// std::string msg = "HTTP/1.1 200 OK\r\nContent-Type: text/html\r\nContent-length: 112\r\n\r\n<!DOCTYPE html><html><head><title>Hello, World!</title></head><body><h1>Hello, World!</h1></body></html>\r\n\r\n";
 	// std::string msg = "HTTP/1.1 200 OK\r\nContent-Type: text/html\r\nContent-length: 112\r\n\r\n" + body;
+	std::cout << "\n\n\n====================" << "In send Response\n\n\n\n" << "====================" << std::endl;
 	Response response = Response();
 	response.setBody(body);
 
@@ -60,6 +61,8 @@ int main(int argc, char *argv[]) {
 		all_pfds.push_back(servers[i]->pfds[0]);
 	}
 
+	servers[0]->print();
+
 	while(1) { // main loop
 		
 		// last argument is timeout, in millisecs. Neg value for no timeout until response
@@ -88,7 +91,8 @@ int main(int argc, char *argv[]) {
 					else {
 						struct pollfd new_pfd;
 						new_pfd.fd = new_fd;
-						new_pfd.events = POLLIN | POLLOUT;
+						// new_pfd.events = POLLIN | POLLOUT;
+						new_pfd.events = POLLIN;
 						all_pfds.push_back(new_pfd);
 						servers[i]->pfds.push_back(new_pfd);
 					}
@@ -126,8 +130,12 @@ int main(int argc, char *argv[]) {
 						}
 					}
 					
-					std::cout << "\n\nCHECK REQUEST SAL -- OPE Tu lis jusqu'au bout ?\n" << request << "\n\n" << std::endl;
-					std::cout << "\n *** Msg received on socket : " << all_pfds[i].fd << ": *** \n" << request;
+					// std::cout << "\n\nCHECK REQUEST SAL -- OPE Tu lis jusqu'au bout ?\n" << request << "\n\n" << std::endl;
+
+					Request r = Request::parseRequest(request, all_pfds[i].fd, servers);
+					servers[0]->print();
+					r.printConfig();
+					// std::cout << "\n *** Msg received on socket : " << all_pfds[i].fd << ": *** \n" << request;
 					flush(std::cout);
 
 				}

@@ -1,9 +1,10 @@
-#ifndef RESPONSE_CLASS_HPP
-# define RESPONSE_CLASS_HPP
+#ifndef RESPONSE_HPP
+# define RESPONSE_HPP
 
 # include "std_libs.hpp"
 
-# include "response_header.class.hpp"
+# include "response_header.hpp"
+# include "request.hpp"
 
 class Response {
 	public:
@@ -12,10 +13,12 @@ class Response {
 		Response(const Response &copy);
 		Response &operator=(const Response &other);
 
-		void	getMethod();
+		Response(Request request);
+
+		void	getMethod(Request request);
 		void	postMethod();
 		void	putMethod();
-		void	deleteMethod();
+		void	deleteMethod(Request request);
 
 		std::string getResponseInString();
 
@@ -26,6 +29,12 @@ class Response {
 		ResponseHeader _header;
 		std::string _body;
 		std::string _path;
+
+		bool	isValidPathFile();
+		void	readFile();
+		void	writeFile(std::string content);
+
+		std::string getErrorPage();
 };
 
 #endif // RESPONSE_CLASS_HPP
