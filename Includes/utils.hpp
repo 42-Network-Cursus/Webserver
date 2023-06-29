@@ -5,7 +5,7 @@
 # include "server.class.hpp"
 
 # include "constantes.hpp"
-# include "request.class.hpp"
+// # include "request.class.hpp"
 
 std::string& 		ltrim(std::string& s, const char* t = " \t\r\f\v");
 std::string& 		rtrim(std::string& s, const char* t = " \t\r\f\v");

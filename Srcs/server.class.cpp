@@ -52,7 +52,12 @@ void Server::get_listening_socket() {
 	hints.ai_flags = AI_PASSIVE; // use my IP
 /*******/
 	
-	if ((rv = getaddrinfo(server_name.c_str(), port.c_str(), &hints, &ai)) != 0) {
+	// TO DELETE
+	// if (server_name == "blabla")
+	// 	server_name = "localhost";
+
+	// if ((rv = getaddrinfo(server_name.c_str(), port.c_str(), &hints, &ai)) != 0) {
+	if ((rv = getaddrinfo("127.0.0.1", port.c_str(), &hints, &ai)) != 0) {
 		std::cerr << "getaddrinfo error " << rv << ": " << gai_strerror(rv) << std::endl;
 		exit(1);
 	}
@@ -87,6 +92,9 @@ void Server::get_listening_socket() {
 		std::cerr << "listen: " << strerror(errno) << std::endl;
 		exit(1);
 	}
+
+	// TO DELETE
+	std::cout << "FOUND LISTENER FOR RANDOM HOSTNAME\n"; 
 
 	struct pollfd pfd;
 	

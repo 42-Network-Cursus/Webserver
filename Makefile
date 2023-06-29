@@ -7,6 +7,7 @@ SRCS	=	Srcs/webserv.cpp \
 			Srcs/server.class.cpp \
 			Srcs/response.class.cpp \
 			Srcs/response_header.class.cpp \
+			Srcs/request.class.cpp
 			
 OBJS 	= 	$(SRCS:.c=.o)
 

@@ -10,14 +10,14 @@ Request::~Request()
 
 }
 
-Request::Request(const Request &copy)
-{
+// Request::Request(const Request &copy)
+// {
 
-}
-Request& Request::operator=(const Request &other)
-{
+// }
+// Request& Request::operator=(const Request &other)
+// {
 
-}
+// }
 
 
 // Constructor

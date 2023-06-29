@@ -59,7 +59,15 @@ bool skip_line(std::string line) {
 
 
 void eraseFD(int fd, std::vector<Server *> servers) {
-	
+		for (int i = 0; servers[i] ; i++) {
+
+		for (int j = 0; servers[i]->pfds[j].fd ; j++) {
+			if (fd == servers[i]->pfds[j].fd)
+				servers[i]->pfds.erase(servers[i]->pfds.begin() + j);
+		}
+	}
+
+}
 
 /**
  * @brief Get the text corresponding to the status code
@@ -110,27 +118,18 @@ std::string	intToString(int number)
 	return res;
 }
 
-Request parseRequest(std::string request)
-{
-	std::string method = "";
-	std::string path = "";
+// Request parseRequest(std::string request)
+// {
+// 	std::string method = "";
+// 	std::string path = "";
 
-	int i = 0;
-	while (i < 2)
-	{
-		if (i == 0)
-		{
-			//method += *request;
-		}
-	}
+// 	int i = 0;
+// 	while (i < 2)
+// 	{
+// 		if (i == 0)
+// 		{
+// 			//method += *request;
+// 		}
+// 	}
 
-}
-	for (int i = 0; servers[i] ; i++) {
-
-		for (int j = 0; servers[i]->pfds[j].fd ; j++) {
-			if (fd == servers[i]->pfds[j].fd)
-				servers[i]->pfds.erase(servers[i]->pfds.begin() + j);
-		}
-	}
-
-}
+// }
