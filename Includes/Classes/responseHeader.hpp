@@ -42,4 +42,4 @@ class ResponseHeader
 		void initValues();
 };
 
-#endif
+#endif // RESPONSEHEADER_HPP

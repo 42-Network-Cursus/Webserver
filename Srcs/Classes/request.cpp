@@ -1,4 +1,4 @@
-#include "request.class.hpp"
+#include "request.hpp"
 
 Request::Request()
 {

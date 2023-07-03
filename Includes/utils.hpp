@@ -2,7 +2,7 @@
 # define UTILS_HPP
 
 # include "std_libs.hpp"
-# include "server.class.hpp"
+# include "server.hpp"
 
 # include "constantes.hpp"
 // # include "request.class.hpp"
@@ -11,11 +11,6 @@ std::string& 		ltrim(std::string& s, const char* t = " \t\r\f\v");
 std::string& 		rtrim(std::string& s, const char* t = " \t\r\f\v");
 std::string& 		trim(std::string& s, const char* t = " \t\r\f\v");
 bool 				skip_line(std::string line);
-
-
-
-// conf_param 			resolve_conf_param(std::string param);
-// void configure_servers(int argc, char *argv[], std::vector<Server *> *servers);
 
 
 std::string	getTextByStatusCode(int code);

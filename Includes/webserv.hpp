@@ -2,10 +2,10 @@
 # define WEBSERV_HPP
 
 # include "std_libs.hpp"
-# include "response.class.hpp"
+# include "response.hpp"
 // # include "utils.hpp"
 # include "configuration.hpp"
-# include "server.class.hpp"
+# include "server.hpp"
 
 # define END_HEADER "\r\n\r\n"
 # define BACKLOG 10 // queue of nb of connexions waiting to be accepted by listen()

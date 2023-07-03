@@ -1,9 +1,9 @@
-#ifndef RESPONSE_CLASS_HPP
-# define RESPONSE_CLASS_HPP
+#ifndef RESPONSE_HPP
+# define RESPONSE_HPP
 
 # include "std_libs.hpp"
 
-# include "responseHeader.class.hpp"
+# include "responseHeader.hpp"
 
 class Response {
 	public:
@@ -28,4 +28,4 @@ class Response {
 		std::string _path;
 };
 
-#endif // RESPONSE_CLASS_HPP
+#endif // RESPONSE_HPP

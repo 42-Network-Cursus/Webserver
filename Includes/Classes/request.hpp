@@ -1,5 +1,5 @@
-#ifndef REQUEST_CLASS_HPP
-# define REQUEST_CLASS_HPP
+#ifndef REQUEST_HPP
+# define REQUEST_HPP
 
 # include "webserv.hpp"
 
@@ -38,4 +38,4 @@ class Request {
 
 };
 
-#endif
+#endif // REQUEST_HPP

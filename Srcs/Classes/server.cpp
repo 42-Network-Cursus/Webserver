@@ -4,19 +4,11 @@
 void Server::print() {
 	std::cout << "port: " << port << std::endl;
 	std::cout << "server name: " << server_name << std::endl;
-	std::cout << "root: " << root << std::endl;
-	std::cout << "index: " << index << std::endl;
-	std::cout << "client_max_body_size: " << client_max_body_size << std::endl;
 }
 
 // Default constructor
 Server::Server() 
-{
-	// next = NULL;
-	// sockfd = -1;
-	// client_max_body_size = "0M";
-}
-
+{}
 
 /*
 	int getaddrinfo(
@@ -102,3 +94,57 @@ void Server::get_listening_socket() {
 	pfd.events = POLLIN;
 	pfds.push_back(pfd);
 }
+
+
+void Server::store_server_configuration(std::ifstream &file_stream) {
+
+	std::string	line;
+
+	while (1) {
+		std::getline(file_stream, line);
+
+		line = trim(line);
+		if (skip_line(line))
+			continue;
+		if (line == "}")
+			break;
+
+		std::string param = line.substr(0, line.find_first_of(" "));
+
+		if (param == "location") {
+			// store location
+		}
+		else {
+
+			std::string param_val = line.substr(line.find_first_of(" "), line.find_first_of(";") - line.find_first_of(" "));
+			param_val = trim(param_val);
+			
+			if (param == "listen") {
+				host = param_val.substr(0, param_val.find_first_of(":"));
+				port = param_val.substr(param_val.find_first_of(":") + 1, param_val.find_first_of(";") - param_val.find_first_of(":"));
+			}
+			else if (param == "server_name") {
+				server_name = param_val;
+			}
+			
+		}
+	} // End While
+
+}
+
+/*
+	*** GETTERS ***
+*/
+
+const char *Server::getPort() const {
+	return port.c_str();
+}
+
+const char *Server::getHost() const {
+return host.c_str();
+}
+
+const std::string Server::getserver_name() const {
+return port;
+}
+
