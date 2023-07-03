@@ -56,6 +56,13 @@ bool skip_line(std::string line) {
 	return false;
 }
 
+bool stringToBool(std::string str) {
+	str = trim(str);
+	if (str == "true")
+		return true;
+	return false;
+}
+
 
 
 // void eraseFD(int fd, std::vector<Server *> servers) {

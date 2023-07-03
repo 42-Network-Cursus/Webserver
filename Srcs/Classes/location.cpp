@@ -17,6 +17,10 @@ void Location::setClientMaxBodySize(std::string val) {
     client_max_body_size = val;
 }
 
+void Location::setMethod(std::string method, bool val) {
+    methods.insert(std::make_pair(method, val));
+}
+
 
 // GETTERS
 std::string Location::getPath() {
@@ -33,5 +37,9 @@ std::string Location::getIndex() {
 
 std::string Location::getClientMaxBodySize() {
     return client_max_body_size;
+}
+
+bool Location::getMethod(std::string method) {
+    return methods[method];
 }
 

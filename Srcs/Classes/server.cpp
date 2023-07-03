@@ -1,4 +1,5 @@
 #include "webserv.hpp"
+#include "utils.hpp"
 
 // Debugging
 void Server::print() {
@@ -16,33 +17,37 @@ void Server::print() {
 		std::cout << "	index: " << loc_begin->getIndex() << std::endl;
 		if (loc_begin->getClientMaxBodySize() != "")
 			std::cout << "	client_max_body_size: " << loc_begin->getClientMaxBodySize() << std::endl;
+		std::cout << "	Methods: " << std::endl;
+		std::cout << "		GET: " << loc_begin->getMethod("GET") << std::endl;
+		std::cout << "		POST: " << loc_begin->getMethod("POST") << std::endl;
+		std::cout << "		DELETE: " << loc_begin->getMethod("DELETE") << std::endl;
 	}
 }
 
-// Default constructor
-Server::Server() {}
 
-/*
-	int getaddrinfo(
-		const char *node, -> host name / IP address to connect to (ex: www.ex.com / IP) IF NULL, fills hints with our IP
-		const char *service, -> port number
-		const struct addrinfo *hints, -> prob no need, send an empty one
-		struct addrinfo **res -> fills your given pointer with result
-	)
-
-	struct addrinfo {
-               int              ai_flags;
-               int              ai_family;
-               int              ai_socktype;
-               int              ai_protocol;
-               socklen_t        ai_addrlen;
-               struct sockaddr *ai_addr;
-               char            *ai_canonname;
-               struct addrinfo *ai_next;
-           };
-*/
 
 void Server::get_listening_socket() {
+	
+	/*
+		int getaddrinfo(
+			const char *node, -> host name / IP address to connect to (ex: www.ex.com / IP) IF NULL, fills hints with our IP
+			const char *service, -> port number
+			const struct addrinfo *hints, -> prob no need, send an empty one
+			struct addrinfo **res -> fills your given pointer with result
+		)
+
+		struct addrinfo {
+			int              ai_flags;
+			int              ai_family;
+			int              ai_socktype;
+			int              ai_protocol;
+			socklen_t        ai_addrlen;
+			struct sockaddr *ai_addr;
+			char            *ai_canonname;
+			struct addrinfo *ai_next;
+		};
+	*/
+
 	struct addrinfo hints, *ai, *p;
 	int yes = 1;
 	int rv;
@@ -122,17 +127,21 @@ Location Server::get_location_config(std::ifstream &file_stream, std::string lin
 		std::string param = line.substr(0, line.find_first_of(" "));
 		std::string param_val = line.substr(line.find_first_of(" "), line.find_first_of(";") - line.find_first_of(" "));
 		
-		if (param == "root") {
+		if (param == "root")
 			rv.setRoot(param_val);
-		}
-		else if (param == "index") {
+		else if (param == "index")
 			rv.setIndex(param_val);
-		}
-		else if (param == "client_max_body_size") {
+		else if (param == "client_max_body_size")
 			rv.setClientMaxBodySize(param_val);
+		else if (param == "GET") {
+			std::cout << "Bool : " <<  stringToBool(param_val) << std::endl;
+			rv.setMethod("GET", stringToBool(param_val));
 		}
+		else if (param == "POST")
+			rv.setMethod("POST", stringToBool(param_val));
+		else if (param == "DELETE")
+			rv.setMethod("DELETE", stringToBool(param_val));
 	}
-
 	return rv;
 }
 

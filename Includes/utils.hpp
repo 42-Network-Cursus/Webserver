@@ -11,7 +11,7 @@ std::string& 		ltrim(std::string& s, const char* t = " \t\r\f\v");
 std::string& 		rtrim(std::string& s, const char* t = " \t\r\f\v");
 std::string& 		trim(std::string& s, const char* t = " \t\r\f\v");
 bool 				skip_line(std::string line);
-
+bool                stringToBool(std::string str);
 
 std::string	getTextByStatusCode(int code);
 std::string	intToString(int number);
