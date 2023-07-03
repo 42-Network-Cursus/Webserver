@@ -5,6 +5,19 @@
 
 class Location {
     public:
+
+        // SETTERS
+        void setPath(std::string val);
+        void setRoot(std::string val);
+        void setIndex(std::string val);
+        void setClientMaxBodySize(std::string val);
+
+        // GETTERS
+        std::string getPath();
+        std::string getRoot();
+        std::string getIndex();
+        std::string getClientMaxBodySize();
+
     private:
         std::string path;
         std::string root;

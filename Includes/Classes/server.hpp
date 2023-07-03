@@ -8,52 +8,32 @@ class Server {
 	public:
 		Server();
 
-		Server(const Server &rhs) {
-			port = rhs.port;
-			server_name = rhs.server_name;
-			
-
-			// sockfd = rhs.sockfd;
-			socklist = rhs.socklist;
-
-		}
-
-		Server&	operator= (const Server& rhs) {
-			if (this != &rhs) 
-			{
-				port = rhs.port;
-				server_name = rhs.server_name;
-				
-
-				// sockfd = rhs.sockfd;
-				socklist = rhs.socklist;
-			}
-			return (*this);
-		}
-
-		void store_server_configuration(std::ifstream &file_stream);
-		void get_listening_socket();
+		void 		store_server_configuration(std::ifstream &file_stream);
+		Location	get_location_config(std::ifstream &file_stream, std::string line);
+		void 		get_listening_socket();
 
 		// Debugging
 		void print();
 	
 		// Getters
-		const char *getPort() const;
-		const char *getHost() const;
-		const std::string getserver_name() const;
+		const std::string& getPort() const;
+		const std::string& getHost() const;
+		const std::string& getServer_name() const;
+		std::vector<struct pollfd> getPfds();
+
 		// char * getLocation();
 		
 	private:
 		std::string port;
 		std::string host;
 		std::string server_name;
+		std::vector<struct pollfd> pfds;
 	
 		std::vector<Location> locations;
 
 
 		// Sockets
 		int socklist; // Listening socket, used by accept()   Used ?	
-		std::vector<struct pollfd> pfds;
 		
 		// Configuration parameters
 

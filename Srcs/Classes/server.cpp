@@ -3,12 +3,24 @@
 // Debugging
 void Server::print() {
 	std::cout << "port: " << port << std::endl;
+	std::cout << "host: "<< host << std::endl;
 	std::cout << "server name: " << server_name << std::endl;
+	std::cout << "pfds size: " << pfds.size() << std::endl;
+
+	std::cout << "Locations: " << std::endl;
+	std::vector<Location>::iterator loc_begin = locations.begin();
+	std::vector<Location>::iterator loc_end = locations.end();
+	for (; loc_begin != loc_end; loc_begin++) {
+		std::cout << "Path: " << loc_begin->getPath() << std::endl;
+		std::cout << "	root: " << loc_begin->getRoot() << std::endl;
+		std::cout << "	index: " << loc_begin->getIndex() << std::endl;
+		if (loc_begin->getClientMaxBodySize() != "")
+			std::cout << "	client_max_body_size: " << loc_begin->getClientMaxBodySize() << std::endl;
+	}
 }
 
 // Default constructor
-Server::Server() 
-{}
+Server::Server() {}
 
 /*
 	int getaddrinfo(
@@ -43,13 +55,8 @@ void Server::get_listening_socket() {
 	// MODIF: Potentially in if/else statement, depending on wether we received a server name in configuration
 	hints.ai_flags = AI_PASSIVE; // use my IP
 /*******/
-	
-	// TO DELETE
-	// if (server_name == "blabla")
-	// 	server_name = "localhost";
 
-	// if ((rv = getaddrinfo(server_name.c_str(), port.c_str(), &hints, &ai)) != 0) {
-	if ((rv = getaddrinfo("127.0.0.1", port.c_str(), &hints, &ai)) != 0) {
+	if ((rv = getaddrinfo(host.c_str(), port.c_str(), &hints, &ai)) != 0) {
 		std::cerr << "getaddrinfo error " << rv << ": " << gai_strerror(rv) << std::endl;
 		exit(1);
 	}
@@ -83,10 +90,7 @@ void Server::get_listening_socket() {
 	if (listen(socklist, BACKLOG) == -1) {
 		std::cerr << "listen: " << strerror(errno) << std::endl;
 		exit(1);
-	}
-
-	// TO DELETE
-	std::cout << "FOUND LISTENER FOR RANDOM HOSTNAME\n"; 
+	} 
 
 	struct pollfd pfd;
 	
@@ -95,12 +99,49 @@ void Server::get_listening_socket() {
 	pfds.push_back(pfd);
 }
 
+Location Server::get_location_config(std::ifstream &file_stream, std::string line) {
+	Location rv;
+
+	line.erase(line.end() - 1);
+	line.erase(0,8); // Deletes characters "location"
+
+	line = trim(line);
+
+	rv.setPath(line);
+	
+	while (1) {
+
+		std::getline(file_stream, line);
+
+		line = trim(line);
+		if (skip_line(line))
+			continue;
+		if (line == "]")
+			break;
+
+		std::string param = line.substr(0, line.find_first_of(" "));
+		std::string param_val = line.substr(line.find_first_of(" "), line.find_first_of(";") - line.find_first_of(" "));
+		
+		if (param == "root") {
+			rv.setRoot(param_val);
+		}
+		else if (param == "index") {
+			rv.setIndex(param_val);
+		}
+		else if (param == "client_max_body_size") {
+			rv.setClientMaxBodySize(param_val);
+		}
+	}
+
+	return rv;
+}
 
 void Server::store_server_configuration(std::ifstream &file_stream) {
 
 	std::string	line;
 
 	while (1) {
+		std::string param = "";
 		std::getline(file_stream, line);
 
 		line = trim(line);
@@ -109,10 +150,11 @@ void Server::store_server_configuration(std::ifstream &file_stream) {
 		if (line == "}")
 			break;
 
-		std::string param = line.substr(0, line.find_first_of(" "));
+		param = line.substr(0, line.find_first_of(" "));
 
 		if (param == "location") {
-			// store location
+			locations.push_back(get_location_config(file_stream, line));
+
 		}
 		else {
 
@@ -135,16 +177,19 @@ void Server::store_server_configuration(std::ifstream &file_stream) {
 /*
 	*** GETTERS ***
 */
-
-const char *Server::getPort() const {
-	return port.c_str();
+const std::string& 			Server::getPort() const {	
+	return port;
 }
 
-const char *Server::getHost() const {
-return host.c_str();
+const std::string& 			Server::getHost() const {
+	return host;
 }
 
-const std::string Server::getserver_name() const {
-return port;
+const std::string& 			Server::getServer_name() const {
+	return server_name;
+}
+
+std::vector<struct pollfd>	Server::getPfds() {
+	return pfds;
 }
 

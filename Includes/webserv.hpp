@@ -6,6 +6,7 @@
 // # include "utils.hpp"
 # include "configuration.hpp"
 # include "server.hpp"
+# include "location.hpp"
 
 # define END_HEADER "\r\n\r\n"
 # define BACKLOG 10 // queue of nb of connexions waiting to be accepted by listen()
