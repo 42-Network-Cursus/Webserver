@@ -21,5 +21,9 @@
 
 
 # include <sstream>
+# include "constantes.hpp"
+# include <dirent.h>
+# include <sys/stat.h> // +> Si on emploie la V2 uniquement
+# include <cstdio>
 
 #endif // STD_LIBS_HPP

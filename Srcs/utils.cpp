@@ -73,6 +73,9 @@ void configure_servers(int argc, char *argv[], std::vector<Server *> *servers) {
 
 		if (line == "server") {
 			Server *server = new Server();
+			server->_methods.push_back(METHOD_GET);
+			server->_methods.push_back(METHOD_POST);
+			server->_methods.push_back(METHOD_DELETE);
 			
 			std::getline(file_stream, line); // go past '{'
 			while (1) {
@@ -197,18 +200,17 @@ std::string	intToString(int number)
 	return res;
 }
 
-Request parseRequest(std::string request)
+bool isInVector(std::vector<std::string> vector, std::string value)
 {
-	std::string method = "";
-	std::string path = "";
+	std::vector<std::string>::iterator it = vector.begin();
+	std::vector<std::string>::iterator end = vector.end();
 
-	int i = 0;
-	while (i < 2)
+	while(it != end)
 	{
-		if (i == 0)
-		{
-			//method += *request;
-		}
+		if (*it == value)
+			return true;
+		++it;
 	}
-
+	std::cout << "FALSE" << std::endl;
+	return false;
 }
