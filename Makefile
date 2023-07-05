@@ -11,7 +11,7 @@ SRCS	=	Srcs/webserv.cpp \
 			\
 			Srcs/Classes/server.cpp \
 			Srcs/Classes/response.cpp \
-			Srcs/Classes/responseHeader.cpp \
+			Srcs/Classes/response_header.cpp \
 			Srcs/Classes/request.cpp \
 			Srcs/Classes/location.cpp
 			
