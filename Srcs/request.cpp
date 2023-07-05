@@ -33,7 +33,7 @@ Request& Request::operator=(const Request &other)
 Request::Request(int socketFd, std::string method, std::string path, std::string version, Server *config)
 : _socketFd(socketFd), _method(method), _path(path), _version(version), _config(config)
 {
-
+	getQueryFromPath();
 }
 
 
@@ -51,6 +51,11 @@ std::string Request::getPath()
 std::string Request::getMethod()
 {
 	return (_method);
+}
+
+std::string Request::getQuery()
+{
+	return (_query);
 }
 
 Server *Request::getServerConfig()
@@ -80,6 +85,10 @@ void		Request::setConfig(Server *config)
 	this->_config = config;
 }
 
+void	Request::setQuery(const std::string &query)
+{
+	this->_query = query;
+}
 
 // Method
 
@@ -126,7 +135,18 @@ Request Request::parseRequest(std::string request, int fd, std::vector<Server *>
 	Request res = Request(fd, method, path, "HTTP/1.1", servers[0]);
 
 	return res;
+}
 
+void Request::getQueryFromPath()
+{
+	size_t pos = _path.find_first_of('?');
+	if (pos == std::string::npos)
+		_query = "";
+	else
+	{
+		_query.assign(_path, pos + 1, std::string::npos);
+		_path = _path.substr(pos);
+	}
 }
 
 // Print
@@ -134,4 +154,5 @@ Request Request::parseRequest(std::string request, int fd, std::vector<Server *>
 void Request::printConfig()
 {
 	_config->print();
+	std::cout << "\n\nPath: " << _path << "\nQuery: " << _query << std::endl;
 }

@@ -22,6 +22,7 @@ class Request {
 		int			getSocketFd();
 		std::string	getPath();
 		std::string	getMethod();
+		std::string	getQuery();
 		Server		*getServerConfig();
 
 		// Setters
@@ -29,6 +30,7 @@ class Request {
 		void		setPath(const std::string &path);
 		void		setMethod(const std::string &method);
 		void		setConfig(Server *config);
+		void		setQuery(const std::string &query);
 
 		// Check function
 		bool		isAcceptedMethod();
@@ -46,13 +48,15 @@ class Request {
 		std::string	_method;
 		std::string _path;
 		std::string	_version;
-		Server 		*_config;
+		std::string	_query;
+		Server		*_config;
 
 		//std::string	_method;
-		std::string _header;
+		std::string	_header;
 
 		std::string	_somesheets;
-
+		
+		void getQueryFromPath();
 };
 
 #endif

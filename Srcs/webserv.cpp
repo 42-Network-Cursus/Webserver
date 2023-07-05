@@ -143,7 +143,7 @@ int main(int argc, char *argv[]) {
 
 					Request r = Request::parseRequest(request, all_pfds[i].fd, servers);
 					// servers[0]->print();
-					// r.printConfig();
+					r.printConfig();
 					// std::cout << "\n *** Msg received on socket : " << all_pfds[i].fd << ": *** \n" << request;
 					flush(std::cout);
 					std::cout << "response: " << sendResponse(all_pfds[i].fd, r) << std::endl;
