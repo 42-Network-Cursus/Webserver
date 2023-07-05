@@ -47,35 +47,35 @@ void Location::setMethod(std::string method, bool val) {
 
 
 // GETTERS
-std::string Location::getPath() {
+std::string Location::getPath() const {
     return _path;
 }
 
-std::string Location::getRoot() {
+std::string Location::getRoot() const {
     return _root;
 }
 
-std::string Location::getIndex() {
+std::string Location::getIndex() const {
     return _index;
 }
 
-std::string Location::getClientMaxBodySize() {
+std::string Location::getClientMaxBodySize() const {
     return _client_max_body_size;
 }
 
-std::string Location::getErrorPagePath() {
+std::string Location::getErrorPagePath() const {
     return _error_page_path;
 }
 
-std::string Location::getCgiPath() {
+std::string Location::getCgiPath() const {
     return _cgi_path;
 }
 
-std::string Location::getUploadPath() {
+std::string Location::getUploadPath() const {
     return _upload_path;
 }
 
-bool        Location::getAutoIndex() {
+bool        Location::getAutoIndex() const {
     return _auto_index;
 }
 

@@ -23,14 +23,14 @@ class Location {
         void setMethod(std::string method, bool val);
 
         // GETTERS
-        std::string getPath();
-        std::string getRoot();
-        std::string getIndex();
-        std::string getClientMaxBodySize();
-        std::string getErrorPagePath();
-        std::string getCgiPath();
-        std::string getUploadPath();
-        bool        getAutoIndex();
+        std::string getPath() const;
+        std::string getRoot() const;
+        std::string getIndex() const;
+        std::string getClientMaxBodySize() const;
+        std::string getErrorPagePath() const;
+        std::string getCgiPath() const;
+        std::string getUploadPath() const;
+        bool        getAutoIndex() const;
         bool        getMethod(std::string method);
 
     private:
