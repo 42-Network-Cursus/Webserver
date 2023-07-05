@@ -48,7 +48,7 @@ int getServerByFd(int fd, std::vector<Server> servers) {
 	return -1;
 }
 
-// ------------ FOR TESTING
+
 std::string fetchBody(int fd, std::vector<Server> servers) {
 	// std::vector<Server>::iterator it_begin = _server_list.begin();
 	// std::vector<Server>::iterator it_end = _server_list.end();
@@ -140,6 +140,8 @@ void handle_pollin(std::vector<Server>& servers, std::vector<struct pollfd>& all
 		
 		// DEBUG
 		std::cout << request << "\n\n" << std::endl;
+		
+		// Create request object
 	}
 }
 
