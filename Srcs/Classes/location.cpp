@@ -35,8 +35,10 @@ void Location::setUploadPath(std::string val) {
     _upload_path = val;
 }
 
-void Location::setAutoIndex(bool val) {
-    _auto_index = val;
+void Location::setAutoIndex(std::string val) {
+    if (val == "on")
+        _auto_index = true;
+    _auto_index = false;
 }
 
 void Location::setMethod(std::string method, bool val) {

@@ -19,7 +19,7 @@ class Location {
         void setErrorPagePath(std::string val);
         void setCgiPath(std::string val);
         void setUploadPath(std::string val);
-        void setAutoIndex(bool val);
+        void setAutoIndex(std::string val);
         void setMethod(std::string method, bool val);
 
         // GETTERS

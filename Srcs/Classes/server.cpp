@@ -129,6 +129,14 @@ Location Server::get_location_config(std::ifstream &file_stream, std::string lin
 			rv.setIndex(param_val);
 		else if (param == "client_max_body_size")
 			rv.setClientMaxBodySize(param_val);
+		else if (param == "error_page")
+			rv.setErrorPagePath(param_val);
+		else if (param == "cgi_path")
+			rv.setCgiPath(param_val);
+		else if (param == "upload_path")
+			rv.setUploadPath(param_val);
+		else if (param == "auto_index")
+			rv.setAutoIndex(param_val);
 		else if (param == "GET")
 			rv.setMethod("GET", stringToBool(param_val));
 		else if (param == "POST")
