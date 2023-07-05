@@ -7,14 +7,15 @@ void Server::print() {
 	std::cout << "root: " << root << std::endl;
 	std::cout << "index: " << index << std::endl;
 	std::cout << "client_max_body_size: " << client_max_body_size << std::endl;
+	size_t i = -1;
+	while (++i < _methods.size())
+		std::cout << "accepted method: " << _methods[i] << std::endl;
 }
 
 // Default constructor
 Server::Server() 
 {
-	_methods.push_back(METHOD_GET);
-	_methods.push_back(METHOD_POST);
-	_methods.push_back(METHOD_DELETE);
+
 }
 
 

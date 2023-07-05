@@ -38,6 +38,7 @@ Response::Response(Request request)
 	else if (_statusCode == 200 && request.isValidPath() == false)
 		_statusCode = 404;
 	
+	std::cout << "\n\n Status Code => " << _statusCode << std::endl;
 	if (_statusCode != 200)
 	{
 		_header = ResponseHeader();
@@ -68,6 +69,8 @@ void	Response::getMethod(Request request)
 	readFile();
 	if (_statusCode == 404)
 		_body = getErrorPage();
+	_body = "<!DOCTYPE html><html><head><title>NTM</title></head><body><h1>On va briser des os...</h1></body></html>";
+	std::cout << "End Get Method" << std::endl;
 }
 
 /**

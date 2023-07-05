@@ -28,6 +28,8 @@ void configure_servers(int argc, char *argv[], std::vector<Server *> *servers);
 std::string	getTextByStatusCode(int code);
 std::string	intToString(int number);
 
+bool isInVector(std::vector<std::string> vector, std::string value);
+
 template<typename T>
 bool containsValue(const std::vector<T>& vect, const T& value);
 

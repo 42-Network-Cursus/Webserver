@@ -39,7 +39,16 @@ int sendResponse(int fd, std::string body) {
 	return sendAll(fd, msg.c_str(), msg.length());
 }
 
+int sendResponse(int fd, Request request)
+{
+	std::cout << "Test" << std::endl;
+	Response response = Response(request);
 
+	std::string msg = response.getResponseInString();
+
+	return sendAll(fd, msg.c_str(), msg.length());
+
+}
 
 
 
@@ -130,13 +139,14 @@ int main(int argc, char *argv[]) {
 						}
 					}
 					
-					// std::cout << "\n\nCHECK REQUEST SAL -- OPE Tu lis jusqu'au bout ?\n" << request << "\n\n" << std::endl;
+					std::cout << "\n\nCHECK REQUEST SAL -- OPE Tu lis jusqu'au bout ?\n" << request << "\n\n" << std::endl;
 
 					Request r = Request::parseRequest(request, all_pfds[i].fd, servers);
-					servers[0]->print();
-					r.printConfig();
+					// servers[0]->print();
+					// r.printConfig();
 					// std::cout << "\n *** Msg received on socket : " << all_pfds[i].fd << ": *** \n" << request;
 					flush(std::cout);
+					std::cout << "response: " << sendResponse(all_pfds[i].fd, r) << std::endl;
 
 				}
 			}

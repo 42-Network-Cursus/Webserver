@@ -30,7 +30,7 @@ Request& Request::operator=(const Request &other)
 
 
 // Constructor
-Request::Request(int socketFd, std::string method, std::string path, std::string version, Server config)
+Request::Request(int socketFd, std::string method, std::string path, std::string version, Server *config)
 : _socketFd(socketFd), _method(method), _path(path), _version(version), _config(config)
 {
 
@@ -53,7 +53,7 @@ std::string Request::getMethod()
 	return (_method);
 }
 
-Server Request::getServerConfig()
+Server *Request::getServerConfig()
 {
 	return (_config);
 }
@@ -75,7 +75,7 @@ void		Request::setMethod(const std::string &method)
 	this->_method = method;
 }
 
-void		Request::setConfig(const Server &config)
+void		Request::setConfig(Server *config)
 {
 	this->_config = config;
 }
@@ -85,19 +85,22 @@ void		Request::setConfig(const Server &config)
 
 bool Request::isAcceptedMethod()
 {
-	return containsValue(_config.getAcceptedMethods(), _method);
+	return isInVector(_config->getAcceptedMethods(), _method);
 }
 
 bool Request::isValidVersion()
 {
+	std::cout << "Version ? " << _version << std::endl;
 	return (_version == "HTTP/1.1" || _version == "HTTP/1.0");	
 }
 
 bool Request::isValidPath()
 {
-	std::string root = _config.getRoot();
+	std::string root = _config->getRoot();
 
-	if (_path.compare(0, root.length(), root) == 0)
+	std::cout << "ROOT => " << root << std::endl;
+	std::cout << "Path => " << _path << std::endl;
+	if (_path.compare(0, root.length(), root) == 0 || _path == "/")
 		return true;
 	return false;
 }
@@ -117,10 +120,10 @@ Request Request::parseRequest(std::string request, int fd, std::vector<Server *>
 	std::string::size_type pos2 = request.find(" ", pos);
 	path = request.substr(pos + 1, pos2 - 2);
 
-	std::cout << "Method " << method << "\nPath " << path << "\n\n\n" << std::endl;
+	std::cout << "\nMethod " << method << "\nPath " << path << "\n\n\n" << std::endl;
 
 // int socketFd, std::string path, std::string method, Server config
-	Request res = Request(fd, method, path, "HTML/1.1", *servers[0]);
+	Request res = Request(fd, method, path, "HTTP/1.1", servers[0]);
 
 	return res;
 
@@ -130,5 +133,5 @@ Request Request::parseRequest(std::string request, int fd, std::vector<Server *>
 
 void Request::printConfig()
 {
-	_config.print();
+	_config->print();
 }

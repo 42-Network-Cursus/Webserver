@@ -16,19 +16,19 @@ class Request {
 		Request &operator=(const Request &other);
 
 		// Constructor
-		Request(int socketFd, std::string method, std::string path, std::string version, Server config);
+		Request(int socketFd, std::string method, std::string path, std::string version, Server *config);
 
 		// Getters
 		int			getSocketFd();
 		std::string	getPath();
 		std::string	getMethod();
-		Server		getServerConfig();
+		Server		*getServerConfig();
 
 		// Setters
 		void		setSocketFd(int socketFd);
 		void		setPath(const std::string &path);
 		void		setMethod(const std::string &method);
-		void		setConfig(const Server &config);
+		void		setConfig(Server *config);
 
 		// Check function
 		bool		isAcceptedMethod();
@@ -46,7 +46,7 @@ class Request {
 		std::string	_method;
 		std::string _path;
 		std::string	_version;
-		Server 		_config;
+		Server 		*_config;
 
 		//std::string	_method;
 		std::string _header;
