@@ -4,8 +4,7 @@
 # include "std_libs.hpp"
 # include "utils.hpp"
 # include "server.class.hpp"
-
-# include "response.hpp"
+# include "response.class.hpp"
 
 # define END_HEADER "\r\n\r\n"
 # define BACKLOG 10 // queue of nb of connexions waiting to be accepted by listen()
@@ -20,6 +19,5 @@
 	getaddrinfo, freeaddrinfo, setsockopt, getsockname,
 	getprotobyname, fcnt
 */
-
 
 #endif // WEBSERV_HPP
