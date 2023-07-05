@@ -35,7 +35,136 @@ int sendResponse(int fd, std::string body) {
 	return sendAll(fd, msg.c_str(), msg.length());
 }
 
+int getServerByFd(int fd, std::vector<Server> servers) {
 
+
+	for (int i = 0; i < servers.size(); i++) {
+
+		for (int j = 0; servers[i].getPfds()[j].fd ; j++) {
+			if (fd == servers[i].getPfds()[j].fd)
+				return i;
+		}
+	}
+	return -1;
+}
+
+
+std::string fetchBody(int fd, std::vector<Server> servers) {
+	// std::vector<Server>::iterator it_begin = _server_list.begin();
+	// std::vector<Server>::iterator it_end = _server_list.end();
+
+	// for (; it_begin != it_end; it_begin++) {
+	// 	if (it_begin->sockfd == fd)
+	// 		break;
+	// }
+	
+	int id = getServerByFd(fd, servers);
+
+	std::cout << "server nb " << id << std::endl;
+	std::string body;
+	
+	std::string htmlpage;
+
+	// if (i == 0)
+	// 	htmlpage = "index.html";
+	// else
+	// 	htmlpage = "secondServer.html";	
+	
+	// servers[id]->root + servers[id]->index
+	std::ifstream file_stream ("test");
+
+	if (!file_stream.is_open()) { // check whether the file is open
+		std::cout << "Error reading conf file" << std::endl;
+		exit(1);
+	}
+	
+	body.assign ( 	(std::istreambuf_iterator<char>(file_stream)),
+					(std::istreambuf_iterator<char>()) 
+				);
+
+	return body;
+}
+
+
+void handle_pollin(std::vector<Server>& servers, std::vector<struct pollfd>& all_pfds, int idx) {
+	
+	int 						new_fd;
+	struct sockaddr_storage 	remoteaddr; // client's info, using sockaddr_storage because big enough to contain either IPv4 or IPv6
+	socklen_t 					addrlen; // length of remoteaddr
+	char 						buf[10]; // Buffer for client data
+
+	// check if listening socket received a connection
+	if (idx < servers.size()) {
+		
+		// DEBUG
+		std::cout << "Connection from server " << servers[idx].getServer_name() << std::endl << std::endl;
+
+		addrlen = sizeof(remoteaddr);
+		new_fd = accept(all_pfds[idx].fd, (struct sockaddr *)&remoteaddr, &addrlen);
+		
+		if (new_fd == -1)
+			std::cerr << "accept: " << strerror(errno) << std::endl;
+		else {
+			struct pollfd new_pfd;
+
+			new_pfd.fd = new_fd;
+			new_pfd.events = POLLIN | POLLOUT;
+
+			all_pfds.push_back(new_pfd);
+			servers[idx].getPfds().push_back(new_pfd);
+		}
+	}
+	
+	// Not a listening socket, but ready to read. (Means a request)
+	else { 
+		std::string request;
+
+		while (recv_header(request)) {
+
+			int nbytes = recv(all_pfds[idx].fd, buf, sizeof(buf), 0);
+			
+			request.append(buf);
+
+			// error handling
+			if (nbytes <= 0) {
+
+				if (nbytes == 0)
+					std::cout << "Pollserver: socket " << all_pfds[idx].fd << " hung up" << std::endl;
+				else 
+					break;
+
+				close(all_pfds[idx].fd);
+				all_pfds.erase(all_pfds.begin() + idx);
+			}
+		}
+		
+		// DEBUG
+		std::cout << request << "\n\n" << std::endl;
+		
+		// Create request object
+	}
+}
+
+void handle_pollout() {
+	// std::cout << "response: " << sendResponse(all_pfds[i].fd, fetchBody(all_pfds[i].fd, servers)) << std::endl;
+
+
+				 // Execute the CGI script using the Python interpreter
+					// int result = system("python3 /cgi-bin/py-cgi.py");
+
+					// if (result == -1) {
+					// 	// Handle error executing the script
+					// 	// ...
+					// }
+					
+					// Process the result as needed
+					// ...
+		
+			// SEGFAULT
+				// all_pfds.erase(all_pfds.begin() + i);
+				// eraseFD(all_pfds[i].fd, servers);
+				// close(all_pfds[i].fd);
+}
 
 
 

@@ -163,10 +163,8 @@ void Server::store_server_configuration(std::ifstream &file_stream) {
 
 		param = line.substr(0, line.find_first_of(" "));
 
-		if (param == "location") {
+		if (param == "location")
 			_locations.push_back(get_location_config(file_stream, line));
-
-		}
 		else {
 
 			std::string param_val = line.substr(line.find_first_of(" "), line.find_first_of(";") - line.find_first_of(" "));
