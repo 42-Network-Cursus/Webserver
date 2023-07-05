@@ -1,45 +1,83 @@
 #include "location.hpp"
 
+// CONSTRUCTORS
+
+Location::Location() 
+: _auto_index(false)
+{}
+
 // SETTERS
 void Location::setPath(std::string val) {
-    path = val;
+    _path = val;
 }
 
 void Location::setRoot(std::string val) {
-    root = val;
+    _root = val;
 }
 
 void Location::setIndex(std::string val) {
-    index = val;
+    _index = val;
 }
 
 void Location::setClientMaxBodySize(std::string val) {
-    client_max_body_size = val;
+    _client_max_body_size = val;
+}
+
+void Location::setErrorPagePath(std::string val) {
+    _error_page_path = val;
+}
+
+void Location::setCgiPath(std::string val) {
+    _cgi_path = val;
+}
+
+void Location::setUploadPath(std::string val) {
+    _upload_path = val;
+}
+
+void Location::setAutoIndex(bool val) {
+    _auto_index = val;
 }
 
 void Location::setMethod(std::string method, bool val) {
-    methods.insert(std::make_pair(method, val));
+    _methods.insert(std::make_pair(method, val));
 }
 
 
 // GETTERS
 std::string Location::getPath() {
-    return path;
+    return _path;
 }
 
 std::string Location::getRoot() {
-    return root;
+    return _root;
 }
 
 std::string Location::getIndex() {
-    return index;
+    return _index;
 }
 
 std::string Location::getClientMaxBodySize() {
-    return client_max_body_size;
+    return _client_max_body_size;
+}
+
+std::string Location::getErrorPagePath() {
+    return _error_page_path;
+}
+
+std::string Location::getCgiPath() {
+    return _cgi_path;
+}
+
+std::string Location::getUploadPath() {
+    return _upload_path;
+}
+
+bool        Location::getAutoIndex() {
+    return _auto_index;
 }
 
 bool Location::getMethod(std::string method) {
-    return methods[method];
+    return _methods[method];
 }
 

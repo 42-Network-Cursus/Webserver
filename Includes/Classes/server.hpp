@@ -18,17 +18,16 @@ class Server {
 		const std::string& getPort() const;
 		const std::string& getHost() const;
 		const std::string& getServer_name() const;
-		std::vector<struct pollfd> getPfds();
+		std::vector<struct pollfd>& getPfds();
 
 		// char * getLocation();
 		
 	private:
-		std::string port;
-		std::string host;
-		std::string server_name;
-		std::vector<struct pollfd> pfds;
-	
-		std::vector<Location> locations;
+		std::string _port;
+		std::string _host;
+		std::string _server_name;
+		std::vector<struct pollfd> _pfds;
+		std::vector<Location> _locations;
 
 
 		// Sockets

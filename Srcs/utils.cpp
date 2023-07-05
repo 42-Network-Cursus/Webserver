@@ -65,16 +65,15 @@ bool stringToBool(std::string str) {
 
 
 
-// void eraseFD(int fd, std::vector<Server *> servers) {
-// 		for (int i = 0; servers[i] ; i++) {
+void eraseFD(int fd, std::vector<Server> servers) {
+		for (int i = 0; i < servers.size() ; i++) {
 
-// 		for (int j = 0; servers[i]->pfds[j].fd ; j++) {
-// 			if (fd == servers[i]->pfds[j].fd)
-// 				servers[i]->pfds.erase(servers[i]->pfds.begin() + j);
-// 		}
-// 	}
-
-// }
+		for (int j = 0; servers[i].getPfds()[j].fd ; j++) {
+			if (fd == servers[i].getPfds()[j].fd)
+				servers[i].getPfds().erase(servers[i].getPfds().begin() + j);
+		}
+	}
+}
 
 /**
  * @brief Get the text corresponding to the status code

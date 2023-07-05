@@ -27,9 +27,6 @@ int sendAll(int s, const char *buf, int len) {
 
 int sendResponse(int fd, std::string body) {
 
-	// <!DOCTYPE html><html><head><title>Hello, World!</title></head><body><h1>Hello, World!</h1></body></html>
-	// std::string msg = "HTTP/1.1 200 OK\r\nContent-Type: text/html\r\nContent-length: 112\r\n\r\n<!DOCTYPE html><html><head><title>Hello, World!</title></head><body><h1>Hello, World!</h1></body></html>\r\n\r\n";
-	// std::string msg = "HTTP/1.1 200 OK\r\nContent-Type: text/html\r\nContent-length: 112\r\n\r\n" + body;
 	Response response = Response();
 	response.setBody(body);
 
@@ -38,55 +35,55 @@ int sendResponse(int fd, std::string body) {
 	return sendAll(fd, msg.c_str(), msg.length());
 }
 
-// int getServerByFd(int fd, std::vector<Server *> servers) {
+int getServerByFd(int fd, std::vector<Server> servers) {
 
 
-// 	for (int i = 0; servers[i] ; i++) {
+	for (int i = 0; i < servers.size(); i++) {
 
-// 		for (int j = 0; servers[i]->pfds[j].fd ; j++) {
-// 			if (fd == servers[i]->pfds[j].fd)
-// 				return i;
-// 		}
-// 	}
-// 	return -1;
-// }
+		for (int j = 0; servers[i].getPfds()[j].fd ; j++) {
+			if (fd == servers[i].getPfds()[j].fd)
+				return i;
+		}
+	}
+	return -1;
+}
 
 // ------------ FOR TESTING
-// std::string fetchBody(int fd, std::vector<Server *> servers) {
-// 	// std::vector<Server>::iterator it_begin = _server_list.begin();
-// 	// std::vector<Server>::iterator it_end = _server_list.end();
+std::string fetchBody(int fd, std::vector<Server> servers) {
+	// std::vector<Server>::iterator it_begin = _server_list.begin();
+	// std::vector<Server>::iterator it_end = _server_list.end();
 
-// 	// for (; it_begin != it_end; it_begin++) {
-// 	// 	if (it_begin->sockfd == fd)
-// 	// 		break;
-// 	// }
+	// for (; it_begin != it_end; it_begin++) {
+	// 	if (it_begin->sockfd == fd)
+	// 		break;
+	// }
 	
-// 	int id = getServerByFd(fd, servers);
+	int id = getServerByFd(fd, servers);
 
-// 	std::cout << "server nb " << id << std::endl;
-// 	std::string body;
+	std::cout << "server nb " << id << std::endl;
+	std::string body;
 	
-// 	std::string htmlpage;
+	std::string htmlpage;
 
-// 	// if (i == 0)
-// 	// 	htmlpage = "index.html";
-// 	// else
-// 	// 	htmlpage = "secondServer.html";	
+	// if (i == 0)
+	// 	htmlpage = "index.html";
+	// else
+	// 	htmlpage = "secondServer.html";	
 	
-// 	// servers[id]->root + servers[id]->index
-// 	std::ifstream file_stream ("test");
+	// servers[id]->root + servers[id]->index
+	std::ifstream file_stream ("test");
 
-// 	if (!file_stream.is_open()) { // check whether the file is open
-// 		std::cout << "Error reading conf file" << std::endl;
-// 		exit(1);
-// 	}
+	if (!file_stream.is_open()) { // check whether the file is open
+		std::cout << "Error reading conf file" << std::endl;
+		exit(1);
+	}
 	
-// 	body.assign ( 	(std::istreambuf_iterator<char>(file_stream)),
-// 					(std::istreambuf_iterator<char>()) 
-// 				);
+	body.assign ( 	(std::istreambuf_iterator<char>(file_stream)),
+					(std::istreambuf_iterator<char>()) 
+				);
 
-// 	return body;
-// }
+	return body;
+}
 
 
 
@@ -111,118 +108,97 @@ int main(int argc, char *argv[]) {
 		all_pfds.push_back(servers[i].getPfds()[0]);
 	}
 
-	// while(1) { // main loop
+	// main loop
+	while(1) { 
 		
-	// 	// last argument is timeout, in millisecs. Neg value for no timeout until response
-	// 	if ( (poll(all_pfds.data(), all_pfds.size(), 1)) == -1) {
-	// 		std::cerr << "poll: " << strerror(errno) << std::endl;
-	// 		exit(1);
-	// 	}
+		// last argument is timeout, in millisecs. Neg value for no timeout until response
+		if ( (poll(all_pfds.data(), all_pfds.size(), 1)) == -1) {
+			std::cerr << "poll: " << strerror(errno) << std::endl;
+			exit(1);
+		}
 
-	// 	// Run through existing connections to look for data to read
-	// 	for (size_t i = 0; i < all_pfds.size(); i++) {
+		// Run through existing connections to look for data to read
+		for (size_t i = 0; i < all_pfds.size(); i++) {
 		
-			
-	// 		// check if someone is ready to read
-	// 		if (all_pfds[i].revents & POLLIN) {				
-	// 			std::cout << "POLLIN" << std::endl;
-	// 			// check if listening socket received a connection
-	// 			if (i < servers.size() && all_pfds[i].fd == servers[i]->pfds[0].fd) {
+			// check if someone is ready to read
+			if (all_pfds[i].revents & POLLIN) {
 
-	// 				std::cout << "Accept new connection" << std::endl;
-
-	// 				addrlen = sizeof(remoteaddr);
-	// 				new_fd = accept(all_pfds[i].fd, (struct sockaddr *)&remoteaddr, &addrlen);
-	// 				if (new_fd == -1) {
-	// 					std::cerr << "accept: " << strerror(errno) << std::endl;
-	// 				}
-	// 				else {
-	// 					std::cout << "New socket to communicate : " << new_fd << std::endl;
-	// 					struct pollfd new_pfd;
-	// 					new_pfd.fd = new_fd;
-	// 					new_pfd.events = POLLIN | POLLOUT;
-	// 					// new_pfd.events = POLLIN;
-	// 					all_pfds.push_back(new_pfd);
-	// 					servers[i]->pfds.push_back(new_pfd);
-	// 				}
-	// 			}
-				
-	// 			// Not a listening socket, but ready to read.
-	// 			else { 
+				// check if listening socket received a connection
+				if (i < servers.size()) {
 					
-	// 				std::cout << "Read data" << std::endl;
+					// DEBUG
+					std::cout << "Connection from server " << servers[i].getServer_name() << std::endl << std::endl;
 
-	// 				// How do i handle reading everything ?
-	// 				// 2nd while loop to read body if needed?
-
-	// 				std::string request;
-	// 				while (recv_header(request)) {
-	// 					int nbytes = recv(all_pfds[i].fd, buf, sizeof(buf), 0);
-	// 					request.append(buf);
-
-	// 					if (nbytes <= 0) { // error handling
-	// 						if (nbytes == 0) {
-	// 							std::cout << "Pollserver: socket " << all_pfds[i].fd << " hung up" << std::endl;
-	// 						}
-	// 						else {
-	// 							// We cant use errno after read
-	// 							// std::cerr << "recv: " << strerror(errno) << std::endl;
-	// 							break;
-	// 						}
-
-	// 						close(all_pfds[i].fd);
-	// 						all_pfds.erase(all_pfds.begin() + i);
-							
-
-	// 						// ADD TO REQUEST CLASS 
-							
-
-
-	// 						// all_pfds[i].events = POLLOUT;
-	
-	// 						// Connection Management: HTTP 1.1 introduces persistent connections by default, 
-	// 						// allowing multiple requests and responses to be sent over a single TCP connection. 
-	// 						// This reduces the overhead of establishing and tearing down connections for each request, improving performance.
-	// 					}
-	// 				}
+					addrlen = sizeof(remoteaddr);
+					new_fd = accept(all_pfds[i].fd, (struct sockaddr *)&remoteaddr, &addrlen);
 					
-	// 				std::cout << "\n\nCHECK REQUEST SAL -- OPE Tu lis jusqu'au bout ?\n" << request << "\n\n" << std::endl;
-	// 				// std::cout << "\n *** Msg received on socket : " << all_pfds[i].fd << ": *** \n" << request;
-	// 				// flush(std::cout);
-	// 				std::cout << "Read request\n";
-
-	// 			}
-	// 		}
-	// 		else if (all_pfds[i].revents & POLLOUT) { // handle POLLOUT event, socket ready to write
-				
-
-	// 			// std::cout << "response: " << sendResponse(all_pfds[i].fd, "<!DOCTYPE html><html><head><title>Hello, World!</title></head><body><h1>Hello, World!</h1></body></html>") << std::endl;
-	// 			std::cout << "response: " << sendResponse(all_pfds[i].fd, fetchBody(all_pfds[i].fd, servers)) << std::endl;
-
-
-	// 			 // Execute the CGI script using the Python interpreter
-	// 				// int result = system("python3 /cgi-bin/py-cgi.py");
-
-	// 				// if (result == -1) {
-	// 				// 	// Handle error executing the script
-	// 				// 	// ...
-	// 				// }
+					if (new_fd == -1)
+						std::cerr << "accept: " << strerror(errno) << std::endl;
 					
-	// 				// Process the result as needed
-	// 				// ...
+					else {
+				
+						struct pollfd new_pfd;
 
-	// 			// std::cout << "response: " << sendResponse(all_pfds[i].fd, fetchBody()) << std::endl;
+						new_pfd.fd = new_fd;
+						new_pfd.events = POLLIN | POLLOUT;
+
+						all_pfds.push_back(new_pfd);
+						servers[i].getPfds().push_back(new_pfd);
+					}
+				}
 				
-	// 			std::cout << "POLLOUT, closing socket " << all_pfds[i].fd << std::endl;
+				// Not a listening socket, but ready to read. (Means a request)
+				else { 
+					
+					std::string request;
+
+					while (recv_header(request)) {
+
+						int nbytes = recv(all_pfds[i].fd, buf, sizeof(buf), 0);
+						
+						request.append(buf);
+
+						// error handling
+						if (nbytes <= 0) {
+
+							if (nbytes == 0)
+								std::cout << "Pollserver: socket " << all_pfds[i].fd << " hung up" << std::endl;
+							else 
+								break;
+
+							close(all_pfds[i].fd);
+							all_pfds.erase(all_pfds.begin() + i);
+						}
+					}
+					
+					// DEBUG
+					std::cout << request << "\n\n" << std::endl;
+				}
+			}
+
+			// handle POLLOUT event, socket ready to write
+			else if (all_pfds[i].revents & POLLOUT) { 
 				
-	// 			std::cout << "1" << std::endl;
-	// 			all_pfds.erase(all_pfds.begin() + i);
-	// 			std::cout << "2" << std::endl;
-	// 			eraseFD(all_pfds[i].fd, servers);
-	// 			std::cout << "3" << std::endl;
-	// 			close(all_pfds[i].fd);
-	// 		}
-	// 	}
-	// }
-	// return 0;
+				// std::cout << "response: " << sendResponse(all_pfds[i].fd, fetchBody(all_pfds[i].fd, servers)) << std::endl;
+
+
+				 // Execute the CGI script using the Python interpreter
+					// int result = system("python3 /cgi-bin/py-cgi.py");
+
+					// if (result == -1) {
+					// 	// Handle error executing the script
+					// 	// ...
+					// }
+					
+					// Process the result as needed
+					// ...
+		
+			// SEGFAULT
+				// all_pfds.erase(all_pfds.begin() + i);
+				// eraseFD(all_pfds[i].fd, servers);
+				// close(all_pfds[i].fd);
+			}
+		}
+	}
+	return 0;
 }

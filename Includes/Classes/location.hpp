@@ -6,13 +6,20 @@
 # include <map>
 
 class Location {
+
     public:
+        
+        Location();
 
         // SETTERS
         void setPath(std::string val);
         void setRoot(std::string val);
         void setIndex(std::string val);
-        void setClientMaxBodySize(std::string val);
+        void setClientMaxBodySize(std::string val); 
+        void setErrorPagePath(std::string val);
+        void setCgiPath(std::string val);
+        void setUploadPath(std::string val);
+        void setAutoIndex(bool val);
         void setMethod(std::string method, bool val);
 
         // GETTERS
@@ -20,18 +27,23 @@ class Location {
         std::string getRoot();
         std::string getIndex();
         std::string getClientMaxBodySize();
-        bool getMethod(std::string method);
+        std::string getErrorPagePath();
+        std::string getCgiPath();
+        std::string getUploadPath();
+        bool        getAutoIndex();
+        bool        getMethod(std::string method);
 
     private:
-        std::string path;
-        std::string root;
-        std::string index;
-        std::string client_max_body_size;
-        std::map<std::string, bool> methods; 
-       
-        // methods
-        // dir_listing
-        // cgi
+        std::string                 _path;
+        std::string                 _root;
+        std::string                 _index;
+        std::string                 _client_max_body_size;
+        std::string                 _error_page_path;
+        std::string                 _cgi_path;
+        std::string                 _upload_path;
+        bool                        _auto_index;
+        std::map<std::string, bool> _methods;
+
 };
 
 #endif // LOCATION_HPP

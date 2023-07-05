@@ -19,6 +19,6 @@ std::string	intToString(int number);
 // Debugging
 void				print_server_list(std::vector<Server> servers);
 
-void eraseFD(int fd, std::vector<Server *> servers);
+void eraseFD(int fd, std::vector<Server> servers);
 
 #endif // UTILS_HPP

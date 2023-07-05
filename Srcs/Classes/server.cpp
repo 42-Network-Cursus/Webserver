@@ -3,14 +3,14 @@
 
 // Debugging
 void Server::print() {
-	std::cout << "port: " << port << std::endl;
-	std::cout << "host: "<< host << std::endl;
-	std::cout << "server name: " << server_name << std::endl;
-	std::cout << "pfds size: " << pfds.size() << std::endl;
+	std::cout << "port: " << _port << std::endl;
+	std::cout << "host: "<< _host << std::endl;
+	std::cout << "server name: " << _server_name << std::endl;
+	std::cout << "pfds size: " << _pfds.size() << std::endl;
 
 	std::cout << "Locations: " << std::endl;
-	std::vector<Location>::iterator loc_begin = locations.begin();
-	std::vector<Location>::iterator loc_end = locations.end();
+	std::vector<Location>::iterator loc_begin = _locations.begin();
+	std::vector<Location>::iterator loc_end = _locations.end();
 	for (; loc_begin != loc_end; loc_begin++) {
 		std::cout << "Path: " << loc_begin->getPath() << std::endl;
 		std::cout << "	root: " << loc_begin->getRoot() << std::endl;
@@ -55,13 +55,9 @@ void Server::get_listening_socket() {
 	memset(&hints, 0, sizeof(hints)); // To make sure it is empty
 	hints.ai_family = AF_UNSPEC; // either IPV4 or 6, no need to specify
 	hints.ai_socktype = SOCK_STREAM; // TCP stream socket
-	
-/********/
-	// MODIF: Potentially in if/else statement, depending on wether we received a server name in configuration
 	hints.ai_flags = AI_PASSIVE; // use my IP
-/*******/
 
-	if ((rv = getaddrinfo(host.c_str(), port.c_str(), &hints, &ai)) != 0) {
+	if ((rv = getaddrinfo(_host.c_str(), _port.c_str(), &hints, &ai)) != 0) {
 		std::cerr << "getaddrinfo error " << rv << ": " << gai_strerror(rv) << std::endl;
 		exit(1);
 	}
@@ -101,7 +97,7 @@ void Server::get_listening_socket() {
 	
 	pfd.fd = socklist;
 	pfd.events = POLLIN;
-	pfds.push_back(pfd);
+	_pfds.push_back(pfd);
 }
 
 Location Server::get_location_config(std::ifstream &file_stream, std::string line) {
@@ -133,10 +129,8 @@ Location Server::get_location_config(std::ifstream &file_stream, std::string lin
 			rv.setIndex(param_val);
 		else if (param == "client_max_body_size")
 			rv.setClientMaxBodySize(param_val);
-		else if (param == "GET") {
-			std::cout << "Bool : " <<  stringToBool(param_val) << std::endl;
+		else if (param == "GET")
 			rv.setMethod("GET", stringToBool(param_val));
-		}
 		else if (param == "POST")
 			rv.setMethod("POST", stringToBool(param_val));
 		else if (param == "DELETE")
@@ -162,7 +156,7 @@ void Server::store_server_configuration(std::ifstream &file_stream) {
 		param = line.substr(0, line.find_first_of(" "));
 
 		if (param == "location") {
-			locations.push_back(get_location_config(file_stream, line));
+			_locations.push_back(get_location_config(file_stream, line));
 
 		}
 		else {
@@ -171,11 +165,11 @@ void Server::store_server_configuration(std::ifstream &file_stream) {
 			param_val = trim(param_val);
 			
 			if (param == "listen") {
-				host = param_val.substr(0, param_val.find_first_of(":"));
-				port = param_val.substr(param_val.find_first_of(":") + 1, param_val.find_first_of(";") - param_val.find_first_of(":"));
+				_host = param_val.substr(0, param_val.find_first_of(":"));
+				_port = param_val.substr(param_val.find_first_of(":") + 1, param_val.find_first_of(";") - param_val.find_first_of(":"));
 			}
 			else if (param == "server_name") {
-				server_name = param_val;
+				_server_name = param_val;
 			}
 			
 		}
@@ -187,18 +181,18 @@ void Server::store_server_configuration(std::ifstream &file_stream) {
 	*** GETTERS ***
 */
 const std::string& 			Server::getPort() const {	
-	return port;
+	return _port;
 }
 
 const std::string& 			Server::getHost() const {
-	return host;
+	return _host;
 }
 
 const std::string& 			Server::getServer_name() const {
-	return server_name;
+	return _server_name;
 }
 
-std::vector<struct pollfd>	Server::getPfds() {
-	return pfds;
+std::vector<struct pollfd>&	Server::getPfds() {
+	return _pfds;
 }
 
