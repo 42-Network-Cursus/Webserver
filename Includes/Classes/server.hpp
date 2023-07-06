@@ -19,6 +19,8 @@ class Server {
 		const std::string& getHost() const;
 		const std::string& getServer_name() const;
 		std::vector<struct pollfd>& getPfds();
+		std::vector<Location>& getLocation();
+		Location& getLocationFromPath(std::string path);
 
 		// char * getLocation();
 		

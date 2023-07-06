@@ -30,7 +30,8 @@ Request& Request::operator=(const Request &other)
 
 
 // Constructor
-Request::Request(int socketFd, std::string method, std::string path, std::string version, Server *config)
+// Request::Request(int socketFd, std::string method, std::string path, std::string version, Server *config)
+Request::Request(int socketFd, std::string method, std::string path, std::string version, Location config)
 : _socketFd(socketFd), _method(method), _path(path), _version(version), _config(config)
 {
 	getQueryFromPath();
@@ -58,7 +59,11 @@ std::string Request::getQuery()
 	return (_query);
 }
 
-Server *Request::getServerConfig()
+// Server *Request::getServerConfig()
+// {
+// 	return (_config);
+// }
+Location Request::getLocationConfig()
 {
 	return (_config);
 }
@@ -80,7 +85,11 @@ void		Request::setMethod(const std::string &method)
 	this->_method = method;
 }
 
-void		Request::setConfig(Server *config)
+// void		Request::setConfig(Server *config)
+// {
+// 	this->_config = config;
+// }
+void		Request::setConfig(Location config)
 {
 	this->_config = config;
 }
@@ -94,7 +103,8 @@ void	Request::setQuery(const std::string &query)
 
 bool Request::isAcceptedMethod()
 {
-	return isInVector(_config->getAcceptedMethods(), _method);
+	return 0;
+	// isInVector(_config->getAcceptedMethods(), _method);
 }
 
 bool Request::isValidVersion()
@@ -105,7 +115,8 @@ bool Request::isValidVersion()
 
 bool Request::isValidPath()
 {
-	std::string root = _config->getRoot();
+	std::string root = "";
+	// _config->getRoot();
 
 	std::cout << "ROOT => " << root << std::endl;
 	std::cout << "Path => " << _path << std::endl;
@@ -132,7 +143,8 @@ Request Request::parseRequest(std::string request, int fd, std::vector<Server *>
 	std::cout << "\nMethod " << method << "\nPath " << path << "\n\n\n" << std::endl;
 
 // int socketFd, std::string path, std::string method, Server config
-	Request res = Request(fd, method, path, "HTTP/1.1", servers[0]);
+	// Request res = Request(fd, method, path, "HTTP/1.1", servers[0]);
+	Request res = Request();
 
 	return res;
 }
@@ -153,6 +165,6 @@ void Request::getQueryFromPath()
 
 void Request::printConfig()
 {
-	_config->print();
+	// _config->print();
 	std::cout << "\n\nPath: " << _path << "\nQuery: " << _query << std::endl;
 }

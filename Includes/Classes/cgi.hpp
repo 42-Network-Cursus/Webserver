@@ -3,7 +3,7 @@
 
 #include <string>
 #include <unistd.h>
-#include <sys/type.h>
+#include <sys/types.h>
 
 class CGI
 {

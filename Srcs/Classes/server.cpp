@@ -202,3 +202,17 @@ std::vector<struct pollfd>&	Server::getPfds() {
 	return _pfds;
 }
 
+std::vector<Location>& Server::getLocation() {
+	return _locations;
+}
+
+Location& Server::getLocationFromPath(std::string path) {
+	std::vector<Location>::iterator it_start = _locations.begin();
+	std::vector<Location>::iterator it_end = _locations.end();
+
+	for (; it_start != it_end; it_start++) {
+		if (it_start->getPath() == path)
+			break;
+	}
+	return *it_start;
+}

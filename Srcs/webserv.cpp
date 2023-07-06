@@ -86,39 +86,45 @@ std::string fetchBody(int fd, std::vector<Server> servers) {
 }
 
 
-void handle_pollin(std::vector<Server>& servers, std::vector<struct pollfd>& all_pfds, int idx) {
-	
+void add_new_socket_to_pfds(std::vector<Server>& servers, std::vector<struct pollfd>& all_pfds, int idx) {
+		
 	int 						new_fd;
 	struct sockaddr_storage 	remoteaddr; // client's info, using sockaddr_storage because big enough to contain either IPv4 or IPv6
 	socklen_t 					addrlen; // length of remoteaddr
-	char 						buf[10]; // Buffer for client data
+
+	// DEBUG
+	std::cout << "Connection from server " << servers[idx].getServer_name() << std::endl << std::endl;
+
+	addrlen = sizeof(remoteaddr);
+	new_fd = accept(all_pfds[idx].fd, (struct sockaddr *)&remoteaddr, &addrlen);
+	
+	if (new_fd == -1)
+		std::cerr << "accept: " << strerror(errno) << std::endl;
+	else {
+		struct pollfd new_pfd;
+
+		new_pfd.fd = new_fd;
+		new_pfd.events = POLLIN | POLLOUT;
+
+		all_pfds.push_back(new_pfd);
+		servers[idx].getPfds().push_back(new_pfd);
+	}
+}
+
+void handle_pollin(std::vector<Server>& servers, std::vector<struct pollfd>& all_pfds, int idx) {
+	
+	
 
 	// check if listening socket received a connection
-	if (idx < servers.size()) {
-		
-		// DEBUG
-		std::cout << "Connection from server " << servers[idx].getServer_name() << std::endl << std::endl;
-
-		addrlen = sizeof(remoteaddr);
-		new_fd = accept(all_pfds[idx].fd, (struct sockaddr *)&remoteaddr, &addrlen);
-		
-		if (new_fd == -1)
-			std::cerr << "accept: " << strerror(errno) << std::endl;
-		else {
-			struct pollfd new_pfd;
-
-			new_pfd.fd = new_fd;
-			new_pfd.events = POLLIN | POLLOUT;
-
-			all_pfds.push_back(new_pfd);
-			servers[idx].getPfds().push_back(new_pfd);
-		}
-	}
+	if (idx < servers.size())
+		add_new_socket_to_pfds(servers, all_pfds, idx);
 	
 	// Not a listening socket, but ready to read. (Means a request)
-	else { 
-		std::string request;
+	else {
 
+		std::string request;
+		char 						buf[10]; // Buffer for client data
+		
 		while (recv_header(request)) {
 
 			int nbytes = recv(all_pfds[idx].fd, buf, sizeof(buf), 0);
