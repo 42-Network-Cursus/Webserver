@@ -56,7 +56,10 @@ class Request {
 		Location	_config;
 		// Server		*_config;
 
-		// string or class body ?
+
+		std::string _server_name; // Maybe used for POST and DELETE, specifies the host name (server name)
+		std::string _body; // used for POST method ?
+
 
 		std::string	_header;
 

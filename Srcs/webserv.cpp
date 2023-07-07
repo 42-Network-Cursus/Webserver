@@ -123,7 +123,7 @@ void handle_pollin(std::vector<Server>& servers, std::vector<struct pollfd>& all
 	else {
 
 		std::string request;
-		char 						buf[10]; // Buffer for client data
+		char 		buf[1]; // Buffer for client data
 		
 		while (recv_header(request)) {
 

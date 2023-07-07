@@ -12,15 +12,8 @@ void Server::print() {
 	std::vector<Location>::iterator loc_begin = _locations.begin();
 	std::vector<Location>::iterator loc_end = _locations.end();
 	for (; loc_begin != loc_end; loc_begin++) {
-		std::cout << "Path: " << loc_begin->getPath() << std::endl;
-		std::cout << "	root: " << loc_begin->getRoot() << std::endl;
-		std::cout << "	index: " << loc_begin->getIndex() << std::endl;
-		if (loc_begin->getClientMaxBodySize() != "")
-			std::cout << "	client_max_body_size: " << loc_begin->getClientMaxBodySize() << std::endl;
-		std::cout << "	Methods: " << std::endl;
-		std::cout << "		GET: " << loc_begin->getMethod("GET") << std::endl;
-		std::cout << "		POST: " << loc_begin->getMethod("POST") << std::endl;
-		std::cout << "		DELETE: " << loc_begin->getMethod("DELETE") << std::endl;
+		loc_begin->print();
+		std::cout << std::endl;
 	}
 }
 
