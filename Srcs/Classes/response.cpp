@@ -1,4 +1,5 @@
 #include "response.hpp"
+#include "request.hpp"
 
 Response::Response()
 {

@@ -7,9 +7,9 @@
 # include "constantes.hpp"
 // # include "request.class.hpp"
 
-std::string& 		ltrim(std::string& s, const char* t = " \t\r\f\v");
-std::string& 		rtrim(std::string& s, const char* t = " \t\r\f\v");
-std::string& 		trim(std::string& s, const char* t = " \t\r\f\v");
+std::string 		&ltrim(std::string &s, const char *t = " \t\r\f\v");
+std::string 		&rtrim(std::string &s, const char *t = " \t\r\f\v");
+std::string 		&trim(std::string &s, const char *t = " \t\r\f\v");
 bool 				skip_line(std::string line);
 bool                stringToBool(std::string str);
 
@@ -19,7 +19,7 @@ std::string	intToString(int number);
 bool isInVector(std::vector<std::string> vector, std::string value);
 
 template<typename T>
-bool containsValue(const std::vector<T>& vect, const T& value);
+bool containsValue(const std::vector<T> &vect, const T &value);
 
 
 // Debugging

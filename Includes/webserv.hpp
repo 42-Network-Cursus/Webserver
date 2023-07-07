@@ -4,12 +4,15 @@
 # include "std_libs.hpp"
 # include "utils.hpp"
 # include "server.hpp"
+# include "request.hpp"
 # include "response.hpp"
 # include "configuration.hpp"
 
 # define END_HEADER "\r\n\r\n"
 # define BACKLOG 10 // queue of nb of connexions waiting to be accepted by listen()
 
+// COMMENT TO STOP PRINTING
+# define DEBUG
 
 /*
 	execve, dup, dup2, pipe, strerror, gai_strerror,

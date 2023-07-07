@@ -187,27 +187,28 @@ void Server::setSockFD(int fd) {
 /*
 	*** GETTERS ***
 */
-const std::string& 			Server::getPort() const {	
+
+const std::string 			&Server::getPort() const {	
 	return _port;
 }
 
-const std::string& 			Server::getHost() const {
+const std::string 			&Server::getHost() const {
 	return _host;
 }
 
-const std::string& 			Server::getServer_name() const {
+const std::string 			&Server::getServer_name() const {
 	return _server_name;
 }
 
-std::vector<struct pollfd>&	Server::getPfds() {
+std::vector<struct pollfd>	&Server::getPfds() {
 	return _pfds;
 }
 
-std::vector<Location>& Server::getLocation() {
+std::vector<Location> 		&Server::getLocation() {
 	return _locations;
 }
 
-Location& Server::getLocationFromPath(std::string path) {
+Location 					&Server::getLocationFromPath(std::string path) {
 	std::vector<Location>::iterator it_start = _locations.begin();
 	std::vector<Location>::iterator it_end = _locations.end();
 
@@ -218,6 +219,6 @@ Location& Server::getLocationFromPath(std::string path) {
 	return *it_start;
 }
 
-int Server::getSockFD() const {
+int 						Server::getSockFD() const {
 	return _sockfd;
 }

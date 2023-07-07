@@ -6,6 +6,8 @@
 //# include "constantes.hpp"
 # include "server.hpp"
 # include "utils.hpp"
+// # include "response.hpp"
+class Response;
 
 class Request {
 
@@ -45,6 +47,8 @@ class Request {
 
 		//
 		static Request parseRequest(std::string request, int fd, std::vector<Server> servers);
+		void generateResponse();
+		void sendResponse(int sockfd);
 
 		// Print
 		void		printConfig();
@@ -57,12 +61,11 @@ class Request {
 		std::string	_query; //
 		
 		Location	_config;
-		// Server		*_config;
 
 
 		std::string _server_name; // Maybe used for POST and DELETE, specifies the host name (server name)
 		std::string _body; // used for POST method ?
-
+		Response 	*_response; // NEEDS TO BE POINTER BECAUSE OF INCLUDE CIRCLE
 
 		std::string	_header;
 

@@ -4,7 +4,8 @@
 # include "std_libs.hpp"
 
 # include "response_header.hpp"
-# include "request.hpp"
+// # include "request.hpp"
+class Request;
 
 class Response {
 	public:
@@ -25,10 +26,10 @@ class Response {
 		void setBody(const std::string &body);
 
 	private:
-		int _statusCode;
-		ResponseHeader _header;
-		std::string _body;
-		std::string _path;
+		int 			_statusCode;
+		ResponseHeader	_header;
+		std::string 	_body;
+		std::string 	_path;
 
 		bool	isValidPathFile();
 		void	readFile();

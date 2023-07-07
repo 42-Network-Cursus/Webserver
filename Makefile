@@ -1,6 +1,5 @@
 NAME	=	webserv
-CC		=	c++ 
-# -Wall -Wextra -Werror -std=c++98
+CC		=	c++ -Wall -Wextra -Werror -std=c++98
 
 INCL	=	-I ./Includes/ \
 			-I ./Includes/Classes/

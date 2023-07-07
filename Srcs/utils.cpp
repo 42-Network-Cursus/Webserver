@@ -35,17 +35,17 @@ void *get_in_addr(struct sockaddr *sa) {
 	Actual Utils
 ********************/
 
-std::string& ltrim(std::string& s, const char* t) { // trim from left
+std::string &ltrim(std::string &s, const char* t) { // trim from left
     s.erase(0, s.find_first_not_of(t));
     return s;
 }
 
-std::string& rtrim(std::string& s, const char* t) { // trim from right
+std::string &rtrim(std::string &s, const char* t) { // trim from right
     s.erase(s.find_last_not_of(t) + 1);
     return s;
 }
 
-std::string& trim(std::string& s, const char* t) { // trim from left & right
+std::string &trim(std::string &s, const char* t) { // trim from left & right
     return ltrim(rtrim(s, t), t);
 }
 
@@ -66,7 +66,7 @@ bool stringToBool(std::string str) {
 
 
 void eraseFD(int fd, std::vector<Server> servers) {
-		for (int i = 0; i < servers.size() ; i++) {
+		for (size_t i = 0; i < servers.size() ; i++) {
 
 		for (int j = 0; servers[i].getPfds()[j].fd ; j++) {
 			if (fd == servers[i].getPfds()[j].fd)

@@ -1,4 +1,5 @@
 #include "request.hpp"
+#include "response.hpp"
 
 // DEBUG
 void Request::print() {
@@ -12,7 +13,6 @@ void Request::print() {
 	_config.print();
 	std::cout << "Server name : " << _server_name << std::endl;
 	std::cout << "Body : " << _body << std::endl;
-	
 }
 
 
@@ -31,7 +31,7 @@ Request::Request(const Request &copy) : _socketFd(copy._socketFd), _method(copy.
 
 }
 
-Request& Request::operator=(const Request &other)
+Request &Request::operator=(const Request &other)
 {
 	if (this != &other)
 	{
@@ -177,6 +177,17 @@ void Request::getQueryFromPath()
 		_path = _path.substr(pos);
 	}
 }
+
+void Request::generateResponse() {
+	Response rv;
+	
+	*_response = rv;
+}
+
+void Request::sendResponse(int sockfd) {
+	std::cout << sockfd << std::endl;
+}
+
 
 // Print
 
