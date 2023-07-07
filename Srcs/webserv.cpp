@@ -108,6 +108,7 @@ void add_new_socket_to_pfds(std::vector<Server>& servers, std::vector<struct pol
 
 		all_pfds.push_back(new_pfd);
 		servers[idx].getPfds().push_back(new_pfd);
+		servers[idx].setSockFD(new_fd);
 	}
 }
 
@@ -145,9 +146,11 @@ void handle_pollin(std::vector<Server>& servers, std::vector<struct pollfd>& all
 		}
 		
 		// DEBUG
-		std::cout << request << "\n\n" << std::endl;
+		// std::cout << request << "\n\n" << std::endl;
 		
-		// Create request object
+		Request req;
+		req = req.parseRequest(request, all_pfds[idx].fd, servers);
+		req.print();
 	}
 }
 

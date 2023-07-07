@@ -1,5 +1,21 @@
 #include "request.hpp"
 
+// DEBUG
+void Request::print() {
+	std::cout << "Request info: " << std::endl;
+	std::cout << "Socket : " << _socketFd << std::endl;
+	std::cout << "Method : " << _method << std::endl;
+	std::cout << "Path : " << _path << std::endl;
+	std::cout << "Version : " << _version << std::endl;
+	std::cout << "Query : " << _query << std::endl;
+	std::cout << "\nConfig : " << std::endl;
+	_config.print();
+	std::cout << "Server name : " << _server_name << std::endl;
+	std::cout << "Body : " << _body << std::endl;
+	
+}
+
+
 Request::Request()
 {
 
@@ -30,10 +46,19 @@ Request& Request::operator=(const Request &other)
 
 
 // Constructor
-// Request::Request(int socketFd, std::string method, std::string path, std::string version, Server *config)
-Request::Request(int socketFd, std::string method, std::string path, std::string version, Location config)
-: _socketFd(socketFd), _method(method), _path(path), _version(version), _config(config)
+Request::Request(int socketFd, std::string method, std::string path, std::string version, std::vector<Server> servers)
+: _socketFd(socketFd), _method(method), _path(path), _version(version)
 {
+	std::vector<Server>::iterator it_begin = servers.begin();
+	std::vector<Server>::iterator it_end = servers.end();
+
+	for (; it_begin != it_end; it_begin++) {
+		if (socketFd == it_begin->getSockFD()) {
+			_config = it_begin->getLocationFromPath(path);
+			break;
+		}
+	}
+
 	getQueryFromPath();
 }
 
@@ -125,13 +150,8 @@ bool Request::isValidPath()
 	return false;
 }
 
-Request Request::parseRequest(std::string request, int fd, std::vector<Server *> servers)
+Request Request::parseRequest(std::string request, int fd, std::vector<Server> servers)
 {
-
-	std::cout << "PARSE REQUEST SIZE " << servers.size() << std::endl;
-	std::cout << "PARSE REQUEST PRINT\n\n" << std::endl;
-	servers[0]->print();
-
 	std::string method = "";
 	std::string path = "";
 
@@ -140,11 +160,8 @@ Request Request::parseRequest(std::string request, int fd, std::vector<Server *>
 	std::string::size_type pos2 = request.find(" ", pos);
 	path = request.substr(pos + 1, pos2 - 2);
 
-	std::cout << "\nMethod " << method << "\nPath " << path << "\n\n\n" << std::endl;
 
-// int socketFd, std::string path, std::string method, Server config
-	// Request res = Request(fd, method, path, "HTTP/1.1", servers[0]);
-	Request res = Request();
+	Request res = Request(fd, method, path, "HTTP/1.1", servers);
 
 	return res;
 }

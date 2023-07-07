@@ -14,6 +14,10 @@ class Server {
 		// Debugging
 		void print();
 	
+
+		// Setters 
+		void setSockFD(int fd);
+
 		// Getters
 		const std::string& getPort() const;
 		const std::string& getHost() const;
@@ -21,6 +25,7 @@ class Server {
 		std::vector<struct pollfd>& getPfds();
 		std::vector<Location>& getLocation();
 		Location& getLocationFromPath(std::string path);
+		int getSockFD() const;
 
 		// char * getLocation();
 		
@@ -33,7 +38,8 @@ class Server {
 
 
 		// Sockets
-		int socklist; // Listening socket, used by accept()   Used ?	
+		int _sockfd;
+		int _socklist;
 		
 		// Configuration parameters
 
