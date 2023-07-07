@@ -14,26 +14,32 @@ class Server {
 		// Debugging
 		void print();
 	
+
+		// Setters 
+		void setSockFD(int fd);
+
 		// Getters
-		const std::string& getPort() const;
-		const std::string& getHost() const;
-		const std::string& getServer_name() const;
-		std::vector<struct pollfd>& getPfds();
-		std::vector<Location>& getLocation();
-		Location& getLocationFromPath(std::string path);
+		const std::string 			&getPort() const;
+		const std::string 			&getHost() const;
+		const std::string 			&getServer_name() const;
+		std::vector<struct pollfd>	&getPfds();
+		std::vector<Location> 		&getLocation();
+		Location 					&getLocationFromPath(std::string path);
+		int 						getSockFD() const;
 
 		// char * getLocation();
 		
 	private:
-		std::string _port;
-		std::string _host;
-		std::string _server_name;
-		std::vector<struct pollfd> _pfds;
-		std::vector<Location> _locations;
+		std::string 				_port;
+		std::string 				_host;
+		std::string 				_server_name;
+		std::vector<struct pollfd>	_pfds;
+		std::vector<Location>		_locations;
 
 
 		// Sockets
-		int socklist; // Listening socket, used by accept()   Used ?	
+		int 						_socklist; // Listening socket
+		int 						_sockfd; // Communication socket
 		
 		// Configuration parameters
 

@@ -6,18 +6,23 @@
 //# include "constantes.hpp"
 # include "server.hpp"
 # include "utils.hpp"
+// # include "response.hpp"
+class Response;
 
 class Request {
 
 	public:
+
+		// DEBUG
+		void print();
+		
 		Request();
 		~Request();
 		Request(const Request &copy);
 		Request &operator=(const Request &other);
 
 		// Constructor
-		// Request(int socketFd, std::string method, std::string path, std::string version, Server *config);
-		Request(int socketFd, std::string method, std::string path, std::string version, Location config);
+		Request(int socketFd, std::string method, std::string path, std::string version, std::vector<Server> servers);
 
 		// Getters
 		int			getSocketFd();
@@ -25,7 +30,7 @@ class Request {
 		std::string	getMethod();
 		std::string	getQuery();
 		// Server		*getServerConfig();
-		Location getLocationConfig();
+		Location 	getLocationConfig();
 
 		// Setters
 		void		setSocketFd(int socketFd);
@@ -41,7 +46,9 @@ class Request {
 		bool		isValidPath();
 
 		//
-		static Request parseRequest(std::string request, int fd, std::vector<Server *> servers);
+		static Request parseRequest(std::string request, int fd, std::vector<Server> servers);
+		void generateResponse();
+		void sendResponse(int sockfd);
 
 		// Print
 		void		printConfig();
@@ -54,9 +61,11 @@ class Request {
 		std::string	_query; //
 		
 		Location	_config;
-		// Server		*_config;
 
-		// string or class body ?
+
+		std::string _server_name; // Maybe used for POST and DELETE, specifies the host name (server name)
+		std::string _body; // used for POST method ?
+		Response 	*_response; // NEEDS TO BE POINTER BECAUSE OF INCLUDE CIRCLE
 
 		std::string	_header;
 

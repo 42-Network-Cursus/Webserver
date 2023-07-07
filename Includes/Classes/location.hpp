@@ -8,8 +8,14 @@
 class Location {
 
     public:
-        
+
+        // Debugging
+        void print();
+
         Location();
+        ~Location();
+		Location(const Location &copy);
+		// Location &operator=(const Location &rhs);
 
         // SETTERS
         void setPath(std::string val);
@@ -23,15 +29,16 @@ class Location {
         void setMethod(std::string method, bool val);
 
         // GETTERS
-        std::string getPath() const;
-        std::string getRoot() const;
-        std::string getIndex() const;
-        std::string getClientMaxBodySize() const;
-        std::string getErrorPagePath() const;
-        std::string getCgiPath() const;
-        std::string getUploadPath() const;
-        bool        getAutoIndex() const;
-        bool        getMethod(std::string method);
+        std::string                 getPath() const;
+        std::string                 getRoot() const;
+        std::string                 getIndex() const;
+        std::string                 getClientMaxBodySize() const;
+        std::string                 getErrorPagePath() const;
+        std::string                 getCgiPath() const;
+        std::string                 getUploadPath() const;
+        bool                        getAutoIndex() const;
+        std::map<std::string, bool> getMethods() const;
+        bool                        getMethod(std::string method);
 
     private:
         std::string                 _path;

@@ -12,15 +12,8 @@ void Server::print() {
 	std::vector<Location>::iterator loc_begin = _locations.begin();
 	std::vector<Location>::iterator loc_end = _locations.end();
 	for (; loc_begin != loc_end; loc_begin++) {
-		std::cout << "Path: " << loc_begin->getPath() << std::endl;
-		std::cout << "	root: " << loc_begin->getRoot() << std::endl;
-		std::cout << "	index: " << loc_begin->getIndex() << std::endl;
-		if (loc_begin->getClientMaxBodySize() != "")
-			std::cout << "	client_max_body_size: " << loc_begin->getClientMaxBodySize() << std::endl;
-		std::cout << "	Methods: " << std::endl;
-		std::cout << "		GET: " << loc_begin->getMethod("GET") << std::endl;
-		std::cout << "		POST: " << loc_begin->getMethod("POST") << std::endl;
-		std::cout << "		DELETE: " << loc_begin->getMethod("DELETE") << std::endl;
+		loc_begin->print();
+		std::cout << std::endl;
 	}
 }
 
@@ -63,17 +56,17 @@ void Server::get_listening_socket() {
 	}
 
 	for (p = ai; p != NULL; p = p->ai_next) {
-		if ((socklist = socket(p->ai_family, p->ai_socktype, p->ai_protocol)) < 0)
+		if ((_socklist = socket(p->ai_family, p->ai_socktype, p->ai_protocol)) < 0)
 			continue;
 
 		// If "address already in use" is a problem :
-		setsockopt(socklist, SOL_SOCKET, SO_REUSEADDR, &yes, sizeof(yes));
+		setsockopt(_socklist, SOL_SOCKET, SO_REUSEADDR, &yes, sizeof(yes));
 		
 		// Makes the socket non-blocking.
-		fcntl(socklist, F_SETFL, O_NONBLOCK);
+		fcntl(_socklist, F_SETFL, O_NONBLOCK);
 
-		if (bind(socklist, p->ai_addr, p->ai_addrlen) < 0) {
-			close(socklist);
+		if (bind(_socklist, p->ai_addr, p->ai_addrlen) < 0) {
+			close(_socklist);
 			continue;
 		}
 
@@ -88,14 +81,14 @@ void Server::get_listening_socket() {
 
 	freeaddrinfo(ai); // All done with this structure
 
-	if (listen(socklist, BACKLOG) == -1) {
+	if (listen(_socklist, BACKLOG) == -1) {
 		std::cerr << "listen: " << strerror(errno) << std::endl;
 		exit(1);
 	} 
 
 	struct pollfd pfd;
 	
-	pfd.fd = socklist;
+	pfd.fd = _socklist;
 	pfd.events = POLLIN;
 	_pfds.push_back(pfd);
 }
@@ -184,29 +177,38 @@ void Server::store_server_configuration(std::ifstream &file_stream) {
 }
 
 /*
+	*** SETTERS ***
+*/
+
+void Server::setSockFD(int fd) {
+	_sockfd = fd;
+}
+
+/*
 	*** GETTERS ***
 */
-const std::string& 			Server::getPort() const {	
+
+const std::string 			&Server::getPort() const {	
 	return _port;
 }
 
-const std::string& 			Server::getHost() const {
+const std::string 			&Server::getHost() const {
 	return _host;
 }
 
-const std::string& 			Server::getServer_name() const {
+const std::string 			&Server::getServer_name() const {
 	return _server_name;
 }
 
-std::vector<struct pollfd>&	Server::getPfds() {
+std::vector<struct pollfd>	&Server::getPfds() {
 	return _pfds;
 }
 
-std::vector<Location>& Server::getLocation() {
+std::vector<Location> 		&Server::getLocation() {
 	return _locations;
 }
 
-Location& Server::getLocationFromPath(std::string path) {
+Location 					&Server::getLocationFromPath(std::string path) {
 	std::vector<Location>::iterator it_start = _locations.begin();
 	std::vector<Location>::iterator it_end = _locations.end();
 
@@ -215,4 +217,8 @@ Location& Server::getLocationFromPath(std::string path) {
 			break;
 	}
 	return *it_start;
+}
+
+int 						Server::getSockFD() const {
+	return _sockfd;
 }
