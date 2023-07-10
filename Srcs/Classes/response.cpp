@@ -30,6 +30,7 @@ Response &Response::operator=(const Response &other)
 
 Response::Response(Request request)
 {
+
 	_statusCode = 200;
 
 	if (request.isAcceptedMethod() == false)
@@ -39,7 +40,10 @@ Response::Response(Request request)
 	else if (_statusCode == 200 && request.isValidPath() == false)
 		_statusCode = 404;
 	
+	#ifdef DEBUG
 	std::cout << "\n\n Status Code => " << _statusCode << std::endl;
+	#endif
+	
 	if (_statusCode != 200)
 	{
 		_header = ResponseHeader();

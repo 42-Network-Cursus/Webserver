@@ -37,10 +37,10 @@ int sendAll(int s, const char *buf, int len) {
 // }
 
 
-int sendResponse(int fd, std::string body) {
+int sendResponse(int fd, Response response) {
 
-	Response response = Response();
-	response.setBody(body);
+	
+	// response.setBody(body);
 
 	std::string msg = response.getResponseInString();
 
@@ -118,25 +118,59 @@ void handle_pollin(std::vector<Server> &servers, std::vector<struct pollfd> &all
 	}
 }
 
-void handle_pollout(std::vector<Server> &servers, std::vector<struct pollfd> &all_pfds, int idx, std::vector<Request> &requests) {
+int get_request_index(int sockfd, std::vector<Request> requests) {
 
-	int sockfd = all_pfds[idx].fd;
-	
 	std::vector<Request>::iterator it_begin = requests.begin();
 	std::vector<Request>::iterator it_end = requests.end();
 	int i;
 	
 	for (i = 0; it_begin != it_end; it_begin++, i++) {
-		if (it_begin->getSocketFd() == sockfd)
-			break;
+		if (it_begin->getSocketFd() == sockfd) {
+			
+			// #ifdef DEBUG
+			std::cout << "Request socket found" << std::endl;
+			// #endif
+			
+			break ;
+		}
 	}
-	
-	requests[i].generateResponse();
-	requests[i].sendResponse(sockfd);
 
-	all_pfds.erase(all_pfds.begin() + i);
-	eraseFD(all_pfds[i].fd, servers);
-	close(all_pfds[i].fd);
+	#ifdef DEBUG
+	std::cout << "request index: " << i << std::endl;
+	#endif
+
+	return i;
+}
+
+void handle_pollout(std::vector<Server> &servers, std::vector<struct pollfd> &all_pfds, int idx, std::vector<Request> &requests) {
+
+	int sockfd = all_pfds[idx].fd;
+	int req_idx = get_request_index(sockfd, requests);
+
+	std::cout << req_idx << std::endl;
+	requests[req_idx].print();
+
+	// Response response(requests[req_idx]);
+	
+	
+
+	// response = Response(requests[i]);
+
+	
+	// requests[i].generateResponse();
+	// requests[i].sendResponse(sockfd);
+
+	// sendResponse(sockfd, response);
+
+	// std::vector<Request>::iterator it_erase = requests.begin();
+	
+	// requests.erase(it_erase + req_idx);
+
+	all_pfds.erase(all_pfds.begin() + idx);
+	// eraseFD(all_pfds[idx].fd, servers);
+	std::cout << "SEGFAULT" << std::endl;
+	close(all_pfds[idx].fd);
+	
 }
 
 int main(int argc, char *argv[]) {
@@ -173,8 +207,10 @@ int main(int argc, char *argv[]) {
 				handle_pollin(servers, all_pfds, i, requests);
 			
 			// handle POLLOUT event, socket ready to write
-			else if (all_pfds[i].revents & POLLOUT)
+			else if (all_pfds[i].revents & POLLOUT){
+				// requests[0].print();
 				handle_pollout(servers, all_pfds, i, requests);				
+			}
 		}
 	}
 	return 0;

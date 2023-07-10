@@ -25,6 +25,8 @@ class Response {
 
 		void setBody(const std::string &body);
 
+		// void sendResponse(int sockfd);
+		
 	private:
 		int 			_statusCode;
 		ResponseHeader	_header;
