@@ -128,20 +128,23 @@ void	Request::setQuery(const std::string &query)
 
 bool Request::isAcceptedMethod()
 {
-	return 0;
+	return _config.getMethod(_method);
+
 	// isInVector(_config->getAcceptedMethods(), _method);
 }
 
 bool Request::isValidVersion()
 {
+	#ifdef DEBUG
 	std::cout << "Version ? " << _version << std::endl;
+	#endif
+
 	return (_version == "HTTP/1.1" || _version == "HTTP/1.0");	
 }
 
 bool Request::isValidPath()
 {
-	std::string root = "";
-	// _config->getRoot();
+	std::string root =  _config.getRoot();
 
 	std::cout << "ROOT => " << root << std::endl;
 	std::cout << "Path => " << _path << std::endl;
@@ -178,15 +181,15 @@ void Request::getQueryFromPath()
 	}
 }
 
-void Request::generateResponse() {
-	Response rv;
+// void Request::generateResponse() {
+// 	Response rv;
 	
-	*_response = rv;
-}
+// 	*_response = rv;
+// }
 
-void Request::sendResponse(int sockfd) {
-	std::cout << sockfd << std::endl;
-}
+// void Request::sendResponse(int sockfd) {
+// 	std::cout << sockfd << std::endl;
+// }
 
 
 // Print

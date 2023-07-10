@@ -12,7 +12,7 @@
 # define BACKLOG 10 // queue of nb of connexions waiting to be accepted by listen()
 
 // COMMENT TO STOP PRINTING
-# define DEBUG
+// # define DEBUG
 
 /*
 	execve, dup, dup2, pipe, strerror, gai_strerror,
