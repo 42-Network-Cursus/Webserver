@@ -32,6 +32,7 @@ class Server {
 		std::vector<Location> 		&getLocation();
 		Location 					&getLocationFromPath(std::string path);
 		int 						getSockFD() const;
+		int 						getSockList() const;
 
 		// char * getLocation();
 		void setPfds(const std::vector<struct pollfd> &pfds);
@@ -47,13 +48,7 @@ class Server {
 		int 						_socklist; // Listening socket
 		int 						_sockfd; // Communication socket
 		
-		// Configuration parameters
-
 		
-		// std::string root;
-		// std::string index;
-		// std::string client_max_body_size;
-
 };
 
 #endif // SERVER_HPP

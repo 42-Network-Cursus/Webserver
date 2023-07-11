@@ -65,7 +65,8 @@ void handle_pollin(std::vector<Server> &servers, std::vector<struct pollfd> &all
 	
 	// check if listening socket received a connection
 	// && servers[idx].getSockFD() == -1
-	if (idx < servers.size() )
+	// if (idx < servers.size())
+	if (all_pfds[idx].fd == servers[0].getSockList())
 		add_new_socket_to_pfds(servers, all_pfds, idx);
 	
 	// Not a listening socket, but ready to read. (Means a request)
@@ -219,7 +220,7 @@ int main(int argc, char *argv[]) {
 			// handle POLLOUT event, socket ready to write
 			else if (all_pfds[i].revents & POLLOUT){
 				// requests[0].print();
-				handle_pollout(servers, all_pfds, i, requests);				
+				// handle_pollout(servers, all_pfds, i, requests);				
 			}
 		}
 	}
