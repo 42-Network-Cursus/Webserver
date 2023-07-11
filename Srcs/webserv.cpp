@@ -57,6 +57,7 @@ void add_new_socket_to_pfds(std::vector<Server> &servers, std::vector<struct pol
 		all_pfds.push_back(new_pfd);
 		servers[idx].getPfds().push_back(new_pfd);
 		servers[idx].setSockFD(new_fd);
+		std::cout << "NEW FD " << new_fd << std::endl;
 	}
 }
 
@@ -101,12 +102,14 @@ void handle_pollin(std::vector<Server> &servers, std::vector<struct pollfd> &all
 		std::cout << request << "\n\n" << std::endl;
 		#endif
 		
-		Request req;
-		requests.push_back(Request::parseRequest(request, all_pfds[idx].fd, servers));
+		Request req = Request::parseRequest(request, all_pfds[idx].fd, servers);
+
+
+		requests.push_back(req);
 		
-		#ifdef DEBUG
-		req.print();
-		#endif
+		// #ifdef DEBUG
+		// req.print();
+		// #endif
 	}
 }
 
@@ -143,11 +146,11 @@ void handle_pollout(std::vector<Server> &servers, std::vector<struct pollfd> &al
 	
 	
 	std::cout << " Empty ? " << requests.empty() << std::endl;
-	// requests[req_idx].print();
+	requests[req_idx].print();
 
-	// Response response(requests[req_idx]);
+	Response response(requests[req_idx]);
 	
-	// sendResponse(sockfd, response);
+	sendResponse(sockfd, response);
 	
 
 
