@@ -64,7 +64,8 @@ void add_new_socket_to_pfds(std::vector<Server> &servers, std::vector<struct pol
 void handle_pollin(std::vector<Server> &servers, std::vector<struct pollfd> &all_pfds, size_t idx, std::vector<Request> &requests) {
 	
 	// check if listening socket received a connection
-	if (idx < servers.size())
+	// && servers[idx].getSockFD() == -1
+	if (idx < servers.size() )
 		add_new_socket_to_pfds(servers, all_pfds, idx);
 	
 	// Not a listening socket, but ready to read. (Means a request)
