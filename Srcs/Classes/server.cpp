@@ -229,3 +229,7 @@ void Server::setPfds(const std::vector<struct pollfd> &pfds)
 {
 	_pfds = pfds;
 }
+
+int 						Server::getSockList() const {
+	return _socklist;
+}

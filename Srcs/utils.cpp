@@ -66,20 +66,17 @@ bool stringToBool(std::string str) {
 
 
 void eraseFD(int fd, std::vector<Server> servers) {
-	for (size_t i = 0; i < servers.size() ; i++)
-	{
+	for (size_t i = 0; i < servers.size() ; i++) {
+			
 			std::vector<struct pollfd> test = servers[i].getPfds();
 			std::vector<struct pollfd> tmp;
 
-			// for (size_t j = 0; test[j].fd ; j++) {
 			for (size_t j = 0; j < test.size() ; j++) {
 				
-				if (fd == test[j].fd)
-					std::cout << "FOUND FD TO DELETE\n\n";
-
 				if (fd != test[j].fd)
 					tmp.push_back(test[j]);
 			}
+			
 			servers[i].setPfds(tmp);
 	}
 }
@@ -146,4 +143,23 @@ bool isInVector(std::vector<std::string> vector, std::string value)
 	}
 	std::cout << "FALSE" << std::endl;
 	return false;
+}
+
+// first = server idx, second = pfds idx
+std::pair<int, int> get_idx_server_fd(std::vector<Server> &servers, int fd)
+{
+	size_t i = 0;
+	size_t j;
+	while (i < servers.size())
+	{
+		j = 0;
+		while (j < servers[i].getPfds().size())
+		{
+			if (servers[i].getPfds()[j].fd == fd)
+				return (std::make_pair(i, j));
+			j++;
+		}
+		i++;
+	}
+	return (std::make_pair(0, 0));
 }

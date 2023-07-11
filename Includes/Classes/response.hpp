@@ -24,8 +24,6 @@ class Response {
 		std::string getResponseInString();
 
 		void setBody(const std::string &body);
-
-		// void sendResponse(int sockfd);
 		
 	private:
 		int 			_statusCode;

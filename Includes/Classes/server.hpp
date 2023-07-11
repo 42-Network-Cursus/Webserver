@@ -20,7 +20,6 @@ class Server {
 		// Debugging
 		void print();
 	
-
 		// Setters 
 		void setSockFD(int fd);
 
@@ -32,6 +31,7 @@ class Server {
 		std::vector<Location> 		&getLocation();
 		Location 					&getLocationFromPath(std::string path);
 		int 						getSockFD() const;
+		int 						getSockList() const;
 
 		// char * getLocation();
 		void setPfds(const std::vector<struct pollfd> &pfds);
@@ -41,50 +41,14 @@ class Server {
 		std::string 				_server_name;
 		std::vector<struct pollfd>	_pfds;
 		std::vector<Location>		_locations;
-
-
-		// Sockets
 		int 						_socklist; // Listening socket
-		int 						_sockfd; // Communication socket
-		
-		// Configuration parameters
 
-		
-		// std::string root;
-		// std::string index;
-		// std::string client_max_body_size;
 
+
+		// DELETE THIS ONE, NOT USED ANYMORE
+		int 						_sockfd; // Communication socket 
+		
+		
 };
 
 #endif // SERVER_HPP
-
-
-
-
-
-
-
-
-// std::string Configuration::getBody(int fd) {
-// 	std::vector<Server>::iterator it_begin = _server_list.begin();
-// 	std::vector<Server>::iterator it_end = _server_list.end();
-
-// 	for (; it_begin != it_end; it_begin++) {
-// 		if (it_begin->sockfd == fd)
-// 			break;
-// 	}
-	
-// 	std::string body;
-// 	std::ifstream file_stream (it_begin->root + it_begin->index);
-
-// 	if (!file_stream.is_open()) { // check whether the file is open
-// 		std::cout << "Error reading conf file" << std::endl;
-// 		exit(1);
-// 	}
-	
-// 	body.assign ( 	(std::istreambuf_iterator<char>(file_stream)),
-// 					(std::istreambuf_iterator<char>()) 
-// 				);
-
-// 	return body;
-// }
