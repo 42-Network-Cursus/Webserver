@@ -33,14 +33,14 @@ int sendResponse(int fd, Response response) {
 	return sendAll(fd, msg.c_str(), msg.length());
 }
 
-void add_new_socket_to_pfds(std::vector<Server> &servers, std::vector<struct pollfd> &all_pfds, int idx) {
+void add_new_socket_to_pfds(std::vector<Server> &servers, std::vector<struct pollfd> &all_pfds, int idx_serv, int idx) {
 		
 	int 						new_fd;
 	struct sockaddr_storage 	remoteaddr; // client's info, using sockaddr_storage because big enough to contain either IPv4 or IPv6
 	socklen_t 					addrlen; // length of remoteaddr
 
 	#ifdef DEBUG
-	std::cout << "Connection from server " << servers[idx].getServer_name() << std::endl << std::endl;
+	std::cout << "Connection from server " << servers[idx_serv].getServer_name() << std::endl << std::endl;
 	#endif
 
 	addrlen = sizeof(remoteaddr);
@@ -55,19 +55,15 @@ void add_new_socket_to_pfds(std::vector<Server> &servers, std::vector<struct pol
 		new_pfd.events = POLLIN | POLLOUT;
 
 		all_pfds.push_back(new_pfd);
-		servers[idx].getPfds().push_back(new_pfd);
-		servers[idx].setSockFD(new_fd);
-		std::cout << "NEW FD " << new_fd << std::endl;
+		servers[idx_serv].getPfds().push_back(new_pfd);
 	}
 }
 
-void handle_pollin(std::vector<Server> &servers, std::vector<struct pollfd> &all_pfds, size_t idx, std::vector<Request> &requests) {
+void handle_pollin(std::vector<Server> &servers, std::vector<struct pollfd> &all_pfds, std::pair<int, int> idx_pair, std::vector<Request> &requests, int idx) {
 	
 	// check if listening socket received a connection
-	// && servers[idx].getSockFD() == -1
-	// if (idx < servers.size())
-	if (all_pfds[idx].fd == servers[0].getSockList())
-		add_new_socket_to_pfds(servers, all_pfds, idx);
+	if (servers[idx_pair.first].getPfds()[idx_pair.second].fd == servers[idx_pair.first].getSockList())
+		add_new_socket_to_pfds(servers, all_pfds, idx_pair.first, idx);
 	
 	// Not a listening socket, but ready to read. (Means a request)
 	else {
@@ -78,6 +74,7 @@ void handle_pollin(std::vector<Server> &servers, std::vector<struct pollfd> &all
 		
 		std::string request;
 		request.clear();
+
 		char 		buf[4096]; // Buffer for client data
 		memset(buf, '\0', sizeof(buf));
 		
@@ -105,13 +102,12 @@ void handle_pollin(std::vector<Server> &servers, std::vector<struct pollfd> &all
 		#endif
 		
 		Request req = Request::parseRequest(request, all_pfds[idx].fd, servers);
-
-
 		requests.push_back(req);
 		
-		// #ifdef DEBUG
-		// req.print();
-		// #endif
+
+		#ifdef DEBUG
+		req.print();
+		#endif
 	}
 }
 
@@ -122,19 +118,9 @@ int get_request_index(int sockfd, std::vector<Request> requests) {
 	int i;
 	
 	for (i = 0; it_begin != it_end; it_begin++, i++) {
-		if (it_begin->getSocketFd() == sockfd) {
-			
-			// #ifdef DEBUG
-			std::cout << "Request socket found" << std::endl;
-			// #endif
-			
+		if (it_begin->getSocketFd() == sockfd)	
 			break ;
-		}
 	}
-
-	#ifdef DEBUG
-	// std::cout << "request index: " << i << std::endl;
-	#endif
 
 	return i;
 }
@@ -144,44 +130,21 @@ void handle_pollout(std::vector<Server> &servers, std::vector<struct pollfd> &al
 	int sockfd = all_pfds[idx].fd;
 	int req_idx = get_request_index(sockfd, requests);
 
-	std::cout << "lIGNE AVANT LE CRASH" << req_idx << std::endl;
 	
+	// Response response(requests[req_idx]);
+	// sendResponse(sockfd, response);
 	
-	std::cout << " Empty ? " << requests.empty() << std::endl;
-	requests[req_idx].print();
-
-	Response response(requests[req_idx]);
-	
-	sendResponse(sockfd, response);
-	
-
-
-
-
-	// response = Response(requests[i]);
-
-	
-	// requests[i].generateResponse();
-	// requests[i].sendResponse(sockfd);
-
-
 	// std::vector<Request>::iterator it_erase = requests.begin();
-	
 	// requests.erase(it_erase + req_idx);
 
-	// std::string msg = "HTTP/1.1 200 OK\r\nContent-Type: text/html\r\nContent-length: 112\r\n\r\n<!DOCTYPE html><html><head><title>Hello, World!</title></head><body><h1>Hello, World!</h1></body></html>\r\n\r\n";
-
-	// sendAll(all_pfds[idx].fd, msg.c_str(), msg.length());
-
+	// FOR TESTING
+	std::string msg = "HTTP/1.1 200 OK\r\nContent-Type: text/html\r\nContent-length: 108\r\n\r\n<!DOCTYPE html><html><head><title>Hello, World!</title></head><body><h1>Hello, World!</h1></body></html>\r\n\r\n";
+	sendAll(all_pfds[idx].fd, msg.c_str(), msg.length());
+	// END FOR TESTING
+	
 	close(all_pfds[idx].fd);
-
-	std::cout << "Apres Envoi" << std::endl;
 	all_pfds.erase(all_pfds.begin() + idx);
-	std::cout << "Apres .erase" << std::endl;
 	eraseFD(all_pfds[idx].fd, servers);
-	std::cout << "SEGFAULT" << std::endl;
-	
-	
 }
 
 int main(int argc, char *argv[]) {
@@ -210,17 +173,21 @@ int main(int argc, char *argv[]) {
 			exit(1);
 		}
 
+
 		// Run through existing connections to look for data to read
 		for (size_t i = 0; i < all_pfds.size(); i++) {
 		
 			// check if someone is ready to read
-			if (all_pfds[i].revents & POLLIN)
-				handle_pollin(servers, all_pfds, i, requests);
+			if (all_pfds[i].revents & POLLIN) {
+
+				std::pair<int, int> idx_pair = get_idx_server_fd(servers, all_pfds[i].fd);
+				handle_pollin(servers, all_pfds, idx_pair, requests, i);
+			}
 			
 			// handle POLLOUT event, socket ready to write
-			else if (all_pfds[i].revents & POLLOUT){
+			if (all_pfds[i].revents & POLLOUT){
 				// requests[0].print();
-				// handle_pollout(servers, all_pfds, i, requests);				
+				handle_pollout(servers, all_pfds, i, requests);				
 			}
 		}
 	}

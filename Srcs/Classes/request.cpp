@@ -28,13 +28,10 @@ Request::~Request()
 
 Request::Request(const Request &copy) 
 : _socketFd(copy._socketFd), _method(copy._method), _path(copy._path), _version(copy._version), _config(copy._config)
-{
-	std::cout << "\n\n COPY CONSTRUCTOR ==========\n\n";
-}
+{}
 
 Request &Request::operator=(const Request &other)
 {
-	std::cout << "\n\n = CONSTRUCTOR ==========\n\n";
 	if (this != &other)
 	{
 		this->_socketFd = other._socketFd;
@@ -54,10 +51,9 @@ Request::Request(int socketFd, std::string method, std::string path, std::string
 	std::vector<Server>::iterator it_begin = servers.begin();
 	std::vector<Server>::iterator it_end = servers.end();
 
-		std::cout << "TARGET SOCK : " << socketFd << std::endl;
 	for (; it_begin != it_end; it_begin++) {
-		std::cout << "LOOPED SOCK : " << it_begin->getSockFD() << std::endl;
 		if (socketFd == it_begin->getSockFD()) {
+			// On ne rentre jamais ici. TO DO
 			std::cout << "FOUND CONFIG IN REQUEST CONSTR\n\n";
 			_config = it_begin->getLocationFromPath(path);
 			break;
@@ -171,9 +167,6 @@ Request Request::parseRequest(std::string request, int fd, std::vector<Server> s
 
 	Request res = Request(fd, method, path, "HTTP/1.1", servers);
 
-	std::cout << "IN REQUEST::PARSEREQUEST \n\n";
-	res.print();
-
 	return res;
 }
 
@@ -188,16 +181,6 @@ void Request::getQueryFromPath()
 		_path = _path.substr(pos);
 	}
 }
-
-// void Request::generateResponse() {
-// 	Response rv;
-	
-// 	*_response = rv;
-// }
-
-// void Request::sendResponse(int sockfd) {
-// 	std::cout << sockfd << std::endl;
-// }
 
 
 // Print
