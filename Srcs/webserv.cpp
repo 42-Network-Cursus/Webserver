@@ -25,22 +25,8 @@ int sendAll(int s, const char *buf, int len) {
 	return n == -1 ? -1 : 0;
 }
 
-
-// POST /api/users HTTP/1.1
-// Host: example.com
-// Content-Type: application/json
-// Content-Length: 54
-
-// {
-//   "username": "john_doe",
-//   "password": "secretpassword"
-// }
-
-
 int sendResponse(int fd, Response response) {
 
-	
-	// response.setBody(body);
 
 	std::string msg = response.getResponseInString();
 
@@ -83,8 +69,14 @@ void handle_pollin(std::vector<Server> &servers, std::vector<struct pollfd> &all
 	// Not a listening socket, but ready to read. (Means a request)
 	else {
 
+		#ifdef DEBUG
+		std::cout << "Reading request "  << std::endl;
+		#endif
+		
 		std::string request;
-		char 		buf[1]; // Buffer for client data
+		request.clear();
+		char 		buf[4096]; // Buffer for client data
+		memset(buf, '\0', sizeof(buf));
 		
 		while (recv_header(request)) {
 
@@ -110,7 +102,7 @@ void handle_pollin(std::vector<Server> &servers, std::vector<struct pollfd> &all
 		#endif
 		
 		Request req;
-		requests.push_back(req.parseRequest(request, all_pfds[idx].fd, servers));
+		requests.push_back(Request::parseRequest(request, all_pfds[idx].fd, servers));
 		
 		#ifdef DEBUG
 		req.print();
@@ -136,7 +128,7 @@ int get_request_index(int sockfd, std::vector<Request> requests) {
 	}
 
 	#ifdef DEBUG
-	std::cout << "request index: " << i << std::endl;
+	// std::cout << "request index: " << i << std::endl;
 	#endif
 
 	return i;
@@ -147,12 +139,19 @@ void handle_pollout(std::vector<Server> &servers, std::vector<struct pollfd> &al
 	int sockfd = all_pfds[idx].fd;
 	int req_idx = get_request_index(sockfd, requests);
 
-	std::cout << req_idx << std::endl;
-	requests[req_idx].print();
+	std::cout << "lIGNE AVANT LE CRASH" << req_idx << std::endl;
+	
+	
+	std::cout << " Empty ? " << requests.empty() << std::endl;
+	// requests[req_idx].print();
 
 	// Response response(requests[req_idx]);
 	
+	// sendResponse(sockfd, response);
 	
+
+
+
 
 	// response = Response(requests[i]);
 
@@ -160,16 +159,23 @@ void handle_pollout(std::vector<Server> &servers, std::vector<struct pollfd> &al
 	// requests[i].generateResponse();
 	// requests[i].sendResponse(sockfd);
 
-	// sendResponse(sockfd, response);
 
 	// std::vector<Request>::iterator it_erase = requests.begin();
 	
 	// requests.erase(it_erase + req_idx);
 
-	all_pfds.erase(all_pfds.begin() + idx);
-	// eraseFD(all_pfds[idx].fd, servers);
-	std::cout << "SEGFAULT" << std::endl;
+	// std::string msg = "HTTP/1.1 200 OK\r\nContent-Type: text/html\r\nContent-length: 112\r\n\r\n<!DOCTYPE html><html><head><title>Hello, World!</title></head><body><h1>Hello, World!</h1></body></html>\r\n\r\n";
+
+	// sendAll(all_pfds[idx].fd, msg.c_str(), msg.length());
+
 	close(all_pfds[idx].fd);
+
+	std::cout << "Apres Envoi" << std::endl;
+	all_pfds.erase(all_pfds.begin() + idx);
+	std::cout << "Apres .erase" << std::endl;
+	eraseFD(all_pfds[idx].fd, servers);
+	std::cout << "SEGFAULT" << std::endl;
+	
 	
 }
 

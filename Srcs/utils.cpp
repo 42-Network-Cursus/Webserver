@@ -66,12 +66,21 @@ bool stringToBool(std::string str) {
 
 
 void eraseFD(int fd, std::vector<Server> servers) {
-		for (size_t i = 0; i < servers.size() ; i++) {
+	for (size_t i = 0; i < servers.size() ; i++)
+	{
+			std::vector<struct pollfd> test = servers[i].getPfds();
+			std::vector<struct pollfd> tmp;
 
-		for (int j = 0; servers[i].getPfds()[j].fd ; j++) {
-			if (fd == servers[i].getPfds()[j].fd)
-				servers[i].getPfds().erase(servers[i].getPfds().begin() + j);
-		}
+			// for (size_t j = 0; test[j].fd ; j++) {
+			for (size_t j = 0; j < test.size() ; j++) {
+				
+				if (fd == test[j].fd)
+					std::cout << "FOUND FD TO DELETE\n\n";
+
+				if (fd != test[j].fd)
+					tmp.push_back(test[j]);
+			}
+			servers[i].setPfds(tmp);
 	}
 }
 

@@ -28,7 +28,7 @@ class Server {
 		int 						getSockFD() const;
 
 		// char * getLocation();
-		
+		void setPfds(const std::vector<struct pollfd> &pfds);
 	private:
 		std::string 				_port;
 		std::string 				_host;

@@ -222,3 +222,8 @@ Location 					&Server::getLocationFromPath(std::string path) {
 int 						Server::getSockFD() const {
 	return _sockfd;
 }
+
+void Server::setPfds(const std::vector<struct pollfd> &pfds)
+{
+	_pfds = pfds;
+}
