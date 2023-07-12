@@ -20,7 +20,7 @@ CGI &CGI::operator=(const CGI &other)
 	if (this != &other)
 	{
 		this->_execPath = other._execPath;
-		this->_env = other.env;
+		this->_env = other._env;
 	}
 	return (*this);
 }

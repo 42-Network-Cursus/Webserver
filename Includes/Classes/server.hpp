@@ -47,8 +47,8 @@ class Server {
 
 		// DELETE THIS ONE, NOT USED ANYMORE
 		int 						_sockfd; // Communication socket 
-		
-		
+
+
 };
 
 #endif // SERVER_HPP
