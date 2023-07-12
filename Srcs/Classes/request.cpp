@@ -49,8 +49,12 @@ Request::Request(int socketFd, std::string method, std::string path, std::string
 : _socketFd(socketFd), _method(method), _path(path), _version(version)
 {
 	
-		
+	std::cout << "On est dans le construct" << std::endl;
+	std::cout << "path ? " << path << " NTM" << std::endl;
 	_config = server.getLocationFromPath(path);
+	
+	std::cout << "Apres le config" << std::endl;
+
 
 	getQueryFromPath();
 }
@@ -148,6 +152,7 @@ bool Request::isValidPath()
 
 Request Request::parseRequest(std::string request, int fd, Server server)
 {
+	std::cout << "Request: " << request << "\n\n\n\n" << std::endl;
 	std::string method = "";
 	std::string path = "";
 
@@ -157,7 +162,15 @@ Request Request::parseRequest(std::string request, int fd, Server server)
 	path = request.substr(pos + 1, pos2 - 2);
 
 
-	Request res = Request(fd, method, path, "HTTP/1.1", server);
+	std::cout << "On crash ici ?" << std::endl;
+	std::cout << "METHOD= " << method << std::endl;
+	std::cout << "PATH= " << path << std::endl;
+
+
+	Request res(fd, method, path, "HTTP/1.1", server);
+
+
+	std::cout << "On crash ici ? after construct" << std::endl;
 
 	return res;
 }

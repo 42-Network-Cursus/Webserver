@@ -30,7 +30,7 @@ Server::~Server()
 }
 
 Server::Server(const Server &copy) 
-: _port(copy._port), _host(copy._host), _server_name(copy._server_name), _pfds(copy._pfds), _locations(copy._locations), _socklist(copy._sockfd)
+: _port(copy._port), _host(copy._host), _server_name(copy._server_name), _pfds(copy._pfds), _locations(copy._locations), _socklist(copy._socklist)
 {
 
 }
@@ -44,7 +44,7 @@ Server &Server::operator=(const Server &other)
 		_server_name = other._server_name;
 		_pfds = other._pfds;
 		_locations = other._locations;
-		_socklist = other._sockfd;
+		_socklist = other._socklist;
 	}
 	return (*this);
 }
@@ -239,13 +239,20 @@ std::vector<Location> 		&Server::getLocation() {
 }
 
 Location 					&Server::getLocationFromPath(std::string path) {
+
+	std::cout << "IN GETLOCATIONFROM PATH" << std::endl;
+
 	std::vector<Location>::iterator it_start = _locations.begin();
 	std::vector<Location>::iterator it_end = _locations.end();
 
 	for (; it_start != it_end; it_start++) {
+		std::cout << it_start->getPath() << " VS " << path << std::endl;
 		if (it_start->getPath() == path)
 			break;
 	}
+	std::cout << "On est a la fin ?" << std::endl;
+	std::cout << "check if start == end: " << (it_start == it_end) << std::endl;
+	std::cout << it_start->getPath() << std::endl;
 	return *it_start;
 }
 

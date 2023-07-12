@@ -62,7 +62,7 @@ void add_new_socket_to_pfds(std::vector<Server> &servers, std::vector<struct pol
 
 void handle_pollin(std::vector<Server> &servers, std::vector<struct pollfd> &all_pfds, std::pair<int, int> idx_pair, std::vector<Request> &requests, int idx) {
 	
-	// check if listening socket received a connection
+	// check if listening socket received a connection	
 	if (servers[idx_pair.first].getPfds()[idx_pair.second].fd == servers[idx_pair.first].getSockList())
 		add_new_socket_to_pfds(servers, all_pfds, idx_pair.first, idx);
 	
@@ -79,12 +79,13 @@ void handle_pollin(std::vector<Server> &servers, std::vector<struct pollfd> &all
 		char 		buf[4096]; // Buffer for client data
 		memset(buf, '\0', sizeof(buf));
 		
+		std::cout << "START BOUCLE" << std::endl;
 		while (recv_header(request)) {
 
 			int nbytes = recv(all_pfds[idx].fd, buf, sizeof(buf), 0);
-			
-			request.append(buf);
 
+			request.append(buf);
+			// std::cout << "In the boucle: " << request << std::endl;
 			// error handling
 			if (nbytes <= 0) {
 
@@ -97,11 +98,14 @@ void handle_pollin(std::vector<Server> &servers, std::vector<struct pollfd> &all
 				all_pfds.erase(all_pfds.begin() + idx);
 			}
 		}
-		
+		std::cout << "END BOUCLE" << std::endl;
 		#ifdef DEBUG
-		std::cout << request << "\n\n" << std::endl;
+		std::cout << "Request after BOUCLE " << request << "\n\n" << std::endl;
 		#endif
 		
+		std::cout << "Check idx_pair: " << idx_pair.first << std::endl;
+		std::cout << "servers 0" << std::endl;
+		// servers[idx_pair.first].print();
 		Request req = Request::parseRequest(request, all_pfds[idx].fd, servers[idx_pair.first]);
 		requests.push_back(req);
 		
@@ -208,12 +212,15 @@ int main(int argc, char *argv[]) {
 			if (all_pfds[i].revents & POLLIN) {
 
 				std::pair<int, int> idx_pair = get_idx_server_fd(servers, all_pfds[i].fd);
+				if (idx_pair.first == -1 && idx_pair.second == -1)
+					continue ;
 				handle_pollin(servers, all_pfds, idx_pair, requests, i);
 			}
 			
 			// handle POLLOUT event, socket ready to write
 			if (all_pfds[i].revents & POLLOUT){
-				// requests[0].print();
+				if (requests.size() == 0)
+					continue ;
 				handle_pollout(servers, all_pfds, i, requests);				
 			}
 		}

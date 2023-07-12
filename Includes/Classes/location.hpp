@@ -15,7 +15,7 @@ class Location {
         Location();
         ~Location();
 		Location(const Location &copy);
-		// Location &operator=(const Location &rhs);
+		Location &operator=(const Location &rhs);
 
         // SETTERS
         void setPath(std::string val);

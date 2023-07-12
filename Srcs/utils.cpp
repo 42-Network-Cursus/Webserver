@@ -161,5 +161,5 @@ std::pair<int, int> get_idx_server_fd(std::vector<Server> &servers, int fd)
 		}
 		i++;
 	}
-	return (std::make_pair(0, 0));
+	return (std::make_pair(-1, -1));
 }

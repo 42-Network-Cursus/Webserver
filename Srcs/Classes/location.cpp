@@ -41,12 +41,20 @@ Location::Location(const Location &copy) {
     
 }
 
-// Location &Location::operator=(const Location &rhs) {
-//     if (this != &rhs) {
-//         _auto_index = rhs.getAutoIndex();
-//     }
-//     return *this;
-// }
+Location &Location::operator=(const Location &rhs) {
+    if (this != &rhs) {
+         _path                   = rhs.getPath();
+        _root                   = rhs.getRoot();
+        _index                  = rhs.getIndex();
+        _client_max_body_size   = rhs.getClientMaxBodySize();
+        _error_page_path        = rhs.getErrorPagePath();
+        _cgi_path               = rhs.getCgiPath();
+        _upload_path            = rhs.getUploadPath();
+        _auto_index             = rhs.getAutoIndex();
+        _methods                = rhs.getMethods();
+    }
+    return *this;
+}
 
 
 // SETTERS
