@@ -52,7 +52,8 @@ void add_new_socket_to_pfds(std::vector<Server> &servers, std::vector<struct pol
 		struct pollfd new_pfd;
 
 		new_pfd.fd = new_fd;
-		new_pfd.events = POLLIN | POLLOUT;
+		// new_pfd.events = POLLIN | POLLOUT;
+		new_pfd.events = POLLIN;
 
 		all_pfds.push_back(new_pfd);
 		servers[idx_serv].getPfds().push_back(new_pfd);
@@ -108,6 +109,8 @@ void handle_pollin(std::vector<Server> &servers, std::vector<struct pollfd> &all
 		#ifdef DEBUG
 		req.print();
 		#endif
+
+		all_pfds[idx].events = POLLOUT;
 	}
 }
 
@@ -116,21 +119,44 @@ int get_request_index(int sockfd, std::vector<Request> requests) {
 	std::vector<Request>::iterator it_begin = requests.begin();
 	std::vector<Request>::iterator it_end = requests.end();
 	int i;
-	
+	int j = -1;
 	for (i = 0; it_begin != it_end; it_begin++, i++) {
-		if (it_begin->getSocketFd() == sockfd)	
-			break ;
+		std::cout << "Request Nb" << i <<  std::endl;
+		it_begin->print();
+		std::cout << it_begin->getSocketFd() << " VS " << sockfd << std::endl;
+		if (it_begin->getSocketFd() == sockfd)
+		{
+			std::cout << "On break !" << std::endl;
+			j = i ;
+		}
 	}
-
-	return i;
+	std::cout << "Value of i: " << j << std::endl;
+	return j;
 }
 
 void handle_pollout(std::vector<Server> &servers, std::vector<struct pollfd> &all_pfds, int idx, std::vector<Request> &requests) {
 
+	// if (requests.empty())
+	// 	return ;
+
 	int sockfd = all_pfds[idx].fd;
 	int req_idx = get_request_index(sockfd, requests);
 
-	
+	// if (req_idx == -1)
+	// {
+		// std::string msg = "HTTP/1.1 200 OK\r\nContent-Type: text/html\r\nContent-length: 108\r\n\r\n<!DOCTYPE html><html><head><title>Hello, World!</title></head><body><h1>Hello, World!</h1></body></html>\r\n\r\n";
+		// sendAll(all_pfds[idx].fd, msg.c_str(), msg.length());
+		// return ;
+	// }
+	std::cout << "On crash" << std::endl;
+	std::cout << "id request: " << req_idx << std::endl;
+	std::cout << "Size of requests: " << requests.size() << std::endl;
+	std::cout << "requests empty ? " << requests.empty() << std::endl;
+
+	Request re = requests[req_idx];
+	re.print();
+	std::cout << "Ah non..." << std::endl;
+
 	Response response(requests[req_idx]);
 	response.print();
 	sendResponse(sockfd, response);
