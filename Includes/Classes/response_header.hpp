@@ -8,6 +8,9 @@
 class ResponseHeader
 {
 	public:
+		// DEBUG
+		void print();
+		 
 		ResponseHeader();
 		~ResponseHeader();
 		ResponseHeader(const ResponseHeader &copy);

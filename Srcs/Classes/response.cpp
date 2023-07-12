@@ -1,6 +1,15 @@
 #include "response.hpp"
 #include "request.hpp"
 
+// DEBUG
+void Response::print() {
+	std::cout << "Response info: " << std::endl;
+	std::cout << "Status code: " << _statusCode << std::endl;
+	_header.print();
+	std::cout << "Body : " << _body << std::endl;
+	std::cout << "Path : " << _path << std::endl;
+}
+
 Response::Response()
 {
 

@@ -9,6 +9,10 @@ class Request;
 
 class Response {
 	public:
+
+		// DEBUG
+		void print();
+
 		Response();
 		~Response();
 		Response(const Response &copy);
