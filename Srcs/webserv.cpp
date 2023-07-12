@@ -70,7 +70,7 @@ void handle_pollin(std::vector<Server> &servers, std::vector<struct pollfd> &all
 	else {
 
 		#ifdef DEBUG
-		std::cout << "Reading request "  << std::endl;
+		std::cout << "Reading request on fd " << all_pfds[idx].fd << std::endl;
 		#endif
 		
 		std::string request;
@@ -141,6 +141,7 @@ void handle_pollout(std::vector<Server> &servers, std::vector<struct pollfd> &al
 
 	int sockfd = all_pfds[idx].fd;
 	int req_idx = get_request_index(sockfd, requests);
+
 	// if (req_idx == -1)
 	// {
 		// std::string msg = "HTTP/1.1 200 OK\r\nContent-Type: text/html\r\nContent-length: 108\r\n\r\n<!DOCTYPE html><html><head><title>Hello, World!</title></head><body><h1>Hello, World!</h1></body></html>\r\n\r\n";
@@ -155,6 +156,7 @@ void handle_pollout(std::vector<Server> &servers, std::vector<struct pollfd> &al
 	Request re = requests[req_idx];
 	re.print();
 	std::cout << "Ah non..." << std::endl;
+
 	Response response(requests[req_idx]);
 	response.print();
 	sendResponse(sockfd, response);
