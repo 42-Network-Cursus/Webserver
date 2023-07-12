@@ -45,20 +45,12 @@ Request &Request::operator=(const Request &other)
 
 
 // Constructor
-Request::Request(int socketFd, std::string method, std::string path, std::string version, std::vector<Server> servers)
+Request::Request(int socketFd, std::string method, std::string path, std::string version, Server server)
 : _socketFd(socketFd), _method(method), _path(path), _version(version)
 {
-	std::vector<Server>::iterator it_begin = servers.begin();
-	std::vector<Server>::iterator it_end = servers.end();
-
-	for (; it_begin != it_end; it_begin++) {
-		if (socketFd == it_begin->getSockFD()) {
-			// On ne rentre jamais ici. TO DO
-			std::cout << "FOUND CONFIG IN REQUEST CONSTR\n\n";
-			_config = it_begin->getLocationFromPath(path);
-			break;
-		}
-	}
+	
+		
+	_config = server.getLocationFromPath(path);
 
 	getQueryFromPath();
 }
@@ -154,7 +146,7 @@ bool Request::isValidPath()
 	return false;
 }
 
-Request Request::parseRequest(std::string request, int fd, std::vector<Server> servers)
+Request Request::parseRequest(std::string request, int fd, Server server)
 {
 	std::string method = "";
 	std::string path = "";
@@ -165,7 +157,7 @@ Request Request::parseRequest(std::string request, int fd, std::vector<Server> s
 	path = request.substr(pos + 1, pos2 - 2);
 
 
-	Request res = Request(fd, method, path, "HTTP/1.1", servers);
+	Request res = Request(fd, method, path, "HTTP/1.1", server);
 
 	return res;
 }

@@ -22,7 +22,7 @@ class Request {
 		Request &operator=(const Request &other);
 
 		// Constructor
-		Request(int socketFd, std::string method, std::string path, std::string version, std::vector<Server> servers);
+		Request(int socketFd, std::string method, std::string path, std::string version, Server server);
 
 		// Getters
 		int			getSocketFd();
@@ -46,7 +46,7 @@ class Request {
 		bool		isValidPath();
 
 		//
-		static Request parseRequest(std::string request, int fd, std::vector<Server> servers);
+		static Request parseRequest(std::string request, int fd, Server server);
 		// void generateResponse();
 		// void sendResponse(int sockfd);
 
