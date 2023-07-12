@@ -3,7 +3,7 @@
 
 // DEBUG
 void Request::print() {
-	std::cout << "Request info: " << std::endl;
+	std::cout << "\n\nRequest info: " << std::endl;
 	std::cout << "Socket : " << _socketFd << std::endl;
 	std::cout << "Method : " << _method << std::endl;
 	std::cout << "Path : " << _path << std::endl;

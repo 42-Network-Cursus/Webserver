@@ -19,7 +19,35 @@ void Server::print() {
 	}
 }
 
+Server::Server()
+{
 
+}
+
+Server::~Server()
+{
+
+}
+
+Server::Server(const Server &copy) 
+: _port(copy._port), _host(copy._host), _server_name(copy._server_name), _pfds(copy._pfds), _locations(copy._locations), _socklist(copy._sockfd)
+{
+
+}
+
+Server &Server::operator=(const Server &other)
+{
+	if (this != &other)
+	{
+		_port = other._port;
+		_host = other._host;
+		_server_name = other._server_name;
+		_pfds = other._pfds;
+		_locations = other._locations;
+		_socklist = other._sockfd;
+	}
+	return (*this);
+}
 
 void Server::get_listening_socket() {
 	

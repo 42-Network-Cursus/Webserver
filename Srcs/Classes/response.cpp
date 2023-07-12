@@ -3,7 +3,7 @@
 
 // DEBUG
 void Response::print() {
-	std::cout << "Response info: " << std::endl;
+	std::cout << "\n\nResponse info: " << std::endl;
 	std::cout << "Status code: " << _statusCode << std::endl;
 	_header.print();
 	std::cout << "Body : " << _body << std::endl;
@@ -53,13 +53,14 @@ Response::Response(Request request)
 	std::cout << "\n\n Status Code => " << _statusCode << std::endl;
 	#endif
 	
+	
 	if (_statusCode != 200)
 	{
+		_body = getPageErrorStatus(_statusCode);
+		_path = "";
 		_header = ResponseHeader();
 		_header.setContentType(CT_HTML);
-		_header.setContentLength("0");
-		_body = "";
-		_path = "";
+		_header.setContentLength(intToString(_body.size()));
 	}
 	else if (request.getMethod() == METHOD_GET)
 		getMethod(request);
@@ -250,4 +251,16 @@ bool Response::isValidPathFile()
 std::string Response::getErrorPage()
 {
 	return "<!DOCTYPE html>\n<html><title>Error Page... Nique Ta Mere Salope</title><body><h1>It's a basic error page.</h1><h5>Don't read the title.</h5></body></html>\n";
+}
+
+std::string Response::getPageErrorStatus(int statusCode)
+{
+	switch (statusCode)
+	{
+		case 404:
+			return getErrorPage();
+		case 501:
+			return getErrorPage();
+	}
+	return "";
 }

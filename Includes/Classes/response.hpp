@@ -39,6 +39,7 @@ class Response {
 		void	readFile();
 		void	writeFile(std::string content);
 
+		std::string getPageErrorStatus(int statusCode);
 		std::string getErrorPage();
 };
 

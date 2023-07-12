@@ -7,10 +7,10 @@
 class Server {
 	public:
 
-		// Server();
-		// ~Server();
-		// Server(const Server &rhs);
-		// Server operator=(const Server &rhs);
+		Server();
+		~Server();
+		Server(const Server &copy);
+		Server &operator=(const Server &other);
 
 
 		void 		store_server_configuration(std::ifstream &file_stream);
