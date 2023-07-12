@@ -56,7 +56,8 @@ Response::Response(Request request)
 	
 	if (_statusCode != 200)
 	{
-		_body = getPageErrorStatus(_statusCode);
+		_path = "html/errorPage/" + intToString(_statusCode) + "_page.html";
+		readFile();
 		_path = "";
 		_header = ResponseHeader();
 		_header.setContentType(CT_HTML);
@@ -81,7 +82,10 @@ Response::Response(Request request)
 void	Response::getMethod(Request request)
 {
 	_path = request.getPath();
+	if (_path == "/")
+		_path = request.getLocation().getIndex();
 	readFile();
+	std::cout << "After ReadFile" << _body << std::endl;
 	if (_statusCode == 404)
 		_body = getErrorPage();
 	_body = "<!DOCTYPE html><html><head><title>NTM</title></head><body><h1>On va briser des os...</h1></body></html>";
@@ -251,16 +255,4 @@ bool Response::isValidPathFile()
 std::string Response::getErrorPage()
 {
 	return "<!DOCTYPE html>\n<html><title>Error Page... Nique Ta Mere Salope</title><body><h1>It's a basic error page.</h1><h5>Don't read the title.</h5></body></html>\n";
-}
-
-std::string Response::getPageErrorStatus(int statusCode)
-{
-	switch (statusCode)
-	{
-		case 404:
-			return getErrorPage();
-		case 501:
-			return getErrorPage();
-	}
-	return "";
 }

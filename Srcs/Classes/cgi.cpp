@@ -42,7 +42,7 @@ void CGI::setEnv(std::string type, std::string length, std::string method, std::
 	_env["REDIRECT_STATUS"] = redirect;
 }
 
-
+// Penser a bloquer la valeur max du body --> Pipe a une limite
 std::string CGI::execute(std::string path)
 {
 	pid_t pid;

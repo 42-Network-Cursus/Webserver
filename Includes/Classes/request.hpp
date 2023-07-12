@@ -50,6 +50,7 @@ class Request {
 		// void generateResponse();
 		// void sendResponse(int sockfd);
 
+		std::string getDefaultPage();
 		// Print
 		void		printConfig();
 

@@ -150,6 +150,13 @@ bool Request::isValidPath()
 	return false;
 }
 
+std::string Request::getDefaultPage()
+{
+	std::string page = _config.getRoot();
+
+	return _config.getRoot() + _config.getIndex();
+}
+
 Request Request::parseRequest(std::string request, int fd, Server server)
 {
 	std::cout << "Request: " << request << "\n\n\n\n" << std::endl;
