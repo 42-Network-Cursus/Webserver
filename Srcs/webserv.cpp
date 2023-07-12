@@ -102,7 +102,7 @@ void handle_pollin(std::vector<Server> &servers, std::vector<struct pollfd> &all
 		std::cout << request << "\n\n" << std::endl;
 		#endif
 		
-		Request req = Request::parseRequest(request, all_pfds[idx].fd, servers);
+		Request req = Request::parseRequest(request, all_pfds[idx].fd, servers[idx_pair.first]);
 		requests.push_back(req);
 		
 
