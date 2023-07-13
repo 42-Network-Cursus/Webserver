@@ -18,7 +18,7 @@ int main() {
     }
 
     // Command to execute the PHP script
-    const char* command[] = {PHP_CGI, "-f", "html/cgi/script.php", NULL};
+    const char* command[] = {PHP_CGI.c_str(), "-f", "html/cgi/script.php", NULL};
 
     // Fork a child process
     pid_t pid = fork();
@@ -34,7 +34,7 @@ int main() {
         dup2(fileno(tmpFile), STDOUT_FILENO);
 
         // Execute the PHP script
-        execve(PHP_CGI_PATH, const_cast<char**>(command), NULL);
+        execve(PHP_CGI_PATH.c_str(), const_cast<char**>(command), NULL);
         
         // If execve returns, an error occurred
         std::cerr << "Failed to execute the PHP script." << std::endl;
@@ -56,7 +56,6 @@ int main() {
 			msg.append(tmp);
 		}
 			
-
 		rFile.close();
 		int result = remove("tmpFile.txt");
 		std::cout << result << std::endl;
@@ -74,57 +73,3 @@ int main() {
 
     return 0;
 }
-
-
-// int main() {
-//     // Create a temporary file
-//     FILE* tmpFile = fopen("tmpFile.txt", "w"); 
-
-//     // Check if the file was opened successfully
-//     if (!tmpFile) {
-//         std::cerr << "Failed to open the output file." << std::endl;
-//         return 1;
-//     }
-
-//     // Command to execute the PHP script
-//     const char* command[] = {PHP_CGI, "-f", "cgi-bin/script.php", nullptr};
-
-//     // Fork a child process
-//     pid_t pid = fork();
-
-//     if (pid == -1) {
-//         std::cerr << "Failed to fork a child process." << std::endl;
-//         return 1;
-//     } else if (pid == 0) {
-//         // Child process
-
-//         // Redirect the output to the file
-//         dup2(fileno(tmpFile), STDOUT_FILENO);
-                
-//         // Execute the PHP script
-//         execve(PHP_CGI_PATH, const_cast<char**>(command), nullptr);
-        
-
-//         // If execve returns, an error occurred
-//         std::cerr << "Failed to execute the PHP script." << std::endl;
-//         return 1;
-//     } else {
-//         // Parent process
-
-//         // Wait for the child process to finish
-//         int status;
-//         waitpid(pid, &status, 0);
-
-//         // Close and remove the output file
-//         fclose(tmpFile);
-
-//         if (WIFEXITED(status) && WEXITSTATUS(status) == 0) {
-//             std::cout << "HTML output has been generated." << std::endl;
-//         } else {
-//             std::cerr << "PHP script execution failed." << std::endl;
-//             return 1;
-//         }
-//     }
-
-//     return 0;
-// }
