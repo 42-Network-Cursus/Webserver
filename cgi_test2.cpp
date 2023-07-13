@@ -6,26 +6,31 @@
 #include "Includes/constantes.hpp"
 #include <fstream>
 
-int main() {
+std::string get_body_from_cgi() {
  
 	FILE *tmpFile = fopen("tmpFile.txt", "w");
-	std::string msg;
+	std::string body; // RETURN VALUE
+	std::string script_path =  "html/cgi/script.php"; // ARGUMENT
+
+	// GET CORRECT CONSTANT FROM script_path SUFFIX
+	std::string CGI = PHP_CGI;
+	std::string CGI_PATH = PHP_CGI_PATH;
 
     // Check if the file was opened successfully
     if (!tmpFile) {
         std::cout << "Failed to open the output file." << std::endl;
-        return 1;
+        return "";
     }
 
     // Command to execute the PHP script
-    const char* command[] = {PHP_CGI.c_str(), "-f", "html/cgi/script.php", NULL};
+    const char* command[] = {CGI.c_str(), "-f", script_path.c_str(), NULL};
 
     // Fork a child process
     pid_t pid = fork();
 
     if (pid == -1) {
         std::cerr << "Failed to fork a child process." << std::endl;
-        return 1;
+        return "";
     } 
     // Child process
 	else if (pid == 0) {
@@ -34,11 +39,11 @@ int main() {
         dup2(fileno(tmpFile), STDOUT_FILENO);
 
         // Execute the PHP script
-        execve(PHP_CGI_PATH.c_str(), const_cast<char**>(command), NULL);
+        execve(CGI_PATH.c_str(), const_cast<char**>(command), NULL);
         
         // If execve returns, an error occurred
         std::cerr << "Failed to execute the PHP script." << std::endl;
-        return 1;
+        return "";
     } 
     // Parent process
 	else {
@@ -53,7 +58,7 @@ int main() {
 		while (!rFile.eof()) {
 			std::string tmp;
 			rFile >> tmp;
-			msg.append(tmp);
+			body.append(tmp);
 		}
 			
 		rFile.close();
@@ -64,12 +69,13 @@ int main() {
             std::cout << "HTML output has been generated." << std::endl;
         } else {
             std::cerr << "PHP script execution failed." << std::endl;
-            return 1;
+            return "";
         }
     }
 
-	std::cout << msg;
+	return body;
+}
 
-
-    return 0;
+int main() {
+	std::cout << get_body_from_cgi() << std::endl;
 }
