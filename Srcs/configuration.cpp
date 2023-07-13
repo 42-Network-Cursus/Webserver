@@ -1,15 +1,5 @@
 #include "webserv.hpp"
 
-// conf_param resolve_conf_param(std::string param) {
-// 	if (param == "listen") return port;
-// 	if (param == "server_name") return server_name;
-// 	if (param == "root") return root;
-// 	if (param == "index") return idx;
-// 	if (param == "client_max_body_size") return client_max_body_size;
-// 	return error;
-// }
-
-
 void configure_servers(int argc, char *argv[], std::vector<Server> *servers) {
 	
 	std::string 	file_name;

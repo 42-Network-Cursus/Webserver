@@ -26,6 +26,14 @@ class CGI
 		std::map<std::string, std::string> _env;
 
 		std::string errorPage();
+
+
+		// VARS
+		// CGI PATH -->> FROM suffix script
+		// SCRIPT PATH
+		// ENV ?
+		// tmpFile ?? ->>> Global ? Or actual tmp file ?
+		//  	IF real tmp -> string content ?
 };
 
 #endif
