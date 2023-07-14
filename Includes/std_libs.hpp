@@ -19,7 +19,6 @@
 # include <vector>
 # include <iostream>
 
-
 # include <sstream>
 # include "constantes.hpp"
 # include <dirent.h>

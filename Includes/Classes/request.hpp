@@ -23,6 +23,7 @@ class Request {
 
 		// Constructor
 		Request(int socketFd, std::string method, std::string path, std::string version, Server server);
+		Request(int socketFd, std::string method, std::string path, std::string version, Server server, std::string request);
 
 		// Getters
 		int			getSocketFd();
@@ -31,6 +32,10 @@ class Request {
 		std::string	getQuery();
 		// Server		*getServerConfig();
 		Location 	getLocationConfig();
+		std::string getContentType();
+		std::string getBody();
+		int			getContentSize();
+		std::string getUploadPath();
 
 		// Setters
 		void		setSocketFd(int socketFd);
@@ -39,6 +44,8 @@ class Request {
 		// void		setConfig(Server *config);
 		void		setConfig(Location config);
 		void		setQuery(const std::string &query);
+		void		setBody(const std::string &body);
+		void		setContentSize(int size);
 
 		// Check function
 		bool		isAcceptedMethod();
@@ -60,12 +67,15 @@ class Request {
 		std::string _path; // /
 		std::string	_version; // http 1.1
 		std::string	_query; //
-		
+		std::string _contentType;
+		std::string _body;
+		int _contentSize;
+
 		Location	_config;
 
 
 		std::string _server_name; // Maybe used for POST and DELETE, specifies the host name (server name)
-		std::string _body; // used for POST method ?
+		 // used for POST method ?
 		// Response 	*_response; // NEEDS TO BE POINTER BECAUSE OF INCLUDE CIRCLE
 
 		std::string	_header;
@@ -73,6 +83,8 @@ class Request {
 		std::string	_somesheets;
 		
 		void getQueryFromPath();
+		void getExtraDatas(std::string request);
+		void checkMultiPart();
 };
 
 #endif

@@ -5,6 +5,7 @@
 # include "server.hpp"
 
 # include "constantes.hpp"
+# include <cctype>
 // # include "request.class.hpp"
 
 std::string 		&ltrim(std::string &s, const char *t = " \t\r\f\v");
@@ -23,10 +24,14 @@ bool containsValue(const std::vector<T> &vect, const T &value);
 
 std::pair<int, int> get_idx_server_fd(std::vector<Server> &servers, int fd);
 
-
+std::string	deleteWhiteSpace(std::string str);
+std::string	getExtension(std::string str);
+bool		isCGIExtension(std::string ext);
+std::string getCGIbyExtension(std::string ext);
+size_t getContentSize(std::string request);
 // Debugging
 void				print_server_list(std::vector<Server> servers);
-
+void readBody(std::string str);
 # include "utils.tpp" 
 
 void eraseFD(int fd, std::vector<Server> servers);

@@ -252,7 +252,10 @@ Location 					&Server::getLocationFromPath(std::string path) {
 	}
 	std::cout << "On est a la fin ?" << std::endl;
 	std::cout << "check if start == end: " << (it_start == it_end) << std::endl;
-	std::cout << it_start->getPath() << std::endl;
+	if (it_start != it_end)
+		std::cout << it_start->getPath() << std::endl;
+	if (it_start == it_end)
+		it_start = _locations.begin();
 	return *it_start;
 }
 

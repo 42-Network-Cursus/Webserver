@@ -21,7 +21,7 @@ class Response {
 		Response(Request request);
 
 		void	getMethod(Request request);
-		void	postMethod();
+		void	postMethod(Request request);
 		void	putMethod();
 		void	deleteMethod(Request request);
 
@@ -40,6 +40,8 @@ class Response {
 		void	writeFile(std::string content);
 
 		std::string getPageErrorStatus(int statusCode);
+		bool checkUploadPath(std::string path);
+		bool createDirectory(std::string path);
 		std::string getErrorPage();
 };
 

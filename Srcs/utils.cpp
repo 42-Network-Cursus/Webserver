@@ -93,6 +93,10 @@ std::string getTextByStatusCode(int code)
 	{
 		case 200:
 			return SC_200;
+		case 201:
+			return SC_201;
+		case 204:
+			return SC_204;
 		case 400:
 			return SC_400;
 		case 403:
@@ -103,6 +107,10 @@ std::string getTextByStatusCode(int code)
 			return SC_418;
 		case 500:
 			return SC_500;
+		case 501:
+			return SC_501;
+		case 505:
+			return SC_505;
 		default:
 			return SC_UNKNOWN;
 	}
@@ -128,6 +136,15 @@ std::string	intToString(int number)
 		res = ERR_CONVERSION_ITS;
 	}
 	return res;
+}
+
+int sint(std::string str)
+{
+	std::istringstream iss(str);
+    int res;
+    iss >> res;
+
+	return (res);
 }
 
 bool isInVector(std::vector<std::string> vector, std::string value)
@@ -162,4 +179,83 @@ std::pair<int, int> get_idx_server_fd(std::vector<Server> &servers, int fd)
 		i++;
 	}
 	return (std::make_pair(-1, -1));
+}
+
+std::string deleteWhiteSpace(std::string str)
+{
+	std::string::const_iterator it = str.begin();
+	std::string::const_iterator end = str.end();
+
+	while (std::isspace(*it) && it != end)
+		++it;
+
+	std::string res = "";
+	while (it != end)
+	{
+		res += *it;
+		++it;
+	}
+
+	return res;
+}
+
+std::string getExtension(std::string str)
+{
+	size_t pos = str.find_last_of(".");
+	if (pos <= 0)
+		return ("");
+	std::string res = str.substr(pos + 1);
+	return res;
+}
+
+bool isCGIExtension(std::string ext)
+{
+	return (ext == "php" || ext == "py");
+}
+
+std::string getCGIbyExtension(std::string ext)
+{
+	if (ext == "php")
+		return CGI_PHP;
+	else if (ext =="py")
+		return CGI_PY;
+	else
+		return CGI_UNKNOWN;
+}
+
+size_t getContentSize(std::string request)
+{
+	std::istringstream iss(request);
+	std::string line;
+
+	std::string content = "Content-Length:";
+	size_t contentSize = content.size();
+	
+	int res = 0;
+	std::string tmp;
+	while (std::getline(iss, line))
+	{
+		std::cout << "======== Check Content-Length: " << line << std::endl;
+		if (line.compare(0, contentSize, content) == 0)
+		{
+			tmp = line.substr(contentSize + 1);
+			res = sint(tmp);
+			return (res);
+		}
+	}
+	return (res);
+}
+
+void readBody(std::string str)
+{
+	std::istringstream iss(str);
+	std::string line;
+
+	int i = 0;
+
+	while (std::getline(iss, line) && i < 2)
+	{
+		std::cout << line << std::endl;
+		i++;
+	}
 }
