@@ -53,10 +53,9 @@ Response::Response(Request request)
 	std::cout << "\n\n Status Code => " << _statusCode << std::endl;
 	#endif
 	
-	std::cout << "Pardon ?" << std::endl;
 	if (_statusCode != 200)
 	{
-		_path = "html/errorPage/" + intToString(_statusCode) + "_page.html";
+		_path = "Websites/errorPage/" + intToString(_statusCode) + "_page.html";
 		readFile();
 		_path = "";
 		_header = ResponseHeader();
@@ -82,13 +81,20 @@ Response::Response(Request request)
 void	Response::getMethod(Request request)
 {
 	_path = request.getPath();
-	if (_path == "/")
+	if (_path == request.getLocationConfig().getPath())
 		_path = request.getDefaultPage();
 	readFile();
 	if (_statusCode == 404)
-		_body = getErrorPage();
+	{
+		_path = "Websites/errorPage/" + intToString(_statusCode) + "_page.html";
+		readFile();
+		_path = "";
+		_header = ResponseHeader();
+		_header.setContentType(CT_HTML);
+		_header.setContentLength(intToString(_body.size()));
+	}
 	// _body = "<!DOCTYPE html><html><head><title>NTM</title></head><body><h1>On va briser des os...</h1></body></html>";
-	std::cout << "End Get Method" << std::endl;
+	// std::cout << "End Get Method" << std::endl;
 }
 
 /**
@@ -97,20 +103,20 @@ void	Response::getMethod(Request request)
  */
 void	Response::postMethod(Request request)
 {
-	std::cout << "------------------------------ In POSTMETHOD" << std::endl;
+	// std::cout << "------------------------------ In POSTMETHOD" << std::endl;
 	_path = request.getPath();
 	std::string ext = getExtension(_path);
-	std::cout << "POSTMETHOD:\n\nContentType: " << request.getContentType() << std::endl;
+	// std::cout << "POSTMETHOD:\n\nContentType: " << request.getContentType() << std::endl;
 	if (isCGIExtension(ext))
 	{
 		std::string cgi = getCGIbyExtension(ext);
-		std::cout << "On emploie CGI" << std::endl;
+		// std::cout << "On emploie CGI" << std::endl;
 		return ;
 	}
 	else if (true || request.getContentType() == CT_MULTI) // A changer !!!
 	{
 		// Un truc... Encore en train de tout setup
-		std::cout << "=============================================================== On va créer le fichier" << std::endl;
+		// std::cout << "=============================================================== On va créer le fichier" << std::endl;
 		if (checkUploadPath(request.getUploadPath()) == false)
 		{
 			_statusCode = 500;
@@ -126,19 +132,11 @@ void	Response::postMethod(Request request)
 		// 	_path = request.getUploadPath() + request.getPath();
 		writeFile(request.getBody());
 	}
-	std::cout << "On post !" << std::endl;
+	// std::cout << "On post !" << std::endl;
 	request.setPath("/");
 	getMethod(request);
 }
 
-/**
- * @brief Not really need
- * 
- */
-void	Response::putMethod()
-{
-
-}
 
 /**
  * @brief Delete something
@@ -193,7 +191,7 @@ void	Response::readFile()
 	if (isValidPathFile() == false)
 	{
 		_statusCode = 404;
-		_path = "html/errorPage/" + intToString(_statusCode) + "_page.html";
+		_path = "Websites/errorPage/" + intToString(_statusCode) + "_page.html";
 		readFile();
 		_path = "";
 		return ;
@@ -206,7 +204,7 @@ void	Response::readFile()
 	if (file.is_open() == false)
 	{
 		_statusCode = 404;
-		_path = "html/errorPage/" + intToString(_statusCode) + "_page.html";
+		_path = "Websites/errorPage/" + intToString(_statusCode) + "_page.html";
 			readFile();
 			_path = "";
 		return ;
@@ -223,7 +221,7 @@ void	Response::readFile()
  */
 void	Response::writeFile(std::string content)
 {
-	std::cout << "On tente de creer le fichier" << std::endl;
+	// std::cout << "On tente de creer le fichier" << std::endl;
 	std::ofstream file;
 
 	if (isValidPathFile() == false)
@@ -304,7 +302,7 @@ std::string Response::getErrorPage()
 bool Response::checkUploadPath(std::string path)
 {
 	path = deleteWhiteSpace(path);
-	std::cout << "--------------------------------------------------------------- path directory: " << path << std::endl;
+	// std::cout << "--------------------------------------------------------------- path directory: " << path << std::endl;
 	DIR* dir = opendir(path.c_str());
 	if (dir != nullptr)
 	{

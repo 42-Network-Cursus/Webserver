@@ -143,7 +143,7 @@ bool isInVector(std::vector<std::string> vector, std::string value)
 			return true;
 		++it;
 	}
-	std::cout << "FALSE" << std::endl;
+	// std::cout << "FALSE" << std::endl;
 	return false;
 }
 
@@ -196,7 +196,7 @@ size_t getContentSize(std::string request)
 	std::string tmp;
 	while (std::getline(iss, line))
 	{
-		std::cout << "======== Check Content-Length: " << line << std::endl;
+		// std::cout << "======== Check Content-Length: " << line << std::endl;
 		if (line.compare(0, contentSize, content) == 0)
 		{
 			tmp = line.substr(contentSize + 1);
@@ -262,7 +262,6 @@ void configure_servers(int argc, char *argv[], std::vector<Server> *servers) {
 
 	}
 }
-
 
 /************************
 		  CGI

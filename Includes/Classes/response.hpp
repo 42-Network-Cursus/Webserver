@@ -1,18 +1,17 @@
 #ifndef RESPONSE_HPP
 # define RESPONSE_HPP
 
-# include "std_libs.hpp"
+# include <fstream>
+# include <unistd.h>
+# include <sys/types.h>
+# include <dirent.h>
 
 # include "response_header.hpp"
-// # include "request.hpp"
-class Request;
+# include "request.hpp"
 
 class Response {
+
 	public:
-
-		// DEBUG
-		void print();
-
 		Response();
 		~Response();
 		Response(const Response &copy);
@@ -22,13 +21,15 @@ class Response {
 
 		void	getMethod(Request request);
 		void	postMethod(Request request);
-		void	putMethod();
 		void	deleteMethod(Request request);
 
 		std::string getResponseInString();
 
 		void setBody(const std::string &body);
 		
+		// DEBUG
+		void print();
+
 	private:
 		int 			_statusCode;
 		ResponseHeader	_header;
@@ -40,8 +41,8 @@ class Response {
 		void	writeFile(std::string content);
 
 		std::string getPageErrorStatus(int statusCode);
-		bool checkUploadPath(std::string path);
-		bool createDirectory(std::string path);
+		bool 		checkUploadPath(std::string path);
+		bool 		createDirectory(std::string path);
 		std::string getErrorPage();
 };
 

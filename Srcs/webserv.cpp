@@ -1,6 +1,5 @@
 #include "webserv.hpp"
 
-
 bool recv_header(std::string request) {
 	if (request.find("\r\n\r\n") == std::string::npos)
 		return true;
@@ -64,7 +63,8 @@ void add_new_socket_to_pfds(std::vector<Server> &servers, std::vector<struct pol
 
 void handle_pollin(std::vector<Server> &servers, std::vector<struct pollfd> &all_pfds, std::pair<int, int> idx_pair, std::vector<Request> &requests, int idx) {
 	
-	std::cout << "On rentre ici ?" << std::endl;
+	// std::cout << "On rentre ici ?" << std::endl;
+
 	// check if listening socket received a connection	
 	if (servers[idx_pair.first].getPfds()[idx_pair.second].fd == servers[idx_pair.first].getSockList())
 		add_new_socket_to_pfds(servers, all_pfds, idx_pair.first, idx);
@@ -75,14 +75,17 @@ void handle_pollin(std::vector<Server> &servers, std::vector<struct pollfd> &all
 		#ifdef DEBUG
 		std::cout << "Reading request on fd " << all_pfds[idx].fd << std::endl;
 		#endif
-		std::cout << "La reponse est non!" << std::endl;
+
+		// std::cout << "La reponse est non!" << std::endl;
+
 		std::string request;
 		request.clear();
 
 		char 		buf[4096]; // Buffer for client data
 		memset(buf, '\0', sizeof(buf));
 		
-		std::cout << "START BOUCLE" << std::endl;
+		// std::cout << "START BOUCLE" << std::endl;
+
 		bool check = false;
 		std::string tmp = "";
 
@@ -93,7 +96,9 @@ void handle_pollin(std::vector<Server> &servers, std::vector<struct pollfd> &all
 			int nbytes = recv(all_pfds[idx].fd, buf, sizeof(buf), 0);
 
 			request.append(buf);
-			std::cout << "In the boucle: " << request << std::endl;
+
+			// std::cout << "In the boucle: " << request << std::endl;
+
 			// error handling
 			if (nbytes <= 0) {
 
@@ -113,13 +118,16 @@ void handle_pollin(std::vector<Server> &servers, std::vector<struct pollfd> &all
 					tmp = request.substr(pos + 4);
 			}
 		}
-		std::cout << "END BOUCLE" << std::endl;
-		std::cout << tmp << std::endl;
+
+		// std::cout << "END BOUCLE" << std::endl;
+		// std::cout << tmp << std::endl;
+
 		#ifdef DEBUG
 		// std::cout << "Request after BOUCLE " << request << "\n\n" << std::endl;
 		#endif
+
 		int bodySize = getContentSize(request);
-		std::cout << "getContentSize res: " << bodySize << std::endl;
+		// std::cout << "getContentSize res: " << bodySize << std::endl;
 		std::string body;
 		
 		if (bodySize > 0)
@@ -127,17 +135,22 @@ void handle_pollin(std::vector<Server> &servers, std::vector<struct pollfd> &all
 			char	bodyBuff[8000];
 			memset(bodyBuff, '\0', 8000);
 			body.resize(bodySize);
-			std::cout << "BODY IL Y A !!!" << std::endl;
-			std::cout << bodySize << std::endl;
+
+			// std::cout << "BODY IL Y A !!!" << std::endl;
+			// std::cout << bodySize << std::endl;
+
 			size_t nbBytes = 0;
 			while (nbBytes < bodySize)
 			{
-				std::cout << "On BOUCLE A L'INFINI ?" << std::endl;
+				// std::cout << "On BOUCLE A L'INFINI ?" << std::endl;
 				// std::cout << "Calcul : " << bodySize - nbBytes << std::endl;
-				std::cout << "Datas: BodySize= " << bodySize << " | nbBytes= " << nbBytes << " | Reste=" << bodySize - nbBytes << std::endl;
+				// std::cout << "Datas: BodySize= " << bodySize << " | nbBytes= " << nbBytes << " | Reste=" << bodySize - nbBytes << std::endl;
+				
 				//int bytes = recv(all_pfds[idx].fd, &body[nbBytes], bodySize - nbBytes, 0);
 				int bytes = recv(all_pfds[idx].fd, bodyBuff, sizeof(bodyBuff), 0);
+				
 				// std::cout << bytes << " " << nbBytes << " " << bodySize << std::endl;
+				
 				if (bytes <= 0)
 				{
 					if (bytes == 0)
@@ -145,25 +158,29 @@ void handle_pollin(std::vector<Server> &servers, std::vector<struct pollfd> &all
 					else 
 						break;
 					
-					std::cout << "On a coupé ? " << std::endl;
+					// std::cout << "On a coupé ? " << std::endl;
+					
 					close(all_pfds[idx].fd);
 					all_pfds.erase(all_pfds.begin() + idx);
 				}
+				
 				nbBytes += bytes;
 				body.append(bodyBuff);
 				//memset(bodyBuff, '\0', 8000);
 			}
 			body = tmp + body;
-			std::cout << "On est sorti de la boucle du BODY" << std::endl;
+			
+			// std::cout << "On est sorti de la boucle du BODY" << std::endl;
 		}
 		else
 			body = "";
 		
-		std::cout << "Check idx_pair: " << idx_pair.first << std::endl;
-		std::cout << "servers 0" << std::endl;
+		// std::cout << "Check idx_pair: " << idx_pair.first << std::endl;
+		// std::cout << "servers 0" << std::endl;
 		// servers[idx_pair.first].print();
-		std::cout << "REQUEST:\n" << request << std::endl;
-		std::cout << "BODY:\n" << body << std::endl;
+		// std::cout << "REQUEST:\n" << request << std::endl;
+		// std::cout << "BODY:\n" << body << std::endl;
+		
 		Request req = Request::parseRequest(request, all_pfds[idx].fd, servers[idx_pair.first]);
 		requests.push_back(req);
 		req.setBody(body);
@@ -180,7 +197,7 @@ void handle_pollin(std::vector<Server> &servers, std::vector<struct pollfd> &all
 			}
 		#endif
 
-		std::cout << request << std::endl;
+		// std::cout << request << std::endl;
 		all_pfds[idx].events = POLLOUT;
 	}
 }

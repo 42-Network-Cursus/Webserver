@@ -1,16 +1,13 @@
 #ifndef RESPONSE_HEADER_HPP
 # define RESPONSE_HEADER_HPP
 
-# include "std_libs.hpp"
-// # include "constantes.hpp"
+# include <iostream>
+
 # include "utils.hpp"
 
 class ResponseHeader
 {
 	public:
-		// DEBUG
-		void print();
-		 
 		ResponseHeader();
 		~ResponseHeader();
 		ResponseHeader(const ResponseHeader &copy);
@@ -27,19 +24,17 @@ class ResponseHeader
 		
 		std::string transformHeaderToString(int statusCode, std::string type, std::string length, std::string date, std::string last, std::string location);
 
+		// DEBUG
+		void print();
+
 	private:
-		// Type de contenu de la réponse
-		std::string	_contentType;
-		// Taille du body de la réponse
-		std::string	_contentLength;
-		// Date et heure à laquelle la réponse a été généré
-		std::string	_date;
-		// Date et heure de la dernière modification du contenu de la ressource
-		std::string	_lastModified;
-		// Nom du logiciel serveur
-		std::string _server;
-		// Utilisé lors d'une redirection pour indiquer l'URL vers laquelle le client doit être redirigé
-		std::string _location;
+		
+		std::string	_contentType; // Type de contenu de la réponse	
+		std::string	_contentLength; // Taille du body de la réponse
+		std::string	_date; // Date et heure à laquelle la réponse a été généré
+		std::string	_lastModified; // Date et heure de la dernière modification du contenu de la ressource
+		std::string _server; // Nom du logiciel serveur
+		std::string _location; // Utilisé lors d'une redirection pour indiquer l'URL vers laquelle le client doit être redirigé
 
 		std::string getHeaderData();
 		void initValues();

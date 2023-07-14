@@ -9,7 +9,6 @@ void Server::print() {
 	std::cout << "host: "<< _host << std::endl;
 	std::cout << "server name: " << _server_name << std::endl;
 	std::cout << "pfds size: " << _pfds.size() << std::endl;
-
 	std::cout << "Locations: " << std::endl;
 	std::vector<Location>::iterator loc_begin = _locations.begin();
 	std::vector<Location>::iterator loc_end = _locations.end();
@@ -20,23 +19,17 @@ void Server::print() {
 }
 
 Server::Server()
-{
-
-}
+{}
 
 Server::~Server()
-{
-
-}
+{}
 
 Server::Server(const Server &copy) 
 : _port(copy._port), _host(copy._host), _server_name(copy._server_name), _pfds(copy._pfds), _locations(copy._locations), _socklist(copy._socklist)
-{
+{}
 
-}
-
-Server &Server::operator=(const Server &other)
-{
+Server &Server::operator=(const Server &other) {
+	
 	if (this != &other)
 	{
 		_port = other._port;
@@ -46,7 +39,7 @@ Server &Server::operator=(const Server &other)
 		_locations = other._locations;
 		_socklist = other._socklist;
 	}
-	return (*this);
+	return *this;
 }
 
 void Server::get_listening_socket() {
@@ -203,55 +196,38 @@ void Server::store_server_configuration(std::ifstream &file_stream) {
 			
 		}
 	} // End While
-
-}
-
-/*
-	*** SETTERS ***
-*/
-
-void Server::setSockFD(int fd) {
-	_sockfd = fd;
 }
 
 /*
 	*** GETTERS ***
 */
 
-const std::string 			&Server::getPort() const {	
-	return _port;
-}
+const std::string 			&Server::getPort() const { return _port; }
 
-const std::string 			&Server::getHost() const {
-	return _host;
-}
+const std::string 			&Server::getHost() const { return _host; }
 
-const std::string 			&Server::getServer_name() const {
-	return _server_name;
-}
+const std::string 			&Server::getServer_name() const { return _server_name; }
 
-std::vector<struct pollfd>	&Server::getPfds() {
-	return _pfds;
-}
+std::vector<struct pollfd>	&Server::getPfds() { return _pfds; }
 
-std::vector<Location> 		&Server::getLocation() {
-	return _locations;
-}
+std::vector<Location> 		&Server::getLocation() { return _locations; }
+
+int 						Server::getSockList() const { return _socklist; }
 
 Location 					&Server::getLocationFromPath(std::string path) {
 
-	std::cout << "IN GETLOCATIONFROM PATH" << std::endl;
+	// std::cout << "IN GETLOCATIONFROM PATH" << std::endl;
 
 	std::vector<Location>::iterator it_start = _locations.begin();
 	std::vector<Location>::iterator it_end = _locations.end();
 
 	for (; it_start != it_end; it_start++) {
-		std::cout << it_start->getPath() << " VS " << path << std::endl;
+		// std::cout << it_start->getPath() << " VS " << path << std::endl;
 		if (it_start->getPath() == path)
 			break;
 	}
-	std::cout << "On est a la fin ?" << std::endl;
-	std::cout << "check if start == end: " << (it_start == it_end) << std::endl;
+	// std::cout << "On est a la fin ?" << std::endl;
+	// std::cout << "check if start == end: " << (it_start == it_end) << std::endl;
 	if (it_start != it_end)
 		std::cout << it_start->getPath() << std::endl;
 	if (it_start == it_end)
@@ -259,15 +235,8 @@ Location 					&Server::getLocationFromPath(std::string path) {
 	return *it_start;
 }
 
-int 						Server::getSockFD() const {
-	return _sockfd;
-}
+/*
+	*** SETTERS ***
+*/
 
-void Server::setPfds(const std::vector<struct pollfd> &pfds)
-{
-	_pfds = pfds;
-}
-
-int 						Server::getSockList() const {
-	return _socklist;
-}
+void Server::setPfds(const std::vector<struct pollfd> &pfds) { _pfds = pfds; }

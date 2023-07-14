@@ -1,12 +1,11 @@
 #ifndef UTILS_HPP
 # define UTILS_HPP
 
-# include "std_libs.hpp"
-# include "server.hpp"
+// # include <cctype>
 
+# include "server.hpp"
 # include "constantes.hpp"
-# include <cctype>
-// # include "request.class.hpp"
+// # include "utils.tpp" 
 
 std::string 		&ltrim(std::string &s, const char *t = " \t\r\f\v");
 std::string 		&rtrim(std::string &s, const char *t = " \t\r\f\v");
@@ -25,19 +24,20 @@ bool containsValue(const std::vector<T> &vect, const T &value);
 void 				configure_servers(int argc, char *argv[], std::vector<Server> *servers);
 std::pair<int, int> get_idx_server_fd(std::vector<Server> &servers, int fd);
 
-void get_cgi(std::string script_path, std::string &CGI, std::string &CGI_PATH);
+void 		get_cgi(std::string script_path, std::string &CGI, std::string &CGI_PATH);
 std::string get_body_from_cgi(std::string script);
 
 std::string	deleteWhiteSpace(std::string str);
 std::string	getExtension(std::string str);
 bool		isCGIExtension(std::string ext);
 std::string getCGIbyExtension(std::string ext);
-size_t getContentSize(std::string request);
-// Debugging
-void				print_server_list(std::vector<Server> servers);
+size_t 		getContentSize(std::string request);
+
 void readBody(std::string str);
-# include "utils.tpp" 
 
 void eraseFD(int fd, std::vector<Server> servers);
+
+// DEBUG
+void	print_server_list(std::vector<Server> servers);
 
 #endif // UTILS_HPP

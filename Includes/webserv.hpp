@@ -1,7 +1,6 @@
 #ifndef WEBSERV_HPP
 # define WEBSERV_HPP
 
-# include "std_libs.hpp"
 # include "utils.hpp"
 # include "server.hpp"
 # include "request.hpp"
@@ -11,7 +10,7 @@
 # define BACKLOG 10 // queue of nb of connexions waiting to be accepted by listen()
 
 // COMMENT TO STOP PRINTING
-# define DEBUG
+// # define DEBUG
 
 /*
 	execve, dup, dup2, pipe, strerror, gai_strerror,

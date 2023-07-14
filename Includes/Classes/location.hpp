@@ -2,16 +2,11 @@
 # define LOCATION_HPP
 
 # include <string>
-# include <utility>
 # include <map>
 
 class Location {
 
     public:
-
-        // Debugging
-        void print();
-
         Location();
         ~Location();
 		Location(const Location &copy);
@@ -39,8 +34,11 @@ class Location {
         bool                        getAutoIndex() const;
         std::map<std::string, bool> getMethods() const;
         bool                        getMethod(std::string method);
-
-    private:
+		
+		// DEBUG
+        void print();
+    
+	private:
         std::string                 _path;
         std::string                 _root;
         std::string                 _index;

@@ -1,8 +1,7 @@
 #ifndef CONSTANTES_HPP
-
 # define CONSTANTES_HPP
 
-#include <string>
+# include <string>
 
 /*		ACCEPTED METHODS	*/
 
@@ -59,4 +58,5 @@ const std::string PHP_CGI = "php-cgi";
 // IF WE CAN ADD IT
 // const char PY_CGI_PATH[] = ""; 
 // const char PY_CGI[] = "";
+
 #endif
