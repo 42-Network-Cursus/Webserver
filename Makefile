@@ -7,7 +7,6 @@ INCL	=	-I ./Includes/ \
 
 SRCS	=	Srcs/webserv.cpp \
 			Srcs/utils.cpp \
-			Srcs/configuration.cpp \
 			\
 			Srcs/Classes/server.cpp \
 			Srcs/Classes/response.cpp \
