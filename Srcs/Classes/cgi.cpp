@@ -20,7 +20,7 @@ CGI &CGI::operator=(const CGI &other)
 	if (this != &other)
 	{
 		this->_execPath = other._execPath;
-		this->_env = other.env;
+		this->_env = other._env;
 	}
 	return (*this);
 }
@@ -33,6 +33,8 @@ CGI::CGI(const std::string &execPath)
 
 void CGI::setEnv(std::string type, std::string length, std::string method, std::string query, std::string root, std::string pathInfo, std::string redirect)
 {
+	// SHOULD BE USED TO SEND VARIABLES ?
+	
 	_env["CONTENT_TYPE"] = type;
 	_env["CONTENT_LENGTH"] = length;
 	_env["REQUEST_METHOD"] = method;

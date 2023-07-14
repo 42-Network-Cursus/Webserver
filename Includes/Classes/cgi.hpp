@@ -4,6 +4,7 @@
 #include <string>
 #include <unistd.h>
 #include <sys/types.h>
+#include <map>
 
 class CGI
 {
@@ -15,7 +16,7 @@ class CGI
 
 			CGI(const std::string &execPath);
 
-			void setEnv();
+			void setEnv(std::string type, std::string length, std::string method, std::string query, std::string root, std::string pathInfo, std::string redirect);
 			
 			std::string execute(std::string path);
 	
@@ -25,6 +26,14 @@ class CGI
 		std::map<std::string, std::string> _env;
 
 		std::string errorPage();
+
+
+		// VARS
+		// CGI PATH -->> FROM suffix script
+		// SCRIPT PATH
+		// ENV ?
+		// tmpFile ?? ->>> Global ? Or actual tmp file ?
+		//  	IF real tmp -> string content ?
 };
 
 #endif

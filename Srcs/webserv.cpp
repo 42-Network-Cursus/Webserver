@@ -46,6 +46,8 @@ void add_new_socket_to_pfds(std::vector<Server> &servers, std::vector<struct pol
 	addrlen = sizeof(remoteaddr);
 	new_fd = accept(all_pfds[idx].fd, (struct sockaddr *)&remoteaddr, &addrlen);
 	
+	fcntl(new_fd, F_SETFL, O_NONBLOCK);
+
 	if (new_fd == -1)
 		std::cerr << "accept: " << strerror(errno) << std::endl;
 	else {

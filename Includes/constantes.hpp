@@ -50,4 +50,13 @@ const std::string CGI_UNKNOWN = "Unknown CGI";
 const std::string ERR_CONVERSION_ITS = "Error: Conversion int to string failed";
 
 const std::string INVALID_HEADER = "Invalid Header";
+
+/*			   CGI			*/
+
+const std::string PHP_CGI_PATH = "/Users/cwastche/.brew/Cellar/php/8.2.8/bin/php-cgi";
+const std::string PHP_CGI = "php-cgi";
+
+// IF WE CAN ADD IT
+// const char PY_CGI_PATH[] = ""; 
+// const char PY_CGI[] = "";
 #endif

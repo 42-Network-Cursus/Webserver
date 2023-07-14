@@ -23,7 +23,7 @@ class Location {
         void setIndex(std::string val);
         void setClientMaxBodySize(std::string val); 
         void setErrorPagePath(std::string val);
-        void setCgiPath(std::string val);
+        void setScriptPath(std::string val);
         void setUploadPath(std::string val);
         void setAutoIndex(std::string val);
         void setMethod(std::string method, bool val);
@@ -34,7 +34,7 @@ class Location {
         std::string                 getIndex() const;
         std::string                 getClientMaxBodySize() const;
         std::string                 getErrorPagePath() const;
-        std::string                 getCgiPath() const;
+        std::string                 getScriptPath() const;
         std::string                 getUploadPath() const;
         bool                        getAutoIndex() const;
         std::map<std::string, bool> getMethods() const;
@@ -46,7 +46,7 @@ class Location {
         std::string                 _index;
         std::string                 _client_max_body_size;
         std::string                 _error_page_path;
-        std::string                 _cgi_path;
+        std::string                 _script_path;
         std::string                 _upload_path;
         bool                        _auto_index;
         std::map<std::string, bool> _methods;

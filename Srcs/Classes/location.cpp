@@ -9,7 +9,7 @@ void Location::print() {
     std::cout << "	index: " << _index << std::endl;
     std::cout << "	client_max_body_size: " << _client_max_body_size << std::endl;
     std::cout << "	error page path: " << _error_page_path << std::endl;
-    std::cout << "	cgi path: " << _cgi_path << std::endl;
+    std::cout << "	script path: " << _script_path << std::endl;
     std::cout << "	upload path: " << _upload_path << std::endl;
     std::cout << "	auto index: " << _auto_index << std::endl;
     std::cout << "	Methods: " << std::endl;
@@ -34,7 +34,7 @@ Location::Location(const Location &copy) {
     _index                  = copy.getIndex();
     _client_max_body_size   = copy.getClientMaxBodySize();
     _error_page_path        = copy.getErrorPagePath();
-    _cgi_path               = copy.getCgiPath();
+    _script_path               = copy.getScriptPath();
     _upload_path            = copy.getUploadPath();
     _auto_index             = copy.getAutoIndex();
     _methods                = copy.getMethods();
@@ -48,7 +48,7 @@ Location &Location::operator=(const Location &rhs) {
         _index                  = rhs.getIndex();
         _client_max_body_size   = rhs.getClientMaxBodySize();
         _error_page_path        = rhs.getErrorPagePath();
-        _cgi_path               = rhs.getCgiPath();
+        _script_path               = rhs.getScriptPath();
         _upload_path            = rhs.getUploadPath();
         _auto_index             = rhs.getAutoIndex();
         _methods                = rhs.getMethods();
@@ -78,8 +78,8 @@ void Location::setErrorPagePath(std::string val) {
     _error_page_path = val;
 }
 
-void Location::setCgiPath(std::string val) {
-    _cgi_path = val;
+void Location::setScriptPath(std::string val) {
+    _script_path = val;
 }
 
 void Location::setUploadPath(std::string val) {
@@ -118,8 +118,8 @@ std::string                 Location::getErrorPagePath() const {
     return _error_page_path;
 }
 
-std::string                 Location::getCgiPath() const {
-    return _cgi_path;
+std::string                 Location::getScriptPath() const {
+    return _script_path;
 }
 
 std::string                 Location::getUploadPath() const {
