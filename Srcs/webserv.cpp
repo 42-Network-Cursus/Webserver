@@ -223,9 +223,9 @@ void handle_pollout(std::vector<Server> &servers, std::vector<struct pollfd> &al
 	// std::cout << "Size of requests: " << requests.size() << std::endl;
 	// std::cout << "requests empty ? " << requests.empty() << std::endl;
 
-	Request re = requests[req_idx];
-	// re.print();
-	std::cout << "Ah non... On envoie la reponse !" << std::endl;
+	// Request re = requests[req_idx];
+	// // re.print();
+	// std::cout << "Ah non... On envoie la reponse !" << std::endl;
 
 	Response response(requests[req_idx]);
 	// response.print();

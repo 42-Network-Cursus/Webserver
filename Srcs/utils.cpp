@@ -14,25 +14,8 @@ void		print_server_list(std::vector<Server> servers) {
 	}
 }
 
-/*****************
- Maybe used to print addresses of connected clients ?
-******************/
-// get sockaddr object, IPv4 or 6
-void *get_in_addr(struct sockaddr *sa) {
-	if (sa->sa_family == AF_INET) {
-		return &(((struct sockaddr_in *)sa)->sin_addr);
-	}
-
-	return &(((struct sockaddr_in6 *)sa)->sin6_addr);
-}
-
-// std::cout << "Pollserver: new connection from "
-// 		<< inet_ntop(remoteaddr.ss_family, get_in_addr((struct sockaddr *)&remoteaddr), remoteIP, INET6_ADDRSTRLEN)
-// 		<< " on socket " << new_fd << std::endl;
-
-
 /********************
-	Actual Utils
+	Utility
 ********************/
 
 std::string &ltrim(std::string &s, const char* t) { // trim from left
@@ -62,6 +45,8 @@ bool stringToBool(std::string str) {
 		return true;
 	return false;
 }
+
+
 
 
 
@@ -199,30 +184,6 @@ std::string deleteWhiteSpace(std::string str)
 	return res;
 }
 
-std::string getExtension(std::string str)
-{
-	size_t pos = str.find_last_of(".");
-	if (pos <= 0)
-		return ("");
-	std::string res = str.substr(pos + 1);
-	return res;
-}
-
-bool isCGIExtension(std::string ext)
-{
-	return (ext == "php" || ext == "py");
-}
-
-std::string getCGIbyExtension(std::string ext)
-{
-	if (ext == "php")
-		return CGI_PHP;
-	else if (ext =="py")
-		return CGI_PY;
-	else
-		return CGI_UNKNOWN;
-}
-
 size_t getContentSize(std::string request)
 {
 	std::istringstream iss(request);
@@ -302,6 +263,10 @@ void configure_servers(int argc, char *argv[], std::vector<Server> *servers) {
 	}
 }
 
+
+/************************
+		  CGI
+************************/
 void get_cgi(std::string script_path, std::string &CGI, std::string &CGI_PATH) {
 	std::string suffix = script_path.substr(script_path.find_first_of("."));
 
@@ -381,3 +346,29 @@ std::string get_body_from_cgi(std::string script) {
 
 	return body;
 }
+
+// Needed ?
+std::string getExtension(std::string str)
+{
+	size_t pos = str.find_last_of(".");
+	if (pos <= 0)
+		return ("");
+	std::string res = str.substr(pos + 1);
+	return res;
+}
+
+bool isCGIExtension(std::string ext)
+{
+	return (ext == "php" || ext == "py");
+}
+
+std::string getCGIbyExtension(std::string ext)
+{
+	if (ext == "php")
+		return CGI_PHP;
+	else if (ext =="py")
+		return CGI_PY;
+	else
+		return CGI_UNKNOWN;
+}
+// --------------
