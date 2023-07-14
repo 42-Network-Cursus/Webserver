@@ -1,9 +1,26 @@
 <!DOCTYPE html>
 <html>
 	<head>
-		<title>default index</title>
+		<title>Question pour un crétin</title>
 	</head>
 	<body>
-		<h1>Default website</h1>
+		<h1>Constantin... Tu es</h1>
+		<form action="/test.php" method="post">
+			<input type="radio" id="html" name="answer" value="Un kiwi">
+			<label for="A">A. Un kiwi</label><br>
+			<input type="radio" id="css" name="answer" value="Keske">
+			<label for="B">B. On ne mange pas de bananes ici, ce n'est pas la Slovaquie !</label><br>
+			<input type="radio" id="javascript" name="answer" value="Un desir incontrole pour les batonnets aux poissons">
+			<label for="C">C. Un desir incontrole pour les batonnets aux poissons</label><br>
+			<input type="radio" id="javascript" name="answer" value="La reponse D">
+			<label for="D">D. La reponse D</label>
+			<input type="submit" value="Validation">
+		</form>
+
+		<h1>Un fichier peut etre ?</h1>
+		<form action="/upload" method="post" enctype="multipart/form-data">
+			<input type="file" name="CoucouConstantin">
+			<input type="submit" value="Validation">
+		</form>
 	</body>
 </html>

@@ -37,6 +37,14 @@ const std::string CT_JS = "text/javascript";
 const std::string CT_PNG = "image/png";
 const std::string CT_DEFAULT = "text/plain";
 
+const std::string CT_MULTI = "multipart/form-data;";
+/*		CGI PATH			*/
+
+const std::string CGI_PHP = "/cgi/cgi.php";
+const std::string CGI_PY = "/cgi/cgi.py";
+const std::string CGI_UNKNOWN = "Unknown CGI";
+
+
 /*		ERROR MESSAGE		*/
 
 const std::string ERR_CONVERSION_ITS = "Error: Conversion int to string failed";
