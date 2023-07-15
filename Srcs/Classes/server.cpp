@@ -182,7 +182,6 @@ void Server::store_server_configuration(std::ifstream &file_stream) {
 		if (param == "location")
 			_locations.push_back(get_location_config(file_stream, line));
 		else {
-
 			std::string param_val = line.substr(line.find_first_of(" "), line.find_first_of(";") - line.find_first_of(" "));
 			param_val = trim(param_val);
 			
@@ -193,7 +192,6 @@ void Server::store_server_configuration(std::ifstream &file_stream) {
 			else if (param == "server_name") {
 				_server_name = param_val;
 			}
-			
 		}
 	} // End While
 }
@@ -228,8 +226,9 @@ Location 					&Server::getLocationFromPath(std::string path) {
 	}
 	// std::cout << "On est a la fin ?" << std::endl;
 	// std::cout << "check if start == end: " << (it_start == it_end) << std::endl;
-	if (it_start != it_end)
-		std::cout << it_start->getPath() << std::endl;
+	// if (it_start != it_end)
+	// 	std::cout << it_start->getPath() << std::endl;
+
 	if (it_start == it_end)
 		it_start = _locations.begin();
 	return *it_start;

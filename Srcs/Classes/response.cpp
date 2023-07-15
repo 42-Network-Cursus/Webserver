@@ -42,7 +42,8 @@ Response::Response(Request request)
 
 	_statusCode = 200;
 
-	// if (request.isAcceptedMethod() == false)
+	if (request.isAcceptedMethod() == false)
+		_statusCode = 403; // Or 405 ?
 	// 	_statusCode = 501;
 	// else if (_statusCode == 200 && request.isValidVersion() == false)
 	// 	_statusCode = 505;
@@ -81,8 +82,26 @@ Response::Response(Request request)
 void	Response::getMethod(Request request)
 {
 	_path = request.getPath();
-	if (_path == request.getLocationConfig().getPath())
-		_path = request.getDefaultPage();
+
+	std::cout << "IN GET METHOD " << _path << std::endl;
+
+	if (_path == request.getLocationConfig().getPath()) {
+		if (request.getLocationConfig().getScriptPath() != "") {
+			_path = deleteWhiteSpace(request.getLocationConfig().getRoot() + "cgi-output.html");
+			get_body_from_cgi(request.getLocationConfig().getScriptPath());
+			std::ifstream rFile("Websites/cgi-output.html");
+			while (!rFile.eof()) {
+				std::string tmp;
+				rFile >> tmp;
+				_body.append(tmp);
+			}
+			rFile.close();
+
+			return;
+		}
+		else
+			_path = request.getDefaultPage();
+	}
 	readFile();
 	if (_statusCode == 404)
 	{
@@ -93,8 +112,7 @@ void	Response::getMethod(Request request)
 		_header.setContentType(CT_HTML);
 		_header.setContentLength(intToString(_body.size()));
 	}
-	// _body = "<!DOCTYPE html><html><head><title>NTM</title></head><body><h1>On va briser des os...</h1></body></html>";
-	// std::cout << "End Get Method" << std::endl;
+	
 }
 
 /**
@@ -190,12 +208,16 @@ void	Response::readFile()
 {
 	if (isValidPathFile() == false)
 	{
+		std::cout << "NOT VALID PATH ??" << std::endl;
+
 		_statusCode = 404;
 		_path = "Websites/errorPage/" + intToString(_statusCode) + "_page.html";
 		readFile();
 		_path = "";
 		return ;
 	}
+
+
 
 	std::ifstream file;
 	std::stringstream buffer;

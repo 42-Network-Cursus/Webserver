@@ -13,7 +13,7 @@ void Request::print() {
 	_config.print();
 	std::cout << "Server name : " << _server_name << std::endl;
 	std::cout << "Content-Size: " << _contentSize << std::endl;
-	std::cout << "Body : " << _body << std::endl;
+	std::cout << "Body : " << _body << std::endl << std::endl;
 }
 
 void Request::printConfig()
@@ -64,6 +64,9 @@ Request::Request(int socketFd, std::string method, std::string path, std::string
 	
 	_config = server.getLocationFromPath(path);
 	getQueryFromPath();
+	
+	std::cout << "\n\n ROOT **" << _config.getRoot() <<  "\n\n\n";
+
 	getExtraDatas(request);
 	checkMultiPart();
 	_body = "";
@@ -146,7 +149,8 @@ Request Request::parseRequest(std::string request, int fd, Server server)
 
 	method = request.substr(0, pos);
 	path = request.substr(pos + 1, pos2 - pos - 1);
-	version = request.substr(pos2);
+	version = request.substr(pos2, request.find("\n", pos2));
+	version = trim(version);
 
 	// Request res(fd, method, path, version, server);
 	Request res(fd, method, path, version, server, request);
