@@ -5,6 +5,9 @@
 
 # include "server.hpp"
 # include "constantes.hpp"
+# include <unistd.h>
+# include <sys/types.h>
+# include <sys/wait.h>
 // # include "utils.tpp" 
 
 std::string 		&ltrim(std::string &s, const char *t = " \t\r\f\v");
