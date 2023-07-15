@@ -221,13 +221,7 @@ void readBody(std::string str)
 	}
 }
 
-void configure_servers(int argc, char *argv[], std::vector<Server> *servers) {
-	
-	std::string 	file_name;
-	if (argc < 2)
-		file_name = std::string("default.conf");
-	else
-		file_name = std::string(argv[1]);
+void configure_servers(std::string file_name, std::vector<Server> *servers) {
 	
 	std::ifstream 	file_stream (("conf/" + file_name).c_str());
 	std::string 	line;
@@ -261,6 +255,8 @@ void configure_servers(int argc, char *argv[], std::vector<Server> *servers) {
 		}
 
 	}
+
+	file_stream.close();
 }
 
 /************************
@@ -276,24 +272,20 @@ void get_cgi(std::string script_path, std::string &CGI, std::string &CGI_PATH) {
 	}
 }
 
-// std::string get_body_from_cgi(std::string script) {
-void get_body_from_cgi(std::string script) {
+std::string get_body_from_cgi(std::string script) {
  
-	FILE 		*tmpFile = fopen("Websites/cgi-output.html", "w");
+	FILE 		*tmpFile = fopen("tmpFile.txt", "w");
 	std::string body;
 	std::string script_path = trim(script);
 	std::string CGI;
 	std::string CGI_PATH;
-
-	std::cout << "SCRIPT PATH: " << script << std::endl;
 
 	get_cgi(script_path, CGI, CGI_PATH);
 
     // Check if the file was opened successfully
     if (!tmpFile) {
         std::cout << "Failed to open the output file." << std::endl;
-        // return "";
-        return ;
+        return "";
     }
 
     // Command to execute the PHP script
@@ -304,8 +296,7 @@ void get_body_from_cgi(std::string script) {
 
     if (pid == -1) {
         std::cerr << "Failed to fork a child process." << std::endl;
-        // return "";
-        return ;
+        return "";
     } 
     // Child process
 	else if (pid == 0) {
@@ -318,8 +309,7 @@ void get_body_from_cgi(std::string script) {
         
         // If execve returns, an error occurred
         std::cerr << "Failed to execute the PHP script." << std::endl;
-        // return "";
-        return ;
+        return "";
     } 
     // Parent process
 	else {
@@ -330,27 +320,26 @@ void get_body_from_cgi(std::string script) {
 
 		fclose(tmpFile);
 		
-		// std::ifstream rFile("Websites/cgi-output.html");
-		// while (!rFile.eof()) {
-		// 	std::string tmp;
-		// 	rFile >> tmp;
-		// 	body.append(tmp);
-		// }
+		std::ifstream rFile("tmpFile.txt");
+		while (!rFile.eof()) {
+			std::string tmp;
+			rFile >> tmp;
+			body.append(tmp);
+		}
 			
-		// rFile.close();
-		// int result = remove("tmpFile.txt");
-		// std::cout << result << std::endl;
+		rFile.close();
+		int result = remove("tmpFile.txt");
+		std::cout << result << std::endl;
 
         if (WIFEXITED(status) && WEXITSTATUS(status) == 0) {
             std::cout << "HTML output has been generated." << std::endl;
         } else {
             std::cerr << "PHP script execution failed." << std::endl;
-            // return "";
-            return ;
+            return "";
         }
     }
 
-	// return body;
+	return body;
 }
 
 // Needed ?

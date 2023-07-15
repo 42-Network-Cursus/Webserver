@@ -86,17 +86,12 @@ void	Response::getMethod(Request request)
 	std::cout << "IN GET METHOD " << _path << std::endl;
 
 	if (_path == request.getLocationConfig().getPath()) {
+		
 		if (request.getLocationConfig().getScriptPath() != "") {
-			_path = deleteWhiteSpace(request.getLocationConfig().getRoot() + "cgi-output.html");
-			get_body_from_cgi(request.getLocationConfig().getScriptPath());
-			std::ifstream rFile("Websites/cgi-output.html");
-			while (!rFile.eof()) {
-				std::string tmp;
-				rFile >> tmp;
-				_body.append(tmp);
-			}
-			rFile.close();
-
+			
+			_body = get_body_from_cgi(request.getLocationConfig().getScriptPath());
+			
+			// Can't really return, need to handle if script fails and send an error page
 			return;
 		}
 		else
