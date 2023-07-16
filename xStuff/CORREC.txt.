@@ -1,4 +1,3 @@
-Search for all read/recv/write/send on a socket and check that, if an error is returned, the client is removed.
 
 Setup a default file to search for if you ask for a directory.
 => CHAT GPT

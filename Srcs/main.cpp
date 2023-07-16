@@ -11,8 +11,6 @@ void clean_exit(std::vector<Server *> &servers)
 	}
 }
 
-
-
 // first = server idx, second = pfds idx
 std::pair<int, int> get_idx_server_fd(std::vector<Server> &servers, int fd)
 {

@@ -1,0 +1,7 @@
+
+
+ ROOT ** Websites/
+
+
+IN GET METHOD /favicon.ico
+Websites/favicon.ico
