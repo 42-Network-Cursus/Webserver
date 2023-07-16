@@ -477,4 +477,26 @@ std::string getContentBody(std::string body)
 	std::cout << "RES: \n" << res << std::endl;
 	return res;
 }
+
+
+std::string getContentBody2(std::string body)
+{
+	std::cout << "GetContentBody 2" << std::endl;
+	std::string res = body;
+	std::istringstream iss(res);
+
+	std::string delimiter;
+
+	if (body.size < 0)
+		return "";
+	std::getline(iss, delimiter);
+
+	std::cout << "Delimiter: " << delimiter << std::endl;
+
+	res.erase(0, res.find('\r\n') + 3);
+	res.erase(res.rfind(delimiter) - 3);
+
+	std::cout << "Res: \n" << res << std::endl;
+	return res;
+}
 // --------------

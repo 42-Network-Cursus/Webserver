@@ -8,6 +8,7 @@
 
 # include "response_header.hpp"
 # include "request.hpp"
+# include "utils.hpp"
 
 class Response {
 
