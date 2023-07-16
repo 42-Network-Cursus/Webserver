@@ -8,6 +8,7 @@
 
 # include "response_header.hpp"
 # include "request.hpp"
+# include "utils.hpp"
 
 class Response {
 
@@ -38,7 +39,7 @@ class Response {
 
 		bool	isValidPathFile();
 		void	readFile();
-		void	writeFile(std::string content);
+		void	writeFile(std::string filename, std::string content);
 
 		std::string getPageErrorStatus(int statusCode);
 		bool 		checkUploadPath(std::string path);

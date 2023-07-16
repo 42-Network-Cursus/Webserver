@@ -41,6 +41,7 @@ class Request {
 		void		setQuery(const std::string &query);
 		void		setBody(const std::string &body);
 		void		setContentSize(int size);
+		void		setContentType(const std::string &type);
 
 		// Check function
 		bool		isAcceptedMethod();
@@ -60,10 +61,10 @@ class Request {
 		std::string	_method; // GET
 		std::string _path; // 
 		std::string	_version; // http 1.1
+		Location	_config;
 		std::string	_query;
 		std::string _contentType;
 		std::string _body;
-		Location	_config;
 		int 		_contentSize;
 
 		std::string _server_name; // Maybe used for POST and DELETE, specifies the host name (server name)

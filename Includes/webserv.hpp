@@ -39,4 +39,13 @@ void 	sendResponse(int fd, Response response);
 int 	get_request_index(int sockfd, std::vector<Request> requests);
 void	handle_pollout(std::vector<Server> &servers, std::vector<struct pollfd> &all_pfds, int idx, std::vector<Request> &requests);
 
+
+
+//
+
+bool		isFile(std::string str);
+
+std::string getFilename(std::string body);
+std::string getContentBody(std::string body);
+std::string getContentBody2(std::string body);
 #endif // WEBSERV_HPP
