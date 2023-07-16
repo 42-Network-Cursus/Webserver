@@ -34,7 +34,7 @@ std::string &trim(std::string &s, const char* t) { // trim from left & right
 
 // Skips comments and empty lines in configuration file
 bool skip_line(std::string line) {
-	if (line.find_first_of("#") != std::string::npos || line.length() == 0)
+	if (trim(line)[0] == '#' || line.length() == 0)
 		return true;
 	return false;
 }

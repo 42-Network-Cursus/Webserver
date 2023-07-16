@@ -49,15 +49,11 @@ void check_conf_file(std::string file_name) {
 			continue;
 
 		if (line == "server") {
-			if (open_server){
-					std::cout << "9\n";
+
+			if (open_server)
 				conf_error(line_nb, line);
-			}
-			
-			if (line != "server"){
-					std::cout << "8\n";
+			if (line != "server")
 				conf_error(line_nb, line);
-			}
 
 			while (1) {
 				std::getline(file_stream, line);
@@ -65,70 +61,48 @@ void check_conf_file(std::string file_name) {
 				if (skip_line(line))
 					continue;
 				
-				if (line != "{"){
-					std::cout << "7\n";
+				if (line != "{")
 					conf_error(line_nb, line);
-				}
 
-				std::cout << "Set to true\n";
 				open_server = true;
 				break ;
 			}
 		}
 
 		else if (line.find("location") != std::string::npos ) {
-			if (!open_server || open_location) {
-					std::cout << "6\n";
+			if (!open_server || open_location)
 				conf_error(line_nb, line);
-			}
 
 			std::vector<std::string> tokens = tokenize_string(line);
-			if (tokens.size() != 3 || tokens[0] != "location" || tokens[2] != "[") {
-					std::cout << "5\n";
+			if (tokens.size() != 3 || tokens[0] != "location" || tokens[2] != "[")
 				conf_error(line_nb, line);
-			}
 
 			open_location = true;	
 		}
 		else { 		
 			if (line == "}") {
-				if (!open_server || open_location) {
-					std::cout << "serv " << open_server << "loc " << open_location << std::endl;
-					std::cout << "4\n";
+				if (!open_server || open_location)
 					conf_error(line_nb, line);
-				}
-				else {
-					std::cout << "set to false\n";
+				else
 					open_server = false;
-				}
 			}
 
 			else if (line == "]") {
-				if (!open_server || !open_location) {
-					std::cout << "3\n";
+				if (!open_server || !open_location)
 					conf_error(line_nb, line);
-				}
 				else
 					open_location = false;
 			}
 
 			else {
-				// if (line == "[" || line.back() != ';') {
-				if (line == "[" || line[line.length() - 1] != ';') {
-					std::cout << "2\n";
+				if (line == "[" || line[line.length() - 1] != ';')
 					conf_error(line_nb, line);
-				}
-
-				
 
 				std::vector<std::string> tokens = tokenize_string(line);
-				if (tokens.size() != 2) {
-					std::cout << "1\n";
+				if (tokens.size() != 2)
 					conf_error(line_nb, line);
-				}
 			}
 		}
-		
 	}
 
 	if (open_server || open_location)
@@ -151,15 +125,16 @@ void configure_servers(std::string file_name, std::vector<Server> *servers) {
 	while (file_stream) {
 		
 		std::getline(file_stream, line);
-		
-		line = trim(line);
-		
 		if (skip_line(line))
 			continue;
 
+		line = trim(line);
 		if (line == "server") {
 
-			std::getline(file_stream, line); // go past '{'
+			// go past '{'
+			std::getline(file_stream, line); 
+			while (skip_line(line))
+				std::getline(file_stream, line);
 			
 			Server *server = new Server();
 

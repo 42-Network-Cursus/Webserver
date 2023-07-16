@@ -10,10 +10,10 @@
 # include <stdlib.h>
 
 # define END_HEADER "\r\n\r\n"
-# define BACKLOG 10 // queue of nb of connexions waiting to be accepted by listen()
+# define BACKLOG 10000 // queue of nb of connexions waiting to be accepted by listen()
 
 // COMMENT TO STOP PRINTING
-# define DEBUG
+// # define DEBUG
 
 /*
 	execve, dup, dup2, pipe, strerror, gai_strerror,
@@ -33,9 +33,9 @@ void 	add_new_socket_to_pfds(std::vector<Server> &servers, std::vector<struct po
 void 	handle_pollin(std::vector<Server> &servers, std::vector<struct pollfd> &all_pfds, std::pair<int, int> idx_pair, std::vector<Request> &requests, int idx);
 
 // POLLOUT
-void	eraseFD(int fd, std::vector<Server> servers);
-int 	sendAll(int s, const char *buf, int len);
-int 	sendResponse(int fd, Response response);
+void	erase_fd_from_server(int fd, std::vector<Server> servers);
+// int 	sendAll(int s, const char *buf, int len);
+void 	sendResponse(int fd, Response response);
 int 	get_request_index(int sockfd, std::vector<Request> requests);
 void	handle_pollout(std::vector<Server> &servers, std::vector<struct pollfd> &all_pfds, int idx, std::vector<Request> &requests);
 

@@ -1,6 +1,6 @@
 #include "webserv.hpp"
 
-void eraseFD(int fd, std::vector<Server> servers) {
+void erase_fd_from_server(int fd, std::vector<Server> servers) {
 	for (size_t i = 0; i < servers.size() ; i++) {
 			
 			std::vector<struct pollfd> test = servers[i].getPfds();
@@ -16,28 +16,47 @@ void eraseFD(int fd, std::vector<Server> servers) {
 	}
 }
 
-int sendAll(int s, const char *buf, int len) {
-	int total = 0; // Bytes sent
-	int bytesLeft = len; // Bytes left to send
-	int n;
+// int sendAll(int s, const char *buf, int len) {
+// 	int total = 0; // Bytes sent
+// 	int bytesLeft = len; // Bytes left to send
+// 	int n;
 
-	while (total < len) {
-		n = send(s, buf + total, bytesLeft, 0);
-		if (n == -1)
-			break;
-		total += n;
-		bytesLeft -= n;
-	}
+// 	while (total < len) {
+// 		n = send(s, buf + total, bytesLeft, 0);
+// 		// NEED TO CHECK 0 AS WELL
+// 		// -1 means ERROR, NEED TO PURGE CLIENT FD
+// 		if (n == -1)
+// 			break;
+// 		if (n == 0)
+// 			std::cout << "\n\n 0 BYTES SENT\n\n";
+// 		total += n;
+// 		bytesLeft -= n;
+// 	}
 
-	len = total;
+// 	len = total;
 
-	return n == -1 ? -1 : 0;
-}
+// 	return n == -1 ? -1 : 0;
+// }
 
-int sendResponse(int fd, Response response) {
+void sendResponse(int fd, Response response) {
 	std::string msg = response.getResponseInString();
+	size_t 		total = 0; // Bytes sent
+	int 		bytesLeft = msg.length(); // Bytes left to send
+	int 		bytesRead = 0;
 
-	return sendAll(fd, msg.c_str(), msg.length());
+	while (total < msg.length()) {
+		bytesRead = send(fd, msg.c_str() + total, bytesLeft, 0);
+
+		if (bytesRead == -1) {
+			std::cout << "Error sending response\n";
+			break;
+		}
+		if (bytesRead == 0 && bytesLeft > 0)
+				continue;
+
+		total += bytesRead;
+		bytesLeft -= bytesRead;
+	}
 }
 
 int get_request_index(int sockfd, std::vector<Request> requests) {
@@ -58,8 +77,6 @@ int get_request_index(int sockfd, std::vector<Request> requests) {
 void handle_pollout(std::vector<Server> &servers, std::vector<struct pollfd> &all_pfds, int idx, std::vector<Request> &requests) {
 	int sockfd = all_pfds[idx].fd;
 	int req_idx = get_request_index(sockfd, requests);
-
-	// Request re = requests[req_idx];
 	
 	#ifdef DEBUG
 	requests[req_idx].print();
@@ -68,10 +85,10 @@ void handle_pollout(std::vector<Server> &servers, std::vector<struct pollfd> &al
 	Response response(requests[req_idx]);
 	sendResponse(sockfd, response);
 	
-	// std::vector<Request>::iterator it_erase = requests.begin();
-	// requests.erase(it_erase + req_idx);
+	std::vector<Request>::iterator it_begin = requests.begin();
+	requests.erase(it_begin + req_idx);
 	
 	close(all_pfds[idx].fd);
 	all_pfds.erase(all_pfds.begin() + idx);
-	eraseFD(all_pfds[idx].fd, servers);
+	erase_fd_from_server(all_pfds[idx].fd, servers);
 }
