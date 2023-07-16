@@ -36,7 +36,12 @@ the server should work if one of the configurations isn't functional. Keep going
 
 // CGI w/ fucked script
 
-
+// Location in conf = directory.
+// When accessing URL, check if ends w/ /
+      If yes, is directory, handle 
+      Else, is file.
+      Handle file. Redo path to file w/ root + file
+      If suffix, remove ? .html
 
 // COUT some stuff
 

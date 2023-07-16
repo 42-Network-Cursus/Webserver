@@ -182,6 +182,7 @@ void	Response::deleteMethod(Request request)
 std::string Response::getResponseInString()
 {
 	std::string response = _header.transformHeaderToString(200, "text/html", intToString(_body.size()), "", "", "") + _body;
+	// std::string response = _header.transformHeaderToString(200, "image/vnd.microsoft.icon", intToString(_body.size()), "", "", "") + _body;
 
 	return response;
 }
