@@ -1,6 +1,8 @@
 #include <iostream>
 #include <sstream>
 #include <fstream>
+#include <stdlib.h>
+#include <string>
 
 #include "utils.hpp"
 
@@ -111,7 +113,8 @@ void check_conf_file(std::string file_name) {
 			}
 
 			else {
-				if (line == "[" || line.back() != ';') {
+				// if (line == "[" || line.back() != ';') {
+				if (line == "[" || line[line.length() - 1] != ';') {
 					std::cout << "2\n";
 					conf_error(line_nb, line);
 				}

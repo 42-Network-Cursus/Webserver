@@ -321,7 +321,7 @@ bool Response::checkUploadPath(std::string path)
 	path = deleteWhiteSpace(path);
 	// std::cout << "--------------------------------------------------------------- path directory: " << path << std::endl;
 	DIR* dir = opendir(path.c_str());
-	if (dir != nullptr)
+	if (dir != NULL)
 	{
 		closedir(dir);
 		return true;

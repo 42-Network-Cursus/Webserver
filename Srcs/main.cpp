@@ -20,12 +20,11 @@ std::pair<int, int> get_idx_server_fd(std::vector<Server> &servers, int fd)
 }
 
 int main(int argc, char *argv[]) {
-	
 	std::vector<Server>			servers;
 	std::vector<Request>		requests;
 	std::vector<struct pollfd> 	all_pfds;
+	std::string 				file_name;
 
-	std::string 	file_name;
 	if (argc > 2) {
 		std::cout << "Too many args" << std::endl;
 		return 1;
@@ -61,10 +60,11 @@ int main(int argc, char *argv[]) {
 		
 			// check if someone is ready to read
 			if (all_pfds[i].revents & POLLIN) {
-
 				std::pair<int, int> idx_pair = get_idx_server_fd(servers, all_pfds[i].fd);
+				
 				if (idx_pair.first == -1 && idx_pair.second == -1)
 					continue ;
+
 				handle_pollin(servers, all_pfds, idx_pair, requests, i);
 			}
 			
@@ -72,6 +72,7 @@ int main(int argc, char *argv[]) {
 			if (all_pfds[i].revents & POLLOUT){
 				if (requests.size() == 0)
 					continue ;
+					
 				handle_pollout(servers, all_pfds, i, requests);				
 			}
 		}

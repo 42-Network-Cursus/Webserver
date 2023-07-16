@@ -5,7 +5,9 @@
 # include "server.hpp"
 # include "request.hpp"
 # include "response.hpp"
+
 # include <cstring>
+# include <stdlib.h>
 
 # define END_HEADER "\r\n\r\n"
 # define BACKLOG 10 // queue of nb of connexions waiting to be accepted by listen()

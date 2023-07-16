@@ -1,6 +1,9 @@
 NAME	=	webserv
 CC		=	c++ \
-#-Wall -Wextra -Werror -std=c++98
+-Wall -Wextra -Werror -std=c++98
+
+S		=	Srcs/
+O		=	Objs/
 
 INCL	=	-I ./Includes/ \
 			-I ./Includes/Classes/
@@ -19,20 +22,31 @@ SRCS	=	Srcs/main.cpp \
 			Srcs/Utils/utility.cpp \
 			Srcs/Utils/cgi.cpp
 
-OBJS 	= 	$(SRCS:.c=.o)
+OBJS 	= 	$(SRCS:$S%=$O%.o)
+
+
 
 
 all		:	$(NAME)
 
+$O		:
+			@mkdir $@
+			@mkdir $@/Classes
+			@mkdir $@/Utils
+
+$(OBJS)	:	| $O
+$(OBJS)	:	$O%.o: $S%
+			$(CC) $(INCL) -c $< -o $@
+
 $(NAME)	:	${OBJS}	
-			${CC} ${OBJS} ${INCL} -o ${NAME}
+			${CC} ${INCL} $^ -o ${NAME}
 
-clean :
+clean	:
+			rm -rf $O
 
-fclean :
+fclean 	:	clean
+			rm -rf ${NAME}
 
-re :
-	rm -rf webserv
-	make all
+re		: fclean all
 
-.PHONY : all clean fclean re
+.PHONY	: all clean fclean re
