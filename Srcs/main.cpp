@@ -1,5 +1,18 @@
 #include "webserv.hpp"
 
+// Use as signal ctrl-c ?
+void clean_exit(std::vector<Server *> &servers)
+{
+	unsigned int i = 0;
+	while (i < servers.size())
+	{
+		delete servers[i];
+		i++;
+	}
+}
+
+
+
 // first = server idx, second = pfds idx
 std::pair<int, int> get_idx_server_fd(std::vector<Server> &servers, int fd)
 {
@@ -45,6 +58,8 @@ int main(int argc, char *argv[]) {
 	for (size_t i = 0; i < servers.size(); i++) {
 		all_pfds.push_back(servers[i].getPfds()[0]);
 	}
+
+	// signal(SIGINT, &fct_);
 
 	// main loop
 	while(1) { 

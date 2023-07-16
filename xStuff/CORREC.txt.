@@ -1,0 +1,45 @@
+Search for all read/recv/write/send on a socket and check that, if an error is returned, the client is removed.
+
+Setup a default file to search for if you ask for a directory.
+=> CHAT GPT
+When index directory listing is not turned on in Nginx, and you attempt to access a directory on a website, the server typically responds with an HTTP 403 Forbidden status code. This indicates that the server understands the request, but it refuses to fulfill it due to insufficient permissions.
+
+By default, Nginx does not enable directory listing, meaning that if there is no specific index file (e.g., index.html, index.php) present in the directory, Nginx won't automatically generate a directory listing for you to view the contents.
+
+Instead, Nginx relies on the presence of an index file specified in its configuration to determine what content should be served when accessing a directory. If the index file is not found or not configured, Nginx will return a 403 Forbidden error.
+
+This behavior is a security measure to prevent unintentional exposure of directory contents. It ensures that visitors cannot browse the directory structure and access files that should not be publicly accessible.
+
+Traduction:
+ if directory listing on: return index.html
+ else return 403
+
+
+
+
+Setup routes in a server to different directories.
+
+The CGI should be run in the   directory for relative path file access.????
+
+cgi -> script infinite loop ?? OR error
+  --> NO CRASH + ERROR VISIBLE
+
+
+   Launch multiple servers at the same time with different configurations but with common ports. Does it work? If it does, ask why
+the server should work if one of the configurations isn't functional. Keep going
+    -> Open to interpretation ??
+
+
+
+// EXIT ???
+
+// directory search
+
+// CGI w/ fucked script
+
+
+
+// COUT some stuff
+
+
+// HOW TO SHOW UPLOADED HTML PAGE W/O CONFIG ??????

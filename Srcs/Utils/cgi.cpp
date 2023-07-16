@@ -48,6 +48,8 @@ std::string get_body_from_cgi(std::string script) {
         // Execute the PHP script
         execve(CGI_PATH.c_str(), const_cast<char**>(command), NULL);
         
+		// exit(EXIT_FAILURE);
+		
         // If execve returns, an error occurred
         std::cerr << "Failed to execute the PHP script." << std::endl;
         return "";
