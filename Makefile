@@ -5,15 +5,20 @@ CC		=	c++ \
 INCL	=	-I ./Includes/ \
 			-I ./Includes/Classes/
 
-SRCS	=	Srcs/webserv.cpp \
-			Srcs/utils.cpp \
+SRCS	=	Srcs/main.cpp \
+			Srcs/pollin.cpp \
+			Srcs/pollout.cpp \
 			\
 			Srcs/Classes/server.cpp \
 			Srcs/Classes/response.cpp \
 			Srcs/Classes/response_header.cpp \
 			Srcs/Classes/request.cpp \
-			Srcs/Classes/location.cpp
-			
+			Srcs/Classes/location.cpp \
+			\
+			Srcs/Utils/configuration.cpp \
+			Srcs/Utils/utility.cpp \
+			Srcs/Utils/cgi.cpp
+
 OBJS 	= 	$(SRCS:.c=.o)
 
 

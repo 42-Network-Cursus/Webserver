@@ -23,4 +23,18 @@
 	getprotobyname, fcnt
 */
 
+// POLLIN
+// bool recv_header(std::string request);
+size_t	getContentSize(std::string request);
+Request readRequest(std::vector<Server> &servers, std::vector<struct pollfd> &all_pfds, std::pair<int, int> idx_pair, int idx);
+void 	add_new_socket_to_pfds(std::vector<Server> &servers, std::vector<struct pollfd> &all_pfds, int idx_serv, int idx);
+void 	handle_pollin(std::vector<Server> &servers, std::vector<struct pollfd> &all_pfds, std::pair<int, int> idx_pair, std::vector<Request> &requests, int idx);
+
+// POLLOUT
+void	eraseFD(int fd, std::vector<Server> servers);
+int 	sendAll(int s, const char *buf, int len);
+int 	sendResponse(int fd, Response response);
+int 	get_request_index(int sockfd, std::vector<Request> requests);
+void	handle_pollout(std::vector<Server> &servers, std::vector<struct pollfd> &all_pfds, int idx, std::vector<Request> &requests);
+
 #endif // WEBSERV_HPP
