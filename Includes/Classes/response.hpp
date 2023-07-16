@@ -38,7 +38,7 @@ class Response {
 
 		bool	isValidPathFile();
 		void	readFile();
-		void	writeFile(std::string content);
+		void	writeFile(std::string filename, std::string content);
 
 		std::string getPageErrorStatus(int statusCode);
 		bool 		checkUploadPath(std::string path);

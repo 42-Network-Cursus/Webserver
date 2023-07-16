@@ -13,6 +13,7 @@ void Request::print() {
 	_config.print();
 	std::cout << "Server name : " << _server_name << std::endl;
 	std::cout << "Content-Size: " << _contentSize << std::endl;
+	std::cout << "Content-Type: " << _contentType << std::endl;
 	std::cout << "Body : " << _body << std::endl << std::endl;
 }
 
@@ -31,7 +32,12 @@ Request::~Request()
 
 Request::Request(const Request &copy) 
 : _socketFd(copy._socketFd), _method(copy._method), _path(copy._path), _version(copy._version), _config(copy._config)
-{}
+{
+	this->_contentSize = copy._contentSize;
+	this->_contentType = copy._contentType;
+	this->_body = copy._body;
+	this->_query = copy._query;
+}
 
 Request &Request::operator=(const Request &other)
 {
@@ -42,6 +48,10 @@ Request &Request::operator=(const Request &other)
 		this->_path = other._path;
 		this->_version = other._version;
 		this->_config = other._config;
+		this->_contentSize = other._contentSize;
+		this->_contentType = other._contentType;
+		this->_body = other._body;
+		this->_query = other._query;
 	}
 	return (*this);
 }
@@ -105,6 +115,7 @@ void Request::setBody(const std::string &body) { this->_body = body; }
 
 void Request::setContentSize(int size) { this->_contentSize = size; }
 
+void Request::setContentType(const std::string &type) { this->_contentType = type; }
 // METHODS
 bool Request::isAcceptedMethod()
 {
@@ -196,8 +207,9 @@ void Request::checkMultiPart()
 	size_t pos = _contentType.find(CT_MULTI);
 	if (pos == std::string::npos)
 		return ;
-	_contentType = CT_MULTI;
-	
+	std::cout << "On est un fichier !" << std::endl;
+	setContentType(CT_MULTI);
+	std::cout << "ContentType in checkMultiPart: " << _contentType << std::endl;
 	// std::string newType = _contentType.substr(0, CT_MULTI.size());
 	// std::cout << "New Type ? " << newType << "New Type avec .substr()" <<_contentType.substr(0, CT_MULTI.size()) <<  "ContentType ? " << _contentType << std::endl;
 

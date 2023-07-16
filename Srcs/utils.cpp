@@ -377,4 +377,104 @@ std::string getCGIbyExtension(std::string ext)
 	else
 		return CGI_UNKNOWN;
 }
+
+bool isFile(std::string str)
+{
+	size_t pos = str.find(CT_MULTI);
+	std::cout << "POS? : " << pos << std::endl;
+	if (pos == std::string::npos)
+	{
+		std::cout << "Pas du tout" << std::endl;
+		return false;
+	}
+	std::cout << "On est bon !" << std::endl;
+	return true;
+}
+
+std::string getFilename(std::string body)
+{
+	std::istringstream iss(body);
+	std::string line;
+
+	std::string content = "Content-Disposition:";
+	size_t contentSize = content.size();
+	
+	std::string filename = "";
+	std::string tmp;
+	while (std::getline(iss, line))
+	{
+		// std::cout << "======== Check Content-Length: " << line << std::endl;
+		if (line.compare(0, contentSize, content) == 0)
+		{
+			size_t pos = line.find("filename=");
+			if (pos == std::string::npos)
+				return (filename);
+			filename = line.substr(pos + 9);
+			size_t start = filename.find("\"");
+			size_t end = filename.rfind("\"");
+			if (start != std::string::npos && end != std::string::npos && start < end)
+				filename = filename.substr(start + 1, end - start - 1);
+			return filename;
+		}
+	}
+	return (filename);
+}
+
+/**
+ * @brief Get the Content Body object
+ * 
+ * @param body Body of the request
+ * @return Content of the body
+ */
+std::string getContentBody(std::string body)
+{
+	std::cout << "In getContentBody" << std::endl;
+	std::istringstream iss(body);
+	std::string line;
+	
+	
+	std::string tmp;
+	std::string delimiter;
+	std::getline(iss, line);
+	delimiter = trim(line);
+	std::cout << "Delimiter: " << delimiter << std::endl;
+	std::cout << "First Boucle" << std::endl;
+	while (std::getline(iss, line))
+	{
+		std::cout << "Line: " << line << " | Size: " << line.size() << std::endl;
+		// if (line.size() == 2 && line == "\r\n")
+		// 	break ;
+		// if (line.size() == 4 && line == "\r\n\r\n")
+		// 	break;
+		if (line.size() == 1)
+			break;
+	}
+	std::cout << "Second Boucle" << std::endl;
+	std::string res = "";
+	std::string end = "\n";
+	// A garder ?
+	#ifdef __linus__
+		end = "\n";
+	#endif
+	#ifdef __WIN32
+		end = "\r\n";
+	#endif
+	while (std::getline(iss, line))
+	{	
+		std::cout << "Line: " << line << std::endl;
+		std::cout << "Deli: " << delimiter << std::endl;
+		std::cout << "Check: " << (line.compare(0, delimiter.size(), delimiter.c_str())) << std::endl;
+		if (line.find(delimiter) != std::string::npos)
+		{
+			std::cout << "On break" << std::endl;
+			break;
+		}
+		std::cout << "On est passé le check ?" << std::endl;
+		line = rtrim(line);
+		res += line + end;
+		std::cout << "RES in the boucle: " << res << std::endl;
+	}
+	std::cout << "RES: \n" << res << std::endl;
+	return res;
+}
 // --------------

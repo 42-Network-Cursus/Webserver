@@ -106,7 +106,7 @@ Request readRequest(std::vector<Server> &servers, std::vector<struct pollfd> &al
 	Request res = Request::parseRequest(header, all_pfds[idx].fd, servers[idx_pair.first]);
 	res.setBody(body);
 	res.setContentSize(getContentSize(header));
-
+	
 	return res;
 }
 

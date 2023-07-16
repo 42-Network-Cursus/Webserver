@@ -121,7 +121,8 @@ void	Response::getMethod(Request request)
  */
 void	Response::postMethod(Request request)
 {
-	// std::cout << "------------------------------ In POSTMETHOD" << std::endl;
+	std::cout << "------------------------------ In POSTMETHOD" << std::endl;
+	std::cout << "ContentType: " << request.getContentType() << std::endl;
 	_path = request.getPath();
 	std::string ext = getExtension(_path);
 	// std::cout << "POSTMETHOD:\n\nContentType: " << request.getContentType() << std::endl;
@@ -131,24 +132,32 @@ void	Response::postMethod(Request request)
 		// std::cout << "On emploie CGI" << std::endl;
 		return ;
 	}
-	else if (true || request.getContentType() == CT_MULTI) // A changer !!!
+	// else if (true || request.getContentType() == CT_MULTI) // A changer !!!
+	else if (isFile(request.getContentType()))
 	{
+		std::string filename = getFilename(request.getBody());
+		std::string fileContent = getContentBody(request.getBody());
+		std::cout << "Filename: " << filename << "\nfile Content: " << fileContent << std::endl;
+		// request.setPath("/");
+		// getMethod(request);
+		// return ;
 		// Un truc... Encore en train de tout setup
 		// std::cout << "=============================================================== On va créer le fichier" << std::endl;
-		if (checkUploadPath(request.getUploadPath()) == false)
-		{
-			_statusCode = 500;
-			_path = "html/errorPage/" + intToString(_statusCode) + "_page.html";
-			readFile();
-			_path = "";
-			_header = ResponseHeader();
-			_header.setContentType(CT_HTML);
-			_header.setContentLength(intToString(_body.size()));
-			return ;
-		}
+		// if (checkUploadPath(request.getUploadPath()) == false)
+		// {
+		// 	_statusCode = 500;
+		// 	_path = "html/errorPage/" + intToString(_statusCode) + "_page.html";
+		// 	readFile();
+		// 	_path = "";
+		// 	_header = ResponseHeader();
+		// 	_header.setContentType(CT_HTML);
+		// 	_header.setContentLength(intToString(_body.size()));
+		// 	return ;
+		// }
 		// if (request.getUploadPath() != request.getPath())
 		// 	_path = request.getUploadPath() + request.getPath();
-		writeFile(request.getBody());
+		writeFile(filename, fileContent);
+		// return ;
 	}
 	// std::cout << "On post !" << std::endl;
 	request.setPath("/");
@@ -241,22 +250,28 @@ void	Response::readFile()
  * 
  * @param content Content to write
  */
-void	Response::writeFile(std::string content)
+void	Response::writeFile(std::string filename, std::string content)
 {
 	// std::cout << "On tente de creer le fichier" << std::endl;
 	std::ofstream file;
 
-	if (isValidPathFile() == false)
+	std::string filepath = "Websites/upload/" + filename;
+	bool test = true;
+	// if (true || isValidPathFile() == false)
+	if (test) // Si le fichier n'existe pas (function a ajouter par la suite)
 	{
-		file.open(_path.c_str(), std::ofstream::out | std::ofstream::trunc);
+		std::cout << "Filepath ?: " << filepath << std::endl;
+		file.open(filepath.c_str(), std::ofstream::out | std::ofstream::trunc);
 		if (file.is_open() == false)
 		{
+			std::cout << "On est une merde..." << std::endl;
 			_statusCode = 403;
 			_path = "html/errorPage/" + intToString(_statusCode) + "_page.html";
 			readFile();
 			_path = "";
 			return ;
 		}
+		std::cout << "LET'S GO!!!" << std::endl;
 		file << content;
 		file.close();
 		_statusCode = 201;

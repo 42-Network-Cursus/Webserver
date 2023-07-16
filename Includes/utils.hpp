@@ -36,6 +36,9 @@ std::string	getExtension(std::string str);
 bool		isCGIExtension(std::string ext);
 std::string getCGIbyExtension(std::string ext);
 size_t 		getContentSize(std::string request);
+bool		isFile(std::string str);
+std::string getFilename(std::string body);
+std::string getContentBody(std::string body);
 
 void readBody(std::string str);
 
