@@ -32,7 +32,7 @@ void 			            configure_servers(std::string file_name, std::vector<Server>
 
 // CGI
 void 		get_cgi(std::string script_path, std::string &CGI, std::string &CGI_PATH);
-std::string get_body_from_cgi(std::string script);
+std::string get_body_from_cgi(std::string script, char *env = NULL);
 
 // Used ?
 std::string	getExtension(std::string str);
