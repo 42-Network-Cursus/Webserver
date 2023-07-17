@@ -157,6 +157,7 @@ Location Server::get_location_config(std::ifstream &file_stream, std::string lin
 		else if (param == "DELETE")
 			rv.setMethod("DELETE", stringToBool(param_val));
 	}
+	rv.setHostPort(trim(_host) + ":" + trim(_port));
 	return rv;
 }
 
@@ -211,20 +212,20 @@ int 						Server::getSockList() const { return _socklist; }
 
 Location 					&Server::getLocationFromPath(std::string path) {
 
-	// std::cout << "IN GETLOCATIONFROM PATH" << std::endl;
-
 	std::vector<Location>::iterator it_start = _locations.begin();
 	std::vector<Location>::iterator it_end = _locations.end();
 
-	for (; it_start != it_end; it_start++) {
-		// std::cout << it_start->getPath() << " VS " << path << std::endl;
-		if (it_start->getPath() == path)
+	std::string tmp;
+	path = trim(path);
+	while (it_start != it_end)
+	{
+		tmp = it_start->getPath();
+		if (path.compare(0, tmp.length(), tmp) == 0 && tmp != "/" && path != "/")
 			break;
+		if (path == "/")
+			break ;
+		++it_start;
 	}
-	// std::cout << "On est a la fin ?" << std::endl;
-	// std::cout << "check if start == end: " << (it_start == it_end) << std::endl;
-	// if (it_start != it_end)
-	// 	std::cout << it_start->getPath() << std::endl;
 
 	if (it_start == it_end)
 		it_start = _locations.begin();

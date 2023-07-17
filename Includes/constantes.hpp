@@ -20,6 +20,7 @@ const std::string SC_204 = "No Content";
 const std::string SC_400 = "Bad Request";
 const std::string SC_403 = "Forbidden";
 const std::string SC_404 = "Not Found";
+const std::string SC_413 = "Request Entity Too Large";
 const std::string SC_418 = "I'm a teapot";
 
 const std::string SC_500 = "Internal Server Error";
@@ -34,6 +35,7 @@ const std::string CT_HTML = "text/html";
 const std::string CT_CSS = "text/css";
 const std::string CT_JS = "text/javascript";
 const std::string CT_PNG = "image/png";
+const std::string CT_ICON = "image/x-icon";
 const std::string CT_DEFAULT = "text/plain";
 
 const std::string CT_MULTI = "multipart/form-data;";

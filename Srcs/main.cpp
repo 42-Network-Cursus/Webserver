@@ -77,7 +77,6 @@ int main(int argc, char *argv[]) {
 				
 				if (idx_pair.first == -1 && idx_pair.second == -1)
 					continue ;
-
 				handle_pollin(servers, all_pfds, idx_pair, requests, i);
 			}
 			

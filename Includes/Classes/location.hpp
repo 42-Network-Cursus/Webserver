@@ -22,6 +22,7 @@ class Location {
         void setUploadPath(std::string val);
         void setAutoIndex(std::string val);
         void setMethod(std::string method, bool val);
+        void setHostPort(std::string val);
 
         // GETTERS
         std::string                 getPath() const;
@@ -34,6 +35,7 @@ class Location {
         bool                        getAutoIndex() const;
         std::map<std::string, bool> getMethods() const;
         bool                        getMethod(std::string method);
+        std::string                 getHostPort() const;
 		
 		// DEBUG
         void print();
@@ -48,6 +50,7 @@ class Location {
         std::string                 _upload_path;
         bool                        _auto_index;
         std::map<std::string, bool> _methods;
+        std::string                 _host_port;
 
 };
 

@@ -30,9 +30,7 @@ the server should work if one of the configurations isn't functional. Keep going
 
 
 
-// EXIT ???
 
-// directory search
 
 // CGI w/ fucked script
 
@@ -47,3 +45,7 @@ the server should work if one of the configurations isn't functional. Keep going
 
 
 // HOW TO SHOW UPLOADED HTML PAGE W/O CONFIG ??????
+
+// directory search
+
+// redirect

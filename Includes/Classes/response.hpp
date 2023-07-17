@@ -9,6 +9,7 @@
 # include "response_header.hpp"
 # include "request.hpp"
 # include "utils.hpp"
+# include "autoIndex.hpp"
 
 class Response {
 
@@ -36,6 +37,7 @@ class Response {
 		ResponseHeader	_header;
 		std::string 	_body;
 		std::string 	_path;
+		std::string 	_filename;
 
 		bool	isValidPathFile();
 		void	readFile();
