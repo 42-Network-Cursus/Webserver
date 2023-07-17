@@ -68,6 +68,8 @@ std::string getTextByStatusCode(int code)
 			return SC_403;
 		case 404:
 			return SC_404;
+		case 413:
+			return SC_413;
 		case 418:
 			return SC_418;
 		case 500:
@@ -211,7 +213,7 @@ std::string getFilename(std::string body)
  */
 std::string getContentBody(std::string body)
 {
-	std::cout << "In getContentBody" << std::endl;
+	std::cout << "In getContentBody\nBody: \n" << body << std::endl;
 	std::istringstream iss(body);
 	std::string line;
 	
@@ -289,8 +291,9 @@ std::string getContentBody2(std::string body)
 
 std::string getExtensionFile(std::string str)
 {
+	std::cout << "In getEXTENSIONFILE : " << str << std::endl;
 	size_t pos = str.find_last_of(".");
-	if (pos <= 0 || pos == std::string::npos)
+	if (pos <= 0)
 		return ("");
 	std::string res = str.substr(pos + 1);
 	return res;
@@ -306,13 +309,15 @@ std::string getContentType(std::string str)
 		ext.erase(pos);
 	}
 
-	if (ext == "css")
+	if	(ext == "css")
 		return CT_CSS;
-	else if (ext == "js")
+	else if	(ext == "js")
 		return CT_JS;
-	else if (ext == "png")
+	else if	(ext == "ico")
+		return CT_ICON;
+	else if	(ext == "png")
 		return CT_PNG;
-	else if (ext == "html")
+	else if	(ext == "html")
 		return CT_HTML;
 	else
 		return CT_DEFAULT;

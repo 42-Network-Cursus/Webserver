@@ -13,6 +13,7 @@ void Location::print() {
     std::cout << "	script path: " << _script_path << std::endl;
     std::cout << "	upload path: " << _upload_path << std::endl;
     std::cout << "	auto index: " << _auto_index << std::endl;
+    std::cout << "	host:port: " << _host_port << std::endl;
     std::cout << "	Methods: " << std::endl;
     std::cout << "		GET: " << getMethod("GET") << std::endl;
     std::cout << "		POST: " << getMethod("POST") << std::endl;
@@ -39,21 +40,23 @@ Location::Location(const Location &copy) {
     _upload_path            = copy.getUploadPath();
     _auto_index             = copy.getAutoIndex();
     _methods                = copy.getMethods();
+    _host_port              = copy.getHostPort();
     
 }
 
 Location &Location::operator=(const Location &rhs) {
     
 	if (this != &rhs) {
-        _path                  	= rhs.getPath();
-        _root                   = rhs.getRoot();
-        _index                  = rhs.getIndex();
-        _client_max_body_size   = rhs.getClientMaxBodySize();
-        _error_page_path        = rhs.getErrorPagePath();
-		_script_path            = rhs.getScriptPath();
-        _upload_path            = rhs.getUploadPath();
-        _auto_index             = rhs.getAutoIndex();
-        _methods                = rhs.getMethods();
+        this->_path                   = rhs.getPath();
+        this->_root                   = rhs.getRoot();
+        this->_index                  = rhs.getIndex();
+        this->_client_max_body_size   = rhs.getClientMaxBodySize();
+        this->_error_page_path        = rhs.getErrorPagePath();
+		this->_script_path            = rhs.getScriptPath();
+        this->_upload_path            = rhs.getUploadPath();
+        this->_auto_index             = rhs.getAutoIndex();
+        this->_methods                = rhs.getMethods();
+        this->_host_port              = rhs.getHostPort();
     }
     return *this;
 }
@@ -75,6 +78,8 @@ void Location::setScriptPath(std::string val) { _script_path = val; }
 void Location::setUploadPath(std::string val) { _upload_path = val; }
 
 void Location::setMethod(std::string method, bool val) { _methods.insert(std::make_pair(method, val)); }
+
+void Location::setHostPort(std::string val) { _host_port = val; }
 
 void Location::setAutoIndex(std::string val) { 
 	val = trim(val);
@@ -103,3 +108,4 @@ std::map<std::string, bool> Location::getMethods() const { return _methods; }
 
 bool                        Location::getMethod(std::string method) { return _methods[method]; }
 
+std::string                 Location::getHostPort() const { return _host_port; }

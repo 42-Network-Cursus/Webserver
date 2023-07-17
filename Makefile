@@ -20,6 +20,7 @@ SRCS	=	Srcs/main.cpp \
 			\
 			Srcs/Utils/configuration.cpp \
 			Srcs/Utils/utility.cpp \
+			Srcs/Utils/autoIndex.cpp \
 			Srcs/Utils/cgi.cpp
 
 OBJS 	= 	$(SRCS:$S%=$O%.o)

@@ -13,6 +13,8 @@ class ResponseHeader
 		ResponseHeader(const ResponseHeader &copy);
 		ResponseHeader &operator=(const ResponseHeader &other);
 		
+		std::string getContentType();
+
 		void setContentType(const std::string &type);
 		void setContentLength(const std::string &length);
 		void setDate(const std::string &date);

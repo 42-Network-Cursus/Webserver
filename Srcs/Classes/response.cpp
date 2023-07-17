@@ -41,6 +41,7 @@ Response::Response(Request request)
 {
 
 	_statusCode = 200;
+	_filename = "";
 
 	if (request.isAcceptedMethod() == false)
 		_statusCode = 501;
@@ -90,10 +91,61 @@ void	Response::getMethod(Request request)
 			return;
 		}
 		else
-			_path = request.getDefaultPage();
+		{
+			if (request.getLocationConfig().getAutoIndex())
+			{
+				std::cout << "PATH IN AUTOINDEX: " << _path << std::endl;
+				_path = request.getLocationConfig().getRoot();
+				std::cout << "PATH IN AUTOINDEX SECOND ROW !!!! : " << _path << std::endl;
+				_path = trim(_path);
+				// _path.pop_back();
+				_body = generateAutoIndex(_path, request.getLocationConfig().getHostPort());
+				_filename = "autoindex.html";
+				
+				return ;
+			}
+			else	
+				_path = request.getDefaultPage();
+		}
 	}
-	if (_path == "/")
-		_path = request.getDefaultPage();
+	// if (_path == request.getLocationConfig().getPath())
+	// {
+	// 	std::cout << "On est ici normalement..." << std::endl;
+	// 	_path = request.getDefaultPage();
+	// }
+	else
+	{
+		std::cout << "on est bien rentre ici !" << std::endl;
+		std::cout << _path << " VS " << request.getLocationConfig().getPath() << std::endl;
+
+		size_t pos = _path.find("/"); 
+		size_t pos2 = _path.find("/", pos + 1);
+		if (pos2 == std::string::npos)
+		{
+			std::cout << "Location Path: " << request.getLocationConfig().getPath() << std::endl;
+			std::cout << "Root: " << request.getLocationConfig().getRoot() << std::endl;
+			if (_path[0] == '/')
+			{
+				std::string root = request.getLocationConfig().getRoot();
+				root.pop_back();
+				root = trim(root);
+				_path = root + _path;
+
+			}
+		}
+		else
+		{
+			std::cout << "On est ici" << std::endl;
+			std::string tmp = _path.substr(pos2 + 1);
+			std::cout << "tmp: " << tmp << std::endl;
+			std::string root = request.getLocationConfig().getRoot();
+			std::cout << "Root: " << root << std::endl;
+			root = trim(root);
+			_path = root + tmp;
+		}
+	}
+	
+	std::cout << "Avant le readFile ==> Path: " << _path  << std::endl;
 	readFile();
 	if (_statusCode == 404)
 	{
@@ -127,6 +179,18 @@ void	Response::postMethod(Request request)
 	// else if (true || request.getContentType() == CT_MULTI) // A changer !!!
 	else if (isFile(request.getContentType()))
 	{
+		int maxSize = sint(request.getLocationConfig().getClientMaxBodySize());
+		if (request.getContentSize() > maxSize)
+		{
+			_statusCode = 413;
+			_path = "Websites/errorPage/" + intToString(_statusCode) + "_page.html";
+			readFile();
+			_path = "";
+			_header = ResponseHeader();
+			_header.setContentType(CT_HTML);
+			_header.setContentLength(intToString(_body.size()));
+			return ;
+		}
 		_filename = getFilename(request.getBody());
 		std::string fileContent = getContentBody(request.getBody());
 		// std::string fileContent2 = getContentBody2(request.getBody());
@@ -191,13 +255,28 @@ void	Response::deleteMethod(Request request)
 std::string Response::getResponseInString()
 {
 	std::string type;
-	if (_filename != "")
-	{
-		// type = getExtensionFile(_filename);
-		// type = getCont
-	}
+	
+	std::cout << "In response STRING" << std::endl;
 
-	std::string response = _header.transformHeaderToString(200, "text/html", intToString(_body.size()), "", "", "") + _body;
+	if (_statusCode > 400)
+		type = _header.getContentType();
+	else
+	{
+		std::cout << "Before getExtensionFile" << std::endl;
+		if (_filename != "")
+			type = getExtensionFile(_filename);
+		else
+			type = getExtension(_path);
+		std::cout << "After getEtensionFile : " << type << std::endl;
+		if (type == "")
+			type = CT_DEFAULT;
+		else
+			type = getContentType(type);
+	}
+	
+	std::cout << "Content-type in GetResponseINSTRING: " << type << std::endl;
+
+	std::string response = _header.transformHeaderToString(200, type, intToString(_body.size()), "", "", "") + _body;
 	// std::string response = _header.transformHeaderToString(200, "image/jpg", intToString(_body.size()), "", "", "") + _body;
 	// std::string response = _header.transformHeaderToString(200, "image/vnd.microsoft.icon", intToString(_body.size()), "", "", "") + _body;
 

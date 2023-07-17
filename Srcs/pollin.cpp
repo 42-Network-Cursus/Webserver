@@ -29,7 +29,9 @@ size_t getContentSize(std::string request)
 	return (res);
 }
 
-Request readRequest(std::vector<Server> &servers, std::vector<struct pollfd> &all_pfds, std::pair<int, int> idx_pair, int idx) {
+Request readRequest(std::vector<Server> &servers, std::vector<struct pollfd> &all_pfds, std::pair<int, int> idx_pair, int idx)
+{
+	
 	std::string		request;
 	const size_t	bufferSize = 4096;
 	ssize_t 		bytesRead;
@@ -55,7 +57,7 @@ Request readRequest(std::vector<Server> &servers, std::vector<struct pollfd> &al
 		request += std::string(buffer, bytesRead);
 	}
 
-	// std::cout << "REQUEST: " << request << std::endl;
+	std::cout << "\n\n\n\nREQUEST: " << request << std::endl;
 	std::string header = "";
 	std::string body = "";
 	size_t 		headerEnd = request.find("\r\n\r\n");
