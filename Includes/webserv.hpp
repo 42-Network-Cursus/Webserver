@@ -44,8 +44,11 @@ void	handle_pollout(std::vector<Server> &servers, std::vector<struct pollfd> &al
 //
 
 bool		isFile(std::string str);
-
 std::string getFilename(std::string body);
 std::string getContentBody(std::string body);
 std::string getContentBody2(std::string body);
+
+
+std::string getExtensionFile(std::string str);
+std::string getContentType(std::string str);
 #endif // WEBSERV_HPP

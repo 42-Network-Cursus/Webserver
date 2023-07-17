@@ -357,7 +357,7 @@ void get_body_from_cgi(std::string script) {
 std::string getExtension(std::string str)
 {
 	size_t pos = str.find_last_of(".");
-	if (pos <= 0)
+	if (pos <= 0 || pos == std::string::npos)
 		return ("");
 	std::string res = str.substr(pos + 1);
 	return res;

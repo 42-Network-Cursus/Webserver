@@ -36,6 +36,7 @@ class Response {
 		ResponseHeader	_header;
 		std::string 	_body;
 		std::string 	_path;
+		std::string 	_filename;
 
 		bool	isValidPathFile();
 		void	readFile();

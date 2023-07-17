@@ -59,7 +59,7 @@ void add_new_socket_to_pfds(std::vector<Server> &servers, std::vector<struct pol
 
 Request readRequest(std::vector<Server> &servers, std::vector<struct pollfd> &all_pfds, std::pair<int, int> idx_pair, int idx)
 {
-	// std::cout << "On readRequest" << std::endl;
+	std::cout << "On readRequest" << std::endl;
 
 	std::string request;
 	const size_t bufferSize = 4096;
@@ -112,10 +112,10 @@ Request readRequest(std::vector<Server> &servers, std::vector<struct pollfd> &al
 
 void handle_pollin(std::vector<Server> &servers, std::vector<struct pollfd> &all_pfds, std::pair<int, int> idx_pair, std::vector<Request> &requests, int idx) {
 	
+	std::cout << "On est rentre POLLIN..." << std::endl;
 	// check if listening socket received a connection	
 	if (servers[idx_pair.first].getPfds()[idx_pair.second].fd == servers[idx_pair.first].getSockList())
 		add_new_socket_to_pfds(servers, all_pfds, idx_pair.first, idx);
-	
 	// Not a listening socket, but ready to read. (Means a request)
 	else 
 	{
@@ -285,8 +285,10 @@ int main(int argc, char *argv[]) {
 			if (all_pfds[i].revents & POLLIN) {
 
 				std::pair<int, int> idx_pair = get_idx_server_fd(servers, all_pfds[i].fd);
+				std::cout << "Aled ? " << idx_pair.first << " " << idx_pair.second << std::endl;
 				if (idx_pair.first == -1 && idx_pair.second == -1)
 					continue ;
+				std::cout << "on a continue BILLY... Il a CONTINUE BILLY !!!" << std::endl;
 				handle_pollin(servers, all_pfds, idx_pair, requests, i);
 			}
 			

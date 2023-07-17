@@ -236,12 +236,6 @@ std::string getContentBody(std::string body)
 	std::string res = "";
 	std::string end = "\n";
 	// A garder ?
-	#ifdef __linus__
-		end = "\n";
-	#endif
-	#ifdef __WIN32
-		// end = "\r\n";
-	#endif
 	while (std::getline(iss, line))
 	{	
 		std::cout << "Line: " << line << std::endl;
@@ -293,5 +287,33 @@ std::string getContentBody2(std::string body)
 	return res;
 }
 
+std::string getExtensionFile(std::string str)
+{
+	size_t pos = str.find_last_of(".");
+	if (pos <= 0 || pos == std::string::npos)
+		return ("");
+	std::string res = str.substr(pos + 1);
+	return res;
+}
 
+std::string getContentType(std::string str)
+{
+	std::string ext = getExtension(str);
+	size_t pos = ext.find_last_of("/");
 
+	if (pos == ext.size() - 1)
+	{
+		ext.erase(pos);
+	}
+
+	if (ext == "css")
+		return CT_CSS;
+	else if (ext == "js")
+		return CT_JS;
+	else if (ext == "png")
+		return CT_PNG;
+	else if (ext == "html")
+		return CT_HTML;
+	else
+		return CT_DEFAULT;
+}

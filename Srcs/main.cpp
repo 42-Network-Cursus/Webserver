@@ -77,8 +77,9 @@ int main(int argc, char *argv[]) {
 				
 				if (idx_pair.first == -1 && idx_pair.second == -1)
 					continue ;
-
+				std::cout << "BORDEL D'AMSTERDAM ! J'EN AI MARRE DE ME FAIRE SUCER ! JE SUIS VENU ICI POUR ME TAPER UNE TRANS ET ETRE PASSIF ! QUE QUELQU'UN M'ENCULE PUTAIN !" << std::endl;
 				handle_pollin(servers, all_pfds, idx_pair, requests, i);
+				std::cout << "WHOOOO WEBSERV ! Plus doucement..." << std::endl;
 			}
 			
 			// handle POLLOUT event, socket ready to write
