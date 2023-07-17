@@ -44,32 +44,30 @@ Request readRequest(std::vector<Server> &servers, std::vector<struct pollfd> &al
 	{
 		// std::cout << "On est la ? " << std::endl;
 		bytesRead = recv(all_pfds[idx].fd, buffer, bufferSize, 0);
+		std::cout << "readBytes: " << bytesRead << std::endl;
+		
 		if (bytesRead <= 0) {
+			std::cout << "ERROR: " << strerror(errno) << std::endl;
 			if (bytesRead == 0)
 				std::cout << "Pollserver: socket " << all_pfds[idx].fd << " hung up" << std::endl;
-			else 
-				break;
+			// else 
+			// 	break;
 
 			close(all_pfds[idx].fd);
 			all_pfds.erase(all_pfds.begin() + idx);
 			check = false;
+			// break;
 		}
-		request += std::string(buffer, bytesRead);
+		else
+			request += std::string(buffer, bytesRead);
 	}
 
-	std::cout << "\n\n\n\nREQUEST: " << request << std::endl;
+	std::cout << "\n\n\n\nREAD REQUEST: \n" << request << std::endl;
 	std::string header = "";
 	std::string body = "";
 	size_t 		headerEnd = request.find("\r\n\r\n");
 
-	// std::cout << "Position de \"\r\n\r\n\": " << headerEnd << " | Fin de requete ? " << (headerEnd == std::string::npos) << std::endl;
-	if (headerEnd != std::string::npos) {
-		header = request.substr(0, headerEnd + 2);
-		// std::cout << request.substr(headerEnd + 2) << s:;
-		if (headerEnd + 4 < request.length())
-			body = request.substr(headerEnd + 4);
-	}
-	else
+
 		header = request;
 
 	// std::cout << "\n\n\n====== HEADER: \n" << header << std::endl;
