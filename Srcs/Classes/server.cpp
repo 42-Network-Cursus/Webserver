@@ -95,7 +95,6 @@ void Server::get_listening_socket() {
 	}
 
 	if (p == NULL) {
-		// std::cerr << "listen: " << strerror(errno) << std::endl;
 		std::cerr << "Could not find address to bind to" << std::endl;
 		exit(1);
 	}
