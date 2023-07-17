@@ -25,8 +25,6 @@ SRCS	=	Srcs/main.cpp \
 OBJS 	= 	$(SRCS:$S%=$O%.o)
 
 
-
-
 all		:	$(NAME)
 
 $O		:

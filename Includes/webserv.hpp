@@ -38,9 +38,6 @@ void	erase_fd_from_server(int fd, std::vector<Server> servers);
 void 	sendResponse(int fd, Response response);
 int 	get_request_index(int sockfd, std::vector<Request> requests);
 void	handle_pollout(std::vector<Server> &servers, std::vector<struct pollfd> &all_pfds, int idx, std::vector<Request> &requests);
-
-
-
 //
 
 bool		isFile(std::string str);
