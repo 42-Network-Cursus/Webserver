@@ -34,15 +34,19 @@ void 			            configure_servers(std::string file_name, std::vector<Server>
 void 		get_cgi(std::string script_path, std::string &CGI, std::string &CGI_PATH);
 std::string get_body_from_cgi(std::string script);
 
+// Used ?
 std::string	getExtension(std::string str);
 bool		isCGIExtension(std::string ext);
 std::string getCGIbyExtension(std::string ext);
+// ----
+
 size_t 		getContentSize(std::string request);
 bool		isFile(std::string str);
 
 std::string getFilename(std::string body);
 std::string getContentBody(std::string body);
 std::string getContentBody2(std::string body);
+
 // template<typename T>
 // bool containsValue(const std::vector<T> &vect, const T &value);
 

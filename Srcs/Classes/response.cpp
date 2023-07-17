@@ -193,7 +193,7 @@ std::string Response::getResponseInString()
 	std::string type;
 	if (_filename != "")
 	{
-		type = getExtensionFile(_filename);
+		// type = getExtensionFile(_filename);
 		// type = getCont
 	}
 
