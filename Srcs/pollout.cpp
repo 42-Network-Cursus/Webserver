@@ -1,6 +1,6 @@
 #include "webserv.hpp"
 
-void erase_fd_from_server(int fd, std::vector<Server> servers) {
+void erase_fd_from_server(int fd, std::vector<Server> &servers) {
 	for (size_t i = 0; i < servers.size() ; i++) {
 			
 			std::vector<struct pollfd> test = servers[i].getPfds();
