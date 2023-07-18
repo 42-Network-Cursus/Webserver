@@ -15,15 +15,12 @@
 // COMMENT TO STOP PRINTING
 // # define DEBUG
 
-/*
-	execve, dup, dup2, pipe, strerror, gai_strerror,
-	errno, dup, dup2, fork, htons, htonl, ntohs, ntohl,
-	select, poll, epoll (epoll_create, epoll_ctl,
-	epoll_wait), kqueue (kqueue, kevent), socket,
-	accept, listen, send, recv, bind, connect,
-	getaddrinfo, freeaddrinfo, setsockopt, getsockname,
-	getprotobyname, fcnt
-*/
+
+// SIGNAL
+extern bool G_EXIT;
+
+void exit_bool(int);
+void clean_exit(std::vector<Server> &servers);
 
 // POLLIN
 // bool recv_header(std::string request);
@@ -48,4 +45,5 @@ std::string getContentBody2(std::string body);
 
 std::string getExtensionFile(std::string str);
 std::string getContentType(std::string str);
+
 #endif // WEBSERV_HPP

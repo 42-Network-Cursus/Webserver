@@ -14,10 +14,11 @@
 #include "utils.hpp"
 
 void get_cgi(std::string script_path, std::string &CGI, std::string &CGI_PATH) {
-	std::string suffix = script_path.substr(script_path.find_first_of("."));
+	// std::string suffix = script_path.substr(script_path.find_first_of("."));
+	std::string suffix = script_path.substr(script_path.find_last_of("."));
 
 	if (suffix == ".php") {
-		std::cout << "Found suffix\n";
+		// std::cout << "Found suffix\n";
 		CGI = PHP_CGI;
 		CGI_PATH = PHP_CGI_PATH;
 	}
@@ -53,15 +54,14 @@ std::string get_body_from_cgi(std::string script, char *env) {
 	else if (work_pid == 0) {
 
         // Redirect the output to the file
-        dup2(fileno(tmpFile), STDOUT_FILENO);
-		//  IF fails, exit
+        if ( (dup2(fileno(tmpFile), STDOUT_FILENO)) == -1)
+			exit(EXIT_FAILURE);
 
         // Execute the PHP script
         execve(CGI_PATH.c_str(), const_cast<char**>(command), NULL);
         
-		
         // If execve returns, an error occurred
-        std::cerr << "Failed to execute the PHP script." << std::endl;
+        // std::cerr << "Failed to execute the PHP script." << std::endl;
 		exit(EXIT_FAILURE);	
         return "";
     }

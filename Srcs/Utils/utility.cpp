@@ -317,7 +317,7 @@ std::string getContentType(std::string str)
 		return CT_ICON;
 	else if	(ext == "png")
 		return CT_PNG;
-	else if	(ext == "html")
+	else if	(ext == "html" || ext == "php")
 		return CT_HTML;
 	else
 		return CT_DEFAULT;

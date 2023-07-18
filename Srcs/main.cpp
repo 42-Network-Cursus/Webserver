@@ -1,14 +1,18 @@
 #include "webserv.hpp"
 
-// Use as signal ctrl-c ?
-void clean_exit(std::vector<Server *> &servers)
-{
+bool G_EXIT = false;
+
+void exit_bool(int) {
+	G_EXIT = true;
+}
+
+void clean_exit(std::vector<Server> &servers) {
 	unsigned int i = 0;
-	while (i < servers.size())
-	{
-		delete servers[i];
+	while (i < servers.size()) {
+		servers[i].close_fds();
 		i++;
 	}
+	exit(1);
 }
 
 // first = server idx, second = pfds idx
@@ -35,6 +39,7 @@ int main(int argc, char *argv[]) {
 	std::vector<Request>		requests;
 	std::vector<struct pollfd> 	all_pfds;
 	std::string 				file_name;
+	
 
 	if (argc > 2) {
 		std::cout << "Too many args" << std::endl;
@@ -57,15 +62,19 @@ int main(int argc, char *argv[]) {
 		all_pfds.push_back(servers[i].getPfds()[0]);
 	}
 
-	// signal(SIGINT, &fct_);
+	signal(SIGINT, &exit_bool);
 
 	// main loop
 	while(1) { 
 		
+		if (G_EXIT) {
+			clean_exit(servers);
+		}
+
 		// last argument is timeout, in millisecs. Neg value for no timeout until response
 		if ( (poll(all_pfds.data(), all_pfds.size(), 1)) == -1) {
-			std::cerr << "poll: " << strerror(errno) << std::endl;
-			exit(1);
+			std::cerr << "\npoll: " << strerror(errno) << std::endl;
+			clean_exit(servers);
 		}
 
 		// Run through existing connections to look for data to read
@@ -87,7 +96,7 @@ int main(int argc, char *argv[]) {
 					
 				handle_pollout(servers, all_pfds, i, requests);				
 			}
-		}
+		}		
 	}
 	return 0;
 }
