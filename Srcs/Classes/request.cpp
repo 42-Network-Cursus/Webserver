@@ -94,7 +94,7 @@ std::string Request::getMethod() { return (_method); }
 
 std::string Request::getQuery() { return (_query); }
 
-Location 	Request::getLocationConfig() { return (_config); }
+Location 	&Request::getLocationConfig() { return (_config); }
 
 std::string Request::getContentType() { return (_contentType); }
 

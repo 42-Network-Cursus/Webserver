@@ -16,28 +16,6 @@ void erase_fd_from_server(int fd, std::vector<Server> &servers) {
 	}
 }
 
-// int sendAll(int s, const char *buf, int len) {
-// 	int total = 0; // Bytes sent
-// 	int bytesLeft = len; // Bytes left to send
-// 	int n;
-
-// 	while (total < len) {
-// 		n = send(s, buf + total, bytesLeft, 0);
-// 		// NEED TO CHECK 0 AS WELL
-// 		// -1 means ERROR, NEED TO PURGE CLIENT FD
-// 		if (n == -1)
-// 			break;
-// 		if (n == 0)
-// 			//std::cout << "\n\n 0 BYTES SENT\n\n";
-// 		total += n;
-// 		bytesLeft -= n;
-// 	}
-
-// 	len = total;
-
-// 	return n == -1 ? -1 : 0;
-// }
-
 void sendResponse(int fd, Response response) {
 	std::string msg = response.getResponseInString();
 	size_t 		total = 0; // Bytes sent

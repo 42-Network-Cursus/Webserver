@@ -85,6 +85,8 @@ void	Response::getMethod(Request request)
 	if (_path == request.getLocationConfig().getPath()) {
 		
 		if (request.getLocationConfig().getScriptPath() != "") {
+
+			std::cout << "SCRIPT PATH: " << request.getLocationConfig().getScriptPath() << std::endl;
 			
 			_body = get_body_from_cgi(request.getLocationConfig().getScriptPath());
 			_path = request.getLocationConfig().getScriptPath(); // For content type handling (Uses suffix)
@@ -171,11 +173,16 @@ void	Response::postMethod(Request request)
 	_path = request.getPath();
 	std::string ext = getExtension(_path);
 	// //std::cout << "POSTMETHOD:\n\nContentType: " << request.getContentType() << std::endl;
+	std::cout << "ISCGI: " << isCGIExtension(ext) << std::endl;
 	if (isCGIExtension(ext))
 	{
-		std::string cgi = getCGIbyExtension(ext);
-		// //std::cout << "On emploie CGI" << std::endl;
-		return ;
+		// std::string cgi = getCGIbyExtension(ext);
+		
+		request.getLocationConfig().setScriptPath(request.getLocationConfig().getRoot() + "cgi-bin" + request.getPath());
+		
+		std::cout << "Script: " << request.getLocationConfig().getScriptPath() << std::endl;
+		// getMethod(request);
+		// return ;
 	}
 	// else if (true || request.getContentType() == CT_MULTI) // A changer !!!
 	else if (isFile(request.getContentType()))
@@ -220,7 +227,9 @@ void	Response::postMethod(Request request)
 		// return ;
 	}
 	// //std::cout << "On post !" << std::endl;
+
 	request.setPath("/");
+
 	getMethod(request);
 }
 

@@ -27,7 +27,7 @@ class Request {
 		std::string	getPath();
 		std::string	getMethod();
 		std::string	getQuery();
-		Location 	getLocationConfig();
+		Location 	&getLocationConfig();
 		std::string getContentType();
 		std::string getBody();
 		int			getContentSize();
