@@ -225,6 +225,7 @@ void	Response::postMethod(Request request)
 		// 	_path = request.getUploadPath() + request.getPath();
 		writeFile(_filename, fileContent);
 		_body = getUploadedFilePage();
+		_filename = "upload.html";
 		return ;
 		// return ;
 	}
@@ -246,12 +247,13 @@ void	Response::deleteMethod(Request request)
 	if (isValidPathFile() == false)
 	{
 		_statusCode = 404;
-		return ;
+		_body = getErrorPage();
 	}
 	if (std::remove(_path.c_str()) == 0)
 	{
 		_statusCode = 204;
 		_body = getDeletedFilePage();
+		_filename = "deleted.html";
 	}
 	else
 	{
