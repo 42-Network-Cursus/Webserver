@@ -41,7 +41,7 @@ Location::Location(const Location &copy) {
     _auto_index             = copy.getAutoIndex();
     _methods                = copy.getMethods();
     _host_port              = copy.getHostPort();
-    
+    _redirect               = copy.getRedirect();
 }
 
 Location &Location::operator=(const Location &rhs) {
@@ -57,6 +57,7 @@ Location &Location::operator=(const Location &rhs) {
         this->_auto_index             = rhs.getAutoIndex();
         this->_methods                = rhs.getMethods();
         this->_host_port              = rhs.getHostPort();
+        this->_redirect              = rhs.getRedirect();
     }
     return *this;
 }
@@ -87,6 +88,8 @@ void Location::setAutoIndex(std::string val) {
         _auto_index = true;
 }
 
+void Location::setRedirect(std::string val) { _redirect = val; }
+
 // GETTERS
 std::string                 Location::getPath() const { return _path; }
 
@@ -109,3 +112,5 @@ std::map<std::string, bool> Location::getMethods() const { return _methods; }
 bool                        Location::getMethod(std::string method) { return _methods[method]; }
 
 std::string                 Location::getHostPort() const { return _host_port; }
+
+std::string                 Location::getRedirect() const { return _redirect; }

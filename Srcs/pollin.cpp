@@ -33,14 +33,13 @@ Request readRequest(std::vector<Server> &servers, std::vector<struct pollfd> &al
 {
 	
 	std::string		request;
-	const size_t	bufferSize = 4096;
+	const size_t	bufferSize = 8000;
 	ssize_t 		bytesRead;
-	bool 			check = true;
 	char 			buffer[bufferSize];
 	
-	memset(buffer, '\0', bufferSize);
+	memset(buffer, 0, bufferSize);
 
-	while (check)
+	while (1)
 	{
 		// std::cout << "On est la ? " << std::endl;
 		bytesRead = recv(all_pfds[idx].fd, buffer, bufferSize, 0);
@@ -50,24 +49,35 @@ Request readRequest(std::vector<Server> &servers, std::vector<struct pollfd> &al
 			std::cout << "ERROR: " << strerror(errno) << std::endl;
 			if (bytesRead == 0)
 				std::cout << "Pollserver: socket " << all_pfds[idx].fd << " hung up" << std::endl;
-			// else 
-			// 	break;
-
+			if (bytesRead == -1)
+			{
+				std::cout << "Ressource invalid or temporaily invalid" << std::endl;
+				request = "";
+			}
 			close(all_pfds[idx].fd);
 			all_pfds.erase(all_pfds.begin() + idx);
-			check = false;
-			// break;
+			break;
 		}
-		else
-			request += std::string(buffer, bytesRead);
+		request += std::string(buffer, bytesRead);
+		memset(buffer, 0, bufferSize);
 	}
 
+	if (request == "")
+		return Request();
+		
 	std::cout << "\n\n\n\nREAD REQUEST: \n" << request << std::endl;
 	std::string header = "";
 	std::string body = "";
 	size_t 		headerEnd = request.find("\r\n\r\n");
 
-
+	// std::cout << "Position de \"\r\n\r\n\": " << headerEnd << " | Fin de requete ? " << (headerEnd == std::string::npos) << std::endl;
+	if (headerEnd != std::string::npos) {
+		header = request.substr(0, headerEnd + 2);
+		// std::cout << request.substr(headerEnd + 2) << s:;
+		if (headerEnd + 4 < request.length())
+			body = request.substr(headerEnd + 4);
+	}
+	else
 		header = request;
 
 	// std::cout << "\n\n\n====== HEADER: \n" << header << std::endl;
@@ -82,7 +92,8 @@ Request readRequest(std::vector<Server> &servers, std::vector<struct pollfd> &al
 
 void add_new_socket_to_pfds(std::vector<Server> &servers, std::vector<struct pollfd> &all_pfds, int idx_serv, int idx) {
 	int 						new_fd;
-	struct sockaddr_storage 	remoteaddr; // client's info, using sockaddr_storage because big enough to contain either IPv4 or IPv6
+	struct sockaddr_storage 	remoteaddr; // client's info, using
+	//  sockaddr_storage because big enough to contain either IPv4 or IPv6
 	socklen_t 					addrlen; // length of remoteaddr
 
 	#ifdef DEBUG
@@ -116,7 +127,10 @@ void handle_pollin(std::vector<Server> &servers, std::vector<struct pollfd> &all
 	// Not a listening socket, but ready to read. (Means a request)
 	else {
 		Request req = readRequest(servers, all_pfds, idx_pair, idx);
-		requests.push_back(req);
-		all_pfds[idx].events = POLLOUT;
+		if (req.getMethod() != REQ_INV)
+		{
+			requests.push_back(req);
+			all_pfds[idx].events = POLLOUT;
+		}
 	}
 }

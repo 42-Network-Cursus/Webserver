@@ -62,6 +62,8 @@ std::string getTextByStatusCode(int code)
 			return SC_201;
 		case 204:
 			return SC_204;
+		case 301:
+			return SC_301;
 		case 400:
 			return SC_400;
 		case 403:
@@ -236,7 +238,7 @@ std::string getContentBody(std::string body)
 	}
 	std::cout << "Second Boucle" << std::endl;
 	std::string res = "";
-	std::string end = "\n";
+	std::string end = "\r";
 	// A garder ?
 	while (std::getline(iss, line))
 	{	
@@ -249,8 +251,9 @@ std::string getContentBody(std::string body)
 			break;
 		}
 		std::cout << "On est passé le check ?" << std::endl;
-		line = rtrim(line);
-		res += line + end;
+		// line = rtrim(line);
+		// res += line + end;
+		res += line;
 		std::cout << "RES in the boucle: " << res << std::endl;
 	}
 	std::cout << "RES: \n" << res << std::endl;

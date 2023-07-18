@@ -13,16 +13,17 @@ class Location {
 		Location &operator=(const Location &rhs);
 
         // SETTERS
-        void setPath(std::string val);
-        void setRoot(std::string val);
-        void setIndex(std::string val);
-        void setClientMaxBodySize(std::string val); 
-        void setErrorPagePath(std::string val);
-        void setScriptPath(std::string val);
-        void setUploadPath(std::string val);
-        void setAutoIndex(std::string val);
-        void setMethod(std::string method, bool val);
-        void setHostPort(std::string val);
+        void    setPath(std::string val);
+        void    setRoot(std::string val);
+        void    setIndex(std::string val);
+        void    setClientMaxBodySize(std::string val); 
+        void    setErrorPagePath(std::string val);
+        void    setScriptPath(std::string val);
+        void    setUploadPath(std::string val);
+        void    setAutoIndex(std::string val);
+        void    setMethod(std::string method, bool val);
+        void    setHostPort(std::string val);
+        void    setRedirect(std::string val);
 
         // GETTERS
         std::string                 getPath() const;
@@ -36,6 +37,7 @@ class Location {
         std::map<std::string, bool> getMethods() const;
         bool                        getMethod(std::string method);
         std::string                 getHostPort() const;
+        std::string                 getRedirect() const;
 		
 		// DEBUG
         void print();
@@ -51,6 +53,7 @@ class Location {
         bool                        _auto_index;
         std::map<std::string, bool> _methods;
         std::string                 _host_port;
+        std::string                 _redirect;
 
 };
 
