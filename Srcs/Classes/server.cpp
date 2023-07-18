@@ -111,6 +111,8 @@ void Server::get_listening_socket() {
 	pfd.fd = _socklist;
 	pfd.events = POLLIN;
 	_pfds.push_back(pfd);
+
+	std::cout << "Listener socket on fd " << _socklist << std::endl;
 }
 
 Location Server::get_location_config(std::ifstream &file_stream, std::string line) {
@@ -167,8 +169,10 @@ void Server::close_fds() {
 	std::vector<struct pollfd>::iterator it_begin = _pfds.begin();
 	std::vector<struct pollfd>::iterator it_end = _pfds.end();
 
-	for (; it_begin != it_end; it_begin++)
+	for (; it_begin != it_end; it_begin++) {
+		std::cout << "Closing socket " << it_begin->fd << std::endl;
 		close(it_begin->fd);
+	}
 }
 void Server::store_server_configuration(std::ifstream &file_stream) {
 

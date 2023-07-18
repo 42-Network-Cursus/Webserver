@@ -42,6 +42,7 @@ const std::string CT_CSS = "text/css";
 const std::string CT_JS = "text/javascript";
 const std::string CT_PNG = "image/png";
 const std::string CT_ICON = "image/x-icon";
+// const std::string CT_ICON = "image/vnd.microsoft.icon";
 const std::string CT_DEFAULT = "text/plain";
 
 const std::string CT_MULTI = "multipart/form-data;";

@@ -87,8 +87,8 @@ void	Response::getMethod(Request request)
 		if (request.getLocationConfig().getScriptPath() != "") {
 			
 			_body = get_body_from_cgi(request.getLocationConfig().getScriptPath());
-			
-			// Can't really return, need to handle if script fails and send an error page
+			_path = request.getLocationConfig().getScriptPath(); // For content type handling (Uses suffix)
+
 			return;
 		}
 		else
