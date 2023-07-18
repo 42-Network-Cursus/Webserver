@@ -83,7 +83,7 @@ int main() {
 	}
 
 	inet_ntop(p->ai_family, get_in_addr((struct sockaddr *)&p->ai_addr), s, sizeof(s));
-	std::cout << "Client: connecting to " << s << std::endl;
+	//std::cout << "Client: connecting to " << s << std::endl;
 
 	freeaddrinfo(servinfo);
 
@@ -96,7 +96,7 @@ int main() {
 
 	// buf[numbytes] = '\0';
 
-	// std::cout << "Client: received " << buf << std::endl;
+	// //std::cout << "Client: received " << buf << std::endl;
 
 	char msg[5] = "test";
 	int *len = new int(5);

@@ -3,16 +3,16 @@
 
 // Debugging
 void Server::print() {
-	std::cout << "port: " << _port << std::endl;
-	std::cout << "host: "<< _host << std::endl;
-	std::cout << "server name: " << _server_name << std::endl;
-	std::cout << "pfds size: " << _pfds.size() << std::endl;
-	std::cout << "Locations: " << std::endl;
+	//std::cout << "port: " << _port << std::endl;
+	//std::cout << "host: "<< _host << std::endl;
+	//std::cout << "server name: " << _server_name << std::endl;
+	//std::cout << "pfds size: " << _pfds.size() << std::endl;
+	//std::cout << "Locations: " << std::endl;
 	std::vector<Location>::iterator loc_begin = _locations.begin();
 	std::vector<Location>::iterator loc_end = _locations.end();
 	for (; loc_begin != loc_end; loc_begin++) {
 		loc_begin->print();
-		std::cout << std::endl;
+		//std::cout << std::endl;
 	}
 }
 

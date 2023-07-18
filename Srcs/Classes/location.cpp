@@ -5,19 +5,19 @@
 
 // DEBUG
 void Location::print() {
-    std::cout << "Path: " << _path << std::endl;
-    std::cout << "	root: " << _root << std::endl;
-    std::cout << "	index: " << _index << std::endl;
-    std::cout << "	client_max_body_size: " << _client_max_body_size << std::endl;
-    std::cout << "	error page path: " << _error_page_path << std::endl;
-    std::cout << "	script path: " << _script_path << std::endl;
-    std::cout << "	upload path: " << _upload_path << std::endl;
-    std::cout << "	auto index: " << _auto_index << std::endl;
-    std::cout << "	host:port: " << _host_port << std::endl;
-    std::cout << "	Methods: " << std::endl;
-    std::cout << "		GET: " << getMethod("GET") << std::endl;
-    std::cout << "		POST: " << getMethod("POST") << std::endl;
-    std::cout << "		DELETE: " << getMethod("DELETE") << std::endl;
+    //std::cout << "Path: " << _path << std::endl;
+    //std::cout << "	root: " << _root << std::endl;
+    //std::cout << "	index: " << _index << std::endl;
+    //std::cout << "	client_max_body_size: " << _client_max_body_size << std::endl;
+    //std::cout << "	error page path: " << _error_page_path << std::endl;
+    //std::cout << "	script path: " << _script_path << std::endl;
+    //std::cout << "	upload path: " << _upload_path << std::endl;
+    //std::cout << "	auto index: " << _auto_index << std::endl;
+    //std::cout << "	host:port: " << _host_port << std::endl;
+    //std::cout << "	Methods: " << std::endl;
+    //std::cout << "		GET: " << getMethod("GET") << std::endl;
+    //std::cout << "		POST: " << getMethod("POST") << std::endl;
+    //std::cout << "		DELETE: " << getMethod("DELETE") << std::endl;
 }
 
 // CONSTRUCTORS

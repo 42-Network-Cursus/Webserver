@@ -2,11 +2,11 @@
 
 // DEBUG
 void Response::print() {
-	std::cout << "\n\nResponse info: " << std::endl;
-	std::cout << "Status code: " << _statusCode << std::endl;
+	//std::cout << "\n\nResponse info: " << std::endl;
+	//std::cout << "Status code: " << _statusCode << std::endl;
 	_header.print();
-	std::cout << "Body : " << _body << std::endl;
-	std::cout << "Path : " << _path << std::endl;
+	//std::cout << "Body : " << _body << std::endl;
+	//std::cout << "Path : " << _path << std::endl;
 }
 
 Response::Response()
@@ -49,7 +49,7 @@ Response::Response(Request request)
 		_statusCode = 505;
 	_statusCode = request.isValidPath();
 
-	std::cout << "Creation de la reponse\nStatus Code: " << _statusCode << std::endl;
+	//std::cout << "Creation de la reponse\nStatus Code: " << _statusCode << std::endl;
 
 	if (_statusCode != 200 && _statusCode != 301)
 	{
@@ -80,7 +80,7 @@ void	Response::getMethod(Request request)
 {
 	_path = request.getPath();
 
-	std::cout << "IN GET METHOD " << _path << std::endl;
+	//std::cout << "IN GET METHOD " << _path << std::endl;
 
 	if (_path == request.getLocationConfig().getPath()) {
 		
@@ -95,9 +95,9 @@ void	Response::getMethod(Request request)
 		{
 			if (request.getLocationConfig().getAutoIndex())
 			{
-				std::cout << "PATH IN AUTOINDEX: " << _path << std::endl;
+				//std::cout << "PATH IN AUTOINDEX: " << _path << std::endl;
 				_path = request.getLocationConfig().getRoot();
-				std::cout << "PATH IN AUTOINDEX SECOND ROW !!!! : " << _path << std::endl;
+				//std::cout << "PATH IN AUTOINDEX SECOND ROW !!!! : " << _path << std::endl;
 				_path = trim(_path);
 				// _path.pop_back();
 				_body = generateAutoIndex(_path, request.getLocationConfig().getHostPort());
@@ -111,20 +111,20 @@ void	Response::getMethod(Request request)
 	}
 	// if (_path == request.getLocationConfig().getPath())
 	// {
-	// 	std::cout << "On est ici normalement..." << std::endl;
+	// 	//std::cout << "On est ici normalement..." << std::endl;
 	// 	_path = request.getDefaultPage();
 	// }
 	else
 	{
-		std::cout << "on est bien rentre ici !" << std::endl;
-		std::cout << _path << " VS " << request.getLocationConfig().getPath() << std::endl;
+		//std::cout << "on est bien rentre ici !" << std::endl;
+		//std::cout << _path << " VS " << request.getLocationConfig().getPath() << std::endl;
 
 		size_t pos = _path.find("/"); 
 		size_t pos2 = _path.find("/", pos + 1);
 		if (pos2 == std::string::npos)
 		{
-			std::cout << "Location Path: " << request.getLocationConfig().getPath() << std::endl;
-			std::cout << "Root: " << request.getLocationConfig().getRoot() << std::endl;
+			//std::cout << "Location Path: " << request.getLocationConfig().getPath() << std::endl;
+			//std::cout << "Root: " << request.getLocationConfig().getRoot() << std::endl;
 			if (_path[0] == '/')
 			{
 				std::string root = request.getLocationConfig().getRoot();
@@ -136,17 +136,17 @@ void	Response::getMethod(Request request)
 		}
 		else
 		{
-			std::cout << "On est ici" << std::endl;
+			//std::cout << "On est ici" << std::endl;
 			std::string tmp = _path.substr(pos2 + 1);
-			std::cout << "tmp: " << tmp << std::endl;
+			//std::cout << "tmp: " << tmp << std::endl;
 			std::string root = request.getLocationConfig().getRoot();
-			std::cout << "Root: " << root << std::endl;
+			//std::cout << "Root: " << root << std::endl;
 			root = trim(root);
 			_path = root + tmp;
 		}
 	}
 	
-	std::cout << "Avant le readFile ==> Path: " << _path  << std::endl;
+	//std::cout << "Avant le readFile ==> Path: " << _path  << std::endl;
 	readFile();
 	if (_statusCode == 404)
 	{
@@ -157,7 +157,7 @@ void	Response::getMethod(Request request)
 		_header.setContentType(CT_HTML);
 		_header.setContentLength(intToString(_body.size()));
 	}
-	std::cout << "FIN DE LA REPONSE !!!!\nStatusCode: " << _statusCode << "\n\n\n\n" << std::endl;
+	//std::cout << "FIN DE LA REPONSE !!!!\nStatusCode: " << _statusCode << "\n\n\n\n" << std::endl;
 }
 
 /**
@@ -166,15 +166,15 @@ void	Response::getMethod(Request request)
  */
 void	Response::postMethod(Request request)
 {
-	std::cout << "------------------------------ In POSTMETHOD" << std::endl;
-	std::cout << "ContentType: " << request.getContentType() << std::endl;
+	//std::cout << "------------------------------ In POSTMETHOD" << std::endl;
+	//std::cout << "ContentType: " << request.getContentType() << std::endl;
 	_path = request.getPath();
 	std::string ext = getExtension(_path);
-	// std::cout << "POSTMETHOD:\n\nContentType: " << request.getContentType() << std::endl;
+	// //std::cout << "POSTMETHOD:\n\nContentType: " << request.getContentType() << std::endl;
 	if (isCGIExtension(ext))
 	{
 		std::string cgi = getCGIbyExtension(ext);
-		// std::cout << "On emploie CGI" << std::endl;
+		// //std::cout << "On emploie CGI" << std::endl;
 		return ;
 	}
 	// else if (true || request.getContentType() == CT_MULTI) // A changer !!!
@@ -195,14 +195,14 @@ void	Response::postMethod(Request request)
 		_filename = getFilename(request.getBody());
 		std::string fileContent = getContentBody(request.getBody());
 		// std::string fileContent2 = getContentBody2(request.getBody());
-		std::cout << "Filename: " << _filename << "\nfile Content: " << fileContent << std::endl;
+		// //std::cout << "Filename: " << _filename << "\nfile Content: " << fileContent << std::endl;
 		// if (fileContent.compare(fileContent2))
-		// 	std::cout << "ALED\nIls sont différents" << std::endl;
+		// 	//std::cout << "ALED\nIls sont différents" << std::endl;
 		// request.setPath("/");
 		// getMethod(request);
 		// return ;
 		// Un truc... Encore en train de tout setup
-		// std::cout << "=============================================================== On va créer le fichier" << std::endl;
+		// //std::cout << "=============================================================== On va créer le fichier" << std::endl;
 		// if (checkUploadPath(request.getUploadPath()) == false)
 		// {
 		// 	_statusCode = 500;
@@ -219,7 +219,7 @@ void	Response::postMethod(Request request)
 		writeFile(_filename, fileContent);
 		// return ;
 	}
-	// std::cout << "On post !" << std::endl;
+	// //std::cout << "On post !" << std::endl;
 	request.setPath("/");
 	getMethod(request);
 }
@@ -257,26 +257,25 @@ std::string Response::getResponseInString()
 {
 	std::string type;
 	
-	std::cout << "In response STRING" << std::endl;
+	//std::cout << "In response STRING" << std::endl;
 
 	if (_statusCode > 400)
 		type = _header.getContentType();
 	else
 	{
-		std::cout << "Before getExtensionFile" << std::endl;
+		//std::cout << "Before getExtensionFile" << std::endl;
 		if (_filename != "")
 			type = getExtensionFile(_filename);
 		else
 			type = getExtension(_path);
-		std::cout << "After getEtensionFile : " << type << std::endl;
-		std::cout << _path << std::endl;
+		//std::cout << "After getEtensionFile : " << type << std::endl;
 		if (type == "")
 			type = CT_DEFAULT;
 		else
 			type = getContentType(type);
 	}
 	
-	std::cout << "Content-type in GetResponseINSTRING: " << type << std::endl;
+	//std::cout << "Content-type in GetResponseINSTRING: " << type << std::endl;
 
 	std::string response = _header.transformHeaderToString(_statusCode, type, intToString(_body.size()), "", "", "") + _body;
 	// std::string response = _header.transformHeaderToString(200, "image/jpg", intToString(_body.size()), "", "", "") + _body;
@@ -302,7 +301,7 @@ void	Response::readFile()
 {
 	if (isValidPathFile() == false)
 	{
-		std::cout << "NOT VALID PATH ??" << std::endl;
+		//std::cout << "NOT VALID PATH ??" << std::endl;
 
 		_statusCode = 404;
 		_path = "Websites/errorPage/" + intToString(_statusCode) + "_page.html";
@@ -337,7 +336,7 @@ void	Response::readFile()
  */
 void	Response::writeFile(std::string filename, std::string content)
 {
-	// std::cout << "On tente de creer le fichier" << std::endl;
+	// //std::cout << "On tente de creer le fichier" << std::endl;
 	std::ofstream file;
 
 	std::string filepath = "Websites/upload/" + filename;
@@ -345,18 +344,18 @@ void	Response::writeFile(std::string filename, std::string content)
 	// if (true || isValidPathFile() == false)
 	if (test) // Si le fichier n'existe pas (function a ajouter par la suite)
 	{
-		std::cout << "Filepath ?: " << filepath << std::endl;
+		//std::cout << "Filepath ?: " << filepath << std::endl;
 		file.open(filepath.c_str(), std::ofstream::out | std::ofstream::trunc);
 		if (file.is_open() == false)
 		{
-			std::cout << "On est une merde..." << std::endl;
+			//std::cout << "On est une merde..." << std::endl;
 			_statusCode = 403;
 			_path = "html/errorPage/" + intToString(_statusCode) + "_page.html";
 			readFile();
 			_path = "";
 			return ;
 		}
-		// std::cout << "LET'S GO!!!" << std::endl;
+		// //std::cout << "LET'S GO!!!" << std::endl;
 		// file << content;
 		file.write(content.c_str(), content.size());
 		file.close();
@@ -383,7 +382,7 @@ void	Response::writeFile(std::string filename, std::string content)
 /*		V1		*/
 bool Response::isValidPathFile()
 {
-	std::cout << _path << std::endl;
+	//std::cout << _path << std::endl;
 	if (access(_path.c_str(), F_OK) != 0 || access(_path.c_str(), R_OK) != 0)
 		return false;
 	// DIR *dir = opendir(_path.c_str());
@@ -425,7 +424,7 @@ std::string Response::getErrorPage()
 bool Response::checkUploadPath(std::string path)
 {
 	path = deleteWhiteSpace(path);
-	// std::cout << "--------------------------------------------------------------- path directory: " << path << std::endl;
+	// //std::cout << "--------------------------------------------------------------- path directory: " << path << std::endl;
 	DIR* dir = opendir(path.c_str());
 	if (dir != NULL)
 	{

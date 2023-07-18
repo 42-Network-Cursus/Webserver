@@ -15,9 +15,9 @@ std::string generateAutoIndex(std::string path, std::string host_port)
 	DIR *dir = opendir(path.c_str());
 	if (dir == NULL)
 	{
-		std::cout << path.c_str() << std::endl;
-		std::cout << "Error Open directory in generate AutoIndex" << std::endl;
-		//std::cout << strerror(errno) << std::endl;
+		//std::cout << path.c_str() << std::endl;
+		//std::cout << "Error Open directory in generate AutoIndex" << std::endl;
+		////std::cout << strerror(errno) << std::endl;
 		return "";
 	}
 	

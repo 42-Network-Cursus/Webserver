@@ -7,10 +7,10 @@ void		print_server_list(std::vector<Server> servers) {
 	std::vector<Server>::iterator it_begin = servers.begin();
 	std::vector<Server>::iterator it_end = servers.end();
 
-	std::cout << "Number of servers: " << servers.size() << std::endl << std::endl;
+	//std::cout << "Number of servers: " << servers.size() << std::endl << std::endl;
 	for (; it_begin != it_end; it_begin++) {
 		it_begin->print();
-		std::cout << std::endl;
+		//std::cout << std::endl;
 	}
 }
 
@@ -147,7 +147,7 @@ std::string deleteWhiteSpace(std::string str)
 // 			return true;
 // 		++it;
 // 	}
-// 	// std::cout << "FALSE" << std::endl;
+// 	// //std::cout << "FALSE" << std::endl;
 // 	return false;
 // }
 
@@ -160,7 +160,7 @@ std::string deleteWhiteSpace(std::string str)
 
 // 	while (std::getline(iss, line) && i < 2)
 // 	{
-// 		std::cout << line << std::endl;
+// 		//std::cout << line << std::endl;
 // 		i++;
 // 	}
 // }
@@ -168,13 +168,13 @@ std::string deleteWhiteSpace(std::string str)
 bool isFile(std::string str)
 {
 	size_t pos = str.find(CT_MULTI);
-	std::cout << "POS? : " << pos << std::endl;
+	//std::cout << "POS? : " << pos << std::endl;
 	if (pos == std::string::npos)
 	{
-		std::cout << "Pas du tout" << std::endl;
+		//std::cout << "Pas du tout" << std::endl;
 		return false;
 	}
-	std::cout << "On est bon !" << std::endl;
+	//std::cout << "On est bon !" << std::endl;
 	return true;
 }
 
@@ -190,7 +190,7 @@ std::string getFilename(std::string body)
 	std::string tmp;
 	while (std::getline(iss, line))
 	{
-		// std::cout << "======== Check Content-Length: " << line << std::endl;
+		// //std::cout << "======== Check Content-Length: " << line << std::endl;
 		if (line.compare(0, contentSize, content) == 0)
 		{
 			size_t pos = line.find("filename=");
@@ -215,7 +215,7 @@ std::string getFilename(std::string body)
  */
 std::string getContentBody(std::string body)
 {
-	std::cout << "In getContentBody\nBody: \n" << body << std::endl;
+	//std::cout << "In getContentBody\nBody: \n" << body << std::endl;
 	std::istringstream iss(body);
 	std::string line;
 	
@@ -224,11 +224,11 @@ std::string getContentBody(std::string body)
 	std::string delimiter;
 	std::getline(iss, line);
 	delimiter = trim(line);
-	std::cout << "Delimiter: " << delimiter << std::endl;
-	std::cout << "First Boucle" << std::endl;
+	//std::cout << "Delimiter: " << delimiter << std::endl;
+	//std::cout << "First Boucle" << std::endl;
 	while (std::getline(iss, line))
 	{
-		std::cout << "Line: " << line << " | Size: " << line.size() << std::endl;
+		//std::cout << "Line: " << line << " | Size: " << line.size() << std::endl;
 		// if (line.size() == 2 && line == "\r\n")
 		// 	break ;
 		// if (line.size() == 4 && line == "\r\n\r\n")
@@ -236,34 +236,34 @@ std::string getContentBody(std::string body)
 		if (line.size() == 1)
 			break;
 	}
-	std::cout << "Second Boucle" << std::endl;
+	//std::cout << "Second Boucle" << std::endl;
 	std::string res = "";
-	std::string end = "\r";
+	std::string end = "\n";
 	// A garder ?
 	while (std::getline(iss, line))
 	{	
-		std::cout << "Line: " << line << std::endl;
-		std::cout << "Deli: " << delimiter << std::endl;
-		std::cout << "Check: " << (line.compare(0, delimiter.size(), delimiter.c_str())) << std::endl;
+		//std::cout << "Line: " << line << std::endl;
+		//std::cout << "Deli: " << delimiter << std::endl;
+		//std::cout << "Check: " << (line.compare(0, delimiter.size(), delimiter.c_str())) << std::endl;
 		if (line.find(delimiter) != std::string::npos)
 		{
-			std::cout << "On break" << std::endl;
+			//std::cout << "On break" << std::endl;
 			break;
 		}
-		std::cout << "On est passé le check ?" << std::endl;
-		// line = rtrim(line);
+		//std::cout << "On est passé le check ?" << std::endl;
+		line = rtrim(line);
 		// res += line + end;
-		res += line;
-		std::cout << "RES in the boucle: " << res << std::endl;
+		res += line + end;
+		//std::cout << "RES in the boucle: " << res << std::endl;
 	}
-	std::cout << "RES: \n" << res << std::endl;
+	//std::cout << "RES: \n" << res << std::endl;
 	return res;
 }
 
 
 std::string getContentBody2(std::string body)
 {
-	std::cout << "GetContentBody 2" << std::endl;
+	//std::cout << "GetContentBody 2" << std::endl;
 
 	std::string res = body;
 	std::istringstream iss(res);
@@ -275,26 +275,26 @@ std::string getContentBody2(std::string body)
 	std::getline(iss, delimiter);
 
 	delimiter = trim(delimiter);
-	std::cout << "Delimiter: " << delimiter << std::endl;
+	//std::cout << "Delimiter: " << delimiter << std::endl;
 
 	std::size_t pos = res.find("\r\n");
 	std::size_t pos2 = res.rfind(delimiter);
 	
-	std::cout << "Position de début et de fin: " << pos << " " << pos2 << " Size: " << res.size() << std::endl;
+	//std::cout << "Position de début et de fin: " << pos << " " << pos2 << " Size: " << res.size() << std::endl;
 	if (pos2 == res.size())
-		std::cout << "On est à la fin..." << std::endl;
-	std::cout << "RES Avant le erase :\n" << res << std::endl;
+		//std::cout << "On est à la fin..." << std::endl;
+	//std::cout << "RES Avant le erase :\n" << res << std::endl;
 	res = res.erase(0, pos + 2);
-	std::cout << "Premier erase OK : " << res << std::endl;
+	//std::cout << "Premier erase OK : " << res << std::endl;
 	res = res.erase(pos2 - 2);
 
-	std::cout << "Res: \n" << res << std::endl;
+	//std::cout << "Res: \n" << res << std::endl;
 	return res;
 }
 
 std::string getExtensionFile(std::string str)
 {
-	std::cout << "In getEXTENSIONFILE : " << str << std::endl;
+	//std::cout << "In getEXTENSIONFILE : " << str << std::endl;
 	size_t pos = str.find_last_of(".");
 	if (pos <= 0)
 		return ("");
