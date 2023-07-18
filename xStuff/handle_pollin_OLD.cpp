@@ -7,9 +7,9 @@ void handle_pollin(std::vector<Server> &servers, std::vector<struct pollfd> &all
 	// Not a listening socket, but ready to read. (Means a request)
 	else 
 	{
-		std::cout << "Pardon ?" << std::endl;
+		//std::cout << "Pardon ?" << std::endl;
 		// #ifdef DEBUG
-		// std::cout << "Reading request on fd " << all_pfds[idx].fd << std::endl;
+		// //std::cout << "Reading request on fd " << all_pfds[idx].fd << std::endl;
 		// #endif
 
 		// std::string request;
@@ -30,7 +30,7 @@ void handle_pollin(std::vector<Server> &servers, std::vector<struct pollfd> &all
 		// 	// error handling
 		// 	if (nbytes <= 0) {
 		// 		if (nbytes == 0)
-		// 			std::cout << "Pollserver: socket " << all_pfds[idx].fd << " hung up" << std::endl;
+		// 			//std::cout << "Pollserver: socket " << all_pfds[idx].fd << " hung up" << std::endl;
 		// 		else 
 		// 			break;
 
@@ -61,7 +61,7 @@ void handle_pollin(std::vector<Server> &servers, std::vector<struct pollfd> &all
 				
 		// 		if (bytes <= 0) {
 		// 			if (bytes == 0)
-		// 				std::cout << "Pollserver: socket " << all_pfds[idx].fd << " hung up" << std::endl;
+		// 				//std::cout << "Pollserver: socket " << all_pfds[idx].fd << " hung up" << std::endl;
 		// 			else 
 		// 				break;
 					
@@ -79,7 +79,7 @@ void handle_pollin(std::vector<Server> &servers, std::vector<struct pollfd> &all
 		// else
 		// 	body = "";
 
-		// // std::cout << "\n\n REQUEST \n\n" << request << "\n\n\n";	
+		// // //std::cout << "\n\n REQUEST \n\n" << request << "\n\n\n";	
 			
 		// Request req = Request::parseRequest(request, all_pfds[idx].fd, servers[idx_pair.first]);
 		// requests.push_back(req);
@@ -91,9 +91,9 @@ void handle_pollin(std::vector<Server> &servers, std::vector<struct pollfd> &all
 		// // 	{
 		// // 		req.print();
 		// // 		readBody(req.getBody());
-		// // 		// std::cout << req.getBody() << std::endl;
-		// // 		// std::cout << req.getBody() << std::endl;
-		// // 		// std::cout << req.getBody() << std::endl;
+		// // 		// //std::cout << req.getBody() << std::endl;
+		// // 		// //std::cout << req.getBody() << std::endl;
+		// // 		// //std::cout << req.getBody() << std::endl;
 		// // 	}
 		// // #endif
 

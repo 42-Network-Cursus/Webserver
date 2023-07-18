@@ -3,24 +3,24 @@
 
 // DEBUG
 void Request::print() {
-	std::cout << "\n\nRequest info: " << std::endl;
-	std::cout << "Socket : " << _socketFd << std::endl;
-	std::cout << "Method : " << _method << std::endl;
-	std::cout << "Path : " << _path << std::endl;
-	std::cout << "Version : " << _version << std::endl;
-	std::cout << "Query : " << _query << std::endl;
-	std::cout << "\nConfig : " << std::endl;
+	//std::cout << "\n\nRequest info: " << std::endl;
+	//std::cout << "Socket : " << _socketFd << std::endl;
+	//std::cout << "Method : " << _method << std::endl;
+	//std::cout << "Path : " << _path << std::endl;
+	//std::cout << "Version : " << _version << std::endl;
+	//std::cout << "Query : " << _query << std::endl;
+	//std::cout << "\nConfig : " << std::endl;
 	_config.print();
-	std::cout << "Server name : " << _server_name << std::endl;
-	std::cout << "Content-Size: " << _contentSize << std::endl;
-	std::cout << "Content-Type: " << _contentType << std::endl;
-	std::cout << "Body : " << _body << std::endl << std::endl;
+	//std::cout << "Server name : " << _server_name << std::endl;
+	//std::cout << "Content-Size: " << _contentSize << std::endl;
+	//std::cout << "Content-Type: " << _contentType << std::endl;
+	//std::cout << "Body : " << _body << std::endl << std::endl;
 }
 
 void Request::printConfig()
 {
 	// _config->print();
-	std::cout << "\n\nPath: " << _path << "\nQuery: " << _query << "\nContent-Type: " << _contentType << std::endl;
+	//std::cout << "\n\nPath: " << _path << "\nQuery: " << _query << "\nContent-Type: " << _contentType << std::endl;
 }
 
 // CONSTRUCTORS
@@ -77,7 +77,7 @@ Request::Request(int socketFd, std::string method, std::string path, std::string
 	_config = server.getLocationFromPath(path);
 	getQueryFromPath();
 	
-	std::cout << "\n\n ROOT **" << _config.getRoot() <<  "\n\n\n";
+	//std::cout << "\n\n ROOT **" << _config.getRoot() <<  "\n\n\n";
 
 	getExtraDatas(request);
 	checkMultiPart();
@@ -130,7 +130,7 @@ bool Request::isAcceptedMethod()
 bool Request::isValidVersion()
 {
 	#ifdef DEBUG
-	std::cout << "Version ? " << _version << std::endl;
+	//std::cout << "Version ? " << _version << std::endl;
 	#endif
 
 	_version = trim(_version);
@@ -144,7 +144,7 @@ int Request::isValidPath()
 		if (_config.getAutoIndex())
 			return 200;
 
-		std::cout << "Is VALID PATH !!!!" << std::endl;
+		//std::cout << "Is VALID PATH !!!!" << std::endl;
 
 		std::ifstream file;
 		std::string root = _config.getRoot();
@@ -153,18 +153,18 @@ int Request::isValidPath()
 		std::string fullPath = root + index;
 		fullPath = trim(fullPath);
 
-		std::cout << "Fullpath nb1: " << fullPath << std::endl;
+		//std::cout << "Fullpath nb1: " << fullPath << std::endl;
 
 		file.open(fullPath.c_str(), std::ifstream::in);
 		if (file.is_open() == false)
 		{
-			std::cout << "Normalement, on redirige" << std::endl;
+			//std::cout << "Normalement, on redirige" << std::endl;
 			index = _config.getRedirect();
 			index = trim(index);
 			fullPath = root + index;
 			fullPath = trim(fullPath);
 
-			std::cout << "Fullpath nb2: " << fullPath << std::endl;
+			//std::cout << "Fullpath nb2: " << fullPath << std::endl;
 			file.open(fullPath.c_str(), std::ifstream::in);
 			if (file.is_open() == false)
 				return 404;
@@ -243,11 +243,11 @@ void Request::checkMultiPart()
 	size_t pos = _contentType.find(CT_MULTI);
 	if (pos == std::string::npos)
 		return ;
-	std::cout << "On est un fichier !" << std::endl;
+	//std::cout << "On est un fichier !" << std::endl;
 	setContentType(CT_MULTI);
-	std::cout << "ContentType in checkMultiPart: " << _contentType << std::endl;
+	//std::cout << "ContentType in checkMultiPart: " << _contentType << std::endl;
 	// std::string newType = _contentType.substr(0, CT_MULTI.size());
-	// std::cout << "New Type ? " << newType << "New Type avec .substr()" <<_contentType.substr(0, CT_MULTI.size()) <<  "ContentType ? " << _contentType << std::endl;
+	// //std::cout << "New Type ? " << newType << "New Type avec .substr()" <<_contentType.substr(0, CT_MULTI.size()) <<  "ContentType ? " << _contentType << std::endl;
 
 	// _contentType = newType;
 }

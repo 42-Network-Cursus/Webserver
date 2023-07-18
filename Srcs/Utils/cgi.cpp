@@ -18,7 +18,7 @@ void get_cgi(std::string script_path, std::string &CGI, std::string &CGI_PATH) {
 	std::string suffix = script_path.substr(script_path.find_last_of("."));
 
 	if (suffix == ".php") {
-		// std::cout << "Found suffix\n";
+		// //std::cout << "Found suffix\n";
 		CGI = PHP_CGI;
 		CGI_PATH = PHP_CGI_PATH;
 	}
@@ -36,7 +36,7 @@ std::string get_body_from_cgi(std::string script, char *env) {
 
     // Check if the file was opened successfully
     if (!tmpFile) {
-        std::cout << "Failed to open the output file." << std::endl;
+        //std::cout << "Failed to open the output file." << std::endl;
         return "";
     }
 
@@ -103,10 +103,10 @@ std::string get_body_from_cgi(std::string script, char *env) {
 			
 		rFile.close();
 		int result = remove("tmpFile.txt");
-		std::cout << result << std::endl;
+		//std::cout << result << std::endl;
 
         // if (WIFEXITED(status) && WEXITSTATUS(status) == 0) {
-        //     std::cout << "HTML output has been generated." << std::endl;
+        //     //std::cout << "HTML output has been generated." << std::endl;
         // } else {
         //     std::cerr << "PHP script execution failed." << std::endl;
         //     return "";

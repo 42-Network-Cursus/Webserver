@@ -28,7 +28,7 @@ void erase_fd_from_server(int fd, std::vector<Server> servers) {
 // 		if (n == -1)
 // 			break;
 // 		if (n == 0)
-// 			std::cout << "\n\n 0 BYTES SENT\n\n";
+// 			//std::cout << "\n\n 0 BYTES SENT\n\n";
 // 		total += n;
 // 		bytesLeft -= n;
 // 	}
@@ -48,7 +48,7 @@ void sendResponse(int fd, Response response) {
 		bytesRead = send(fd, msg.c_str() + total, bytesLeft, 0);
 
 		if (bytesRead == -1) {
-			std::cout << "Error sending response\n";
+			//std::cout << "Error sending response\n";
 			break;
 		}
 		if (bytesRead == 0 && bytesLeft > 0)
