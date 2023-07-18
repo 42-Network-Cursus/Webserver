@@ -30,7 +30,7 @@ void 	add_new_socket_to_pfds(std::vector<Server> &servers, std::vector<struct po
 void 	handle_pollin(std::vector<Server> &servers, std::vector<struct pollfd> &all_pfds, std::pair<int, int> idx_pair, std::vector<Request> &requests, int idx);
 
 // POLLOUT
-void	erase_fd_from_server(int fd, std::vector<Server> servers);
+void	erase_fd_from_server(int fd, std::vector<Server> &servers);
 // int 	sendAll(int s, const char *buf, int len);
 void 	sendResponse(int fd, Response response);
 int 	get_request_index(int sockfd, std::vector<Request> requests);
