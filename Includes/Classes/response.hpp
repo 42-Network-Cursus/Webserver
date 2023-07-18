@@ -47,6 +47,8 @@ class Response {
 		bool 		checkUploadPath(std::string path);
 		bool 		createDirectory(std::string path);
 		std::string getErrorPage();
+		std::string getDeletedFilePage();
+		std::string getUploadedFilePage();
 };
 
 #endif // RESPONSE_CLASS_HPP

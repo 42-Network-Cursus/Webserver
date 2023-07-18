@@ -263,33 +263,21 @@ std::string getContentBody(std::string body)
 
 std::string getContentBody2(std::string body)
 {
-	//std::cout << "GetContentBody 2" << std::endl;
+	size_t start;
 
-	std::string res = body;
-	std::istringstream iss(res);
-
-	std::string delimiter;
-
-	if (body.size() == 0)
-		return "";
-	std::getline(iss, delimiter);
-
+	start = body.find("\n");
+	std::string delimiter = body.substr(0, start);
 	delimiter = trim(delimiter);
-	//std::cout << "Delimiter: " << delimiter << std::endl;
+	std::cout << delimiter << std::endl;
+	size_t end = body.rfind(delimiter);
+	start = body.find("\r\n\r\n");
+	std::cout << "Start: " << start << " End: " << end << " Size: " << body.size() << std::endl;
 
-	std::size_t pos = res.find("\r\n");
-	std::size_t pos2 = res.rfind(delimiter);
-	
-	//std::cout << "Position de début et de fin: " << pos << " " << pos2 << " Size: " << res.size() << std::endl;
-	if (pos2 == res.size())
-		//std::cout << "On est à la fin..." << std::endl;
-	//std::cout << "RES Avant le erase :\n" << res << std::endl;
-	res = res.erase(0, pos + 2);
-	//std::cout << "Premier erase OK : " << res << std::endl;
-	res = res.erase(pos2 - 2);
+	start += 4;
+	std::string content = body.substr(start, end - start);
+	std::cout << "Content: " << content << std::endl;
 
-	//std::cout << "Res: \n" << res << std::endl;
-	return res;
+	return content;
 }
 
 std::string getExtensionFile(std::string str)

@@ -200,7 +200,7 @@ void	Response::postMethod(Request request)
 			return ;
 		}
 		_filename = getFilename(request.getBody());
-		std::string fileContent = getContentBody(request.getBody());
+		std::string fileContent = getContentBody2(request.getBody());
 		// std::string fileContent2 = getContentBody2(request.getBody());
 		// //std::cout << "Filename: " << _filename << "\nfile Content: " << fileContent << std::endl;
 		// if (fileContent.compare(fileContent2))
@@ -224,6 +224,8 @@ void	Response::postMethod(Request request)
 		// if (request.getUploadPath() != request.getPath())
 		// 	_path = request.getUploadPath() + request.getPath();
 		writeFile(_filename, fileContent);
+		_body = getUploadedFilePage();
+		return ;
 		// return ;
 	}
 	// //std::cout << "On post !" << std::endl;
@@ -249,7 +251,7 @@ void	Response::deleteMethod(Request request)
 	if (std::remove(_path.c_str()) == 0)
 	{
 		_statusCode = 204;
-		_body = "";
+		_body = getDeletedFilePage();
 	}
 	else
 	{
@@ -428,7 +430,15 @@ std::string Response::getErrorPage()
 	return "<!DOCTYPE html>\n<html><title>Error Page... Nique Ta Mere Salope</title><body><h1>It's a basic error page.</h1><h5>Don't read the title.</h5></body></html>\n";
 }
 
+std::string Response::getDeletedFilePage()
+{
+	return "<!DOCTYPE html>\n<html><title>Deleted file</title><body><h1>Deleted file</h1></body></html>\n";
+}
 
+std::string Response::getUploadedFilePage()
+{
+	return "<!DOCTYPE html>\n<html><title>Uploaded file</title><body><h1>Uploaded file</h1></body></html>\n";
+}
 
 bool Response::checkUploadPath(std::string path)
 {
