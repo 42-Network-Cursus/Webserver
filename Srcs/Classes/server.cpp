@@ -19,7 +19,7 @@ void Server::print() {
 Server::Server()
 {}
 
-Server::~Server()
+Server::~Server() 
 {}
 
 Server::Server(const Server &copy) 
@@ -73,7 +73,7 @@ void Server::get_listening_socket() {
 
 	if ((rv = getaddrinfo(_host.c_str(), _port.c_str(), &hints, &ai)) != 0) {
 		std::cerr << "getaddrinfo error " << rv << ": " << gai_strerror(rv) << std::endl;
-		exit(1);
+		G_EXIT = true;
 	}
 
 	for (p = ai; p != NULL; p = p->ai_next) {
@@ -96,14 +96,14 @@ void Server::get_listening_socket() {
 
 	if (p == NULL) {
 		std::cerr << "Could not find address to bind to" << std::endl;
-		exit(1);
+		G_EXIT = true;
 	}
 
 	freeaddrinfo(ai); // All done with this structure
 
 	if (listen(_socklist, BACKLOG) == -1) {
 		std::cerr << "listen: " << strerror(errno) << std::endl;
-		exit(1);
+		G_EXIT = true;
 	} 
 
 	struct pollfd pfd;
@@ -163,6 +163,13 @@ Location Server::get_location_config(std::ifstream &file_stream, std::string lin
 	return rv;
 }
 
+void Server::close_fds() {
+	std::vector<struct pollfd>::iterator it_begin = _pfds.begin();
+	std::vector<struct pollfd>::iterator it_end = _pfds.end();
+
+	for (; it_begin != it_end; it_begin++)
+		close(it_begin->fd);
+}
 void Server::store_server_configuration(std::ifstream &file_stream) {
 
 	std::string	line;

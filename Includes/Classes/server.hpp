@@ -22,6 +22,8 @@ class Server {
 		void 		store_server_configuration(std::ifstream &file_stream);
 		Location	get_location_config(std::ifstream &file_stream, std::string line);
 		void 		get_listening_socket();
+		void 		close_fds();
+
 
 		// GETTERS
 		const std::string 			&getPort() const;

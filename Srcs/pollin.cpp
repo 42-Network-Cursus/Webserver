@@ -33,33 +33,33 @@ Request readRequest(std::vector<Server> &servers, std::vector<struct pollfd> &al
 {
 	
 	std::string		request;
-	const size_t	bufferSize = 8000;
-	ssize_t 		bytesRead;
+	const size_t	bufferSize = 32;
+	size_t 			bytesRead;
 	char 			buffer[bufferSize];
-	
-	memset(buffer, 0, bufferSize);
 
+	std::cout << "\n\nIN read request" << std::endl;
 	while (1)
 	{
 		// std::cout << "On est la ? " << std::endl;
 		bytesRead = recv(all_pfds[idx].fd, buffer, bufferSize, 0);
-		std::cout << "readBytes: " << bytesRead << std::endl;
+		std::cout << "readBytes: " << bytesRead << " | " << std::string::npos << std::endl;
 		
-		if (bytesRead <= 0) {
+		if (bytesRead <= 0 || bytesRead == std::string::npos)
+		{
 			std::cout << "ERROR: " << strerror(errno) << std::endl;
-			if (bytesRead == 0)
+			if (bytesRead == 0 || bytesRead == std::string::npos)
 				std::cout << "Pollserver: socket " << all_pfds[idx].fd << " hung up" << std::endl;
-			if (bytesRead == -1)
+			if (bytesRead < 0)
 			{
-				std::cout << "Ressource invalid or temporaily invalid" << std::endl;
+				std::cout << "Resource temporarily unavailable" << std::endl;
 				request = "";
+				close(all_pfds[idx].fd);
+				all_pfds.erase(all_pfds.begin() + idx);
 			}
-			close(all_pfds[idx].fd);
-			all_pfds.erase(all_pfds.begin() + idx);
 			break;
 		}
+		buffer[bytesRead] = 0;
 		request += std::string(buffer, bytesRead);
-		memset(buffer, 0, bufferSize);
 	}
 
 	if (request == "")
@@ -72,6 +72,7 @@ Request readRequest(std::vector<Server> &servers, std::vector<struct pollfd> &al
 
 	// std::cout << "Position de \"\r\n\r\n\": " << headerEnd << " | Fin de requete ? " << (headerEnd == std::string::npos) << std::endl;
 	if (headerEnd != std::string::npos) {
+
 		header = request.substr(0, headerEnd + 2);
 		// std::cout << request.substr(headerEnd + 2) << s:;
 		if (headerEnd + 4 < request.length())
@@ -80,8 +81,8 @@ Request readRequest(std::vector<Server> &servers, std::vector<struct pollfd> &al
 	else
 		header = request;
 
-	// std::cout << "\n\n\n====== HEADER: \n" << header << std::endl;
-	// std::cout << "\n\n\n====== BODY: \n" << body << std::endl;
+	std::cout << "\n\n\n====== HEADER: \n" << header << std::endl;
+	std::cout << "\n\n\n====== BODY: \n" << body << std::endl;
 	
 	Request res = Request::parseRequest(header, all_pfds[idx].fd, servers[idx_pair.first]);
 	res.setBody(body);

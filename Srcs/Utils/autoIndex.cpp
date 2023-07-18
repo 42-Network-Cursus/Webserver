@@ -17,7 +17,7 @@ std::string generateAutoIndex(std::string path, std::string host_port)
 	{
 		std::cout << path.c_str() << std::endl;
 		std::cout << "Error Open directory in generate AutoIndex" << std::endl;
-		std::cout << strerror(errno) << std::endl;
+		//std::cout << strerror(errno) << std::endl;
 		return "";
 	}
 	

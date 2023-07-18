@@ -1,6 +1,6 @@
 NAME	=	webserv
 CC		=	c++ \
--Wall -Wextra -Werror -std=c++98
+# -Wall -Wextra -Werror -std=c++98
 
 S		=	Srcs/
 O		=	Objs/

@@ -128,7 +128,7 @@ void	Response::getMethod(Request request)
 			if (_path[0] == '/')
 			{
 				std::string root = request.getLocationConfig().getRoot();
-				root.pop_back();
+				// root.pop_back();
 				root = trim(root);
 				_path = root + _path;
 
