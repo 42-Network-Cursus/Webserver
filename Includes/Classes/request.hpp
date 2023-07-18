@@ -32,6 +32,7 @@ class Request {
 		std::string getBody();
 		int			getContentSize();
 		std::string	getUploadPath();
+		std::string	getRequest();
 
 		// SETTERS
 		void		setSocketFd(int socketFd);
@@ -46,7 +47,7 @@ class Request {
 		// Check function
 		bool		isAcceptedMethod();
 		bool		isValidVersion();
-		bool		isValidPath();
+		int			isValidPath();
 		
 
 		std::string getDefaultPage();

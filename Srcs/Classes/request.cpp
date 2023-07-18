@@ -25,7 +25,9 @@ void Request::printConfig()
 
 // CONSTRUCTORS
 Request::Request()
-{}
+{
+	_method = REQ_INV;
+}
 
 Request::~Request()
 {}
@@ -100,6 +102,8 @@ std::string Request::getBody() { return (_body); }
 
 int 		Request::getContentSize() { return (_contentSize); }
 
+std::string Request::getRequest() {	return (_config.getRedirect()); }
+
 // SETTERS
 void		Request::setSocketFd(int socketFd) { this->_socketFd = socketFd; }
 
@@ -129,16 +133,48 @@ bool Request::isValidVersion()
 	std::cout << "Version ? " << _version << std::endl;
 	#endif
 
+	_version = trim(_version);
 	return (_version == "HTTP/1.1" || _version == "HTTP/1.0");	
 }
 
-bool Request::isValidPath()
+int Request::isValidPath()
 {
-	std::string root =  _config.getRoot();
+	if (_path == _config.getPath())
+	{
+		if (_config.getAutoIndex())
+			return 200;
 
-	if (_path.compare(0, root.length(), root) == 0 || _path == "/")
-		return true;
-	return false;
+		std::cout << "Is VALID PATH !!!!" << std::endl;
+
+		std::ifstream file;
+		std::string root = _config.getRoot();
+		std::string index = _config.getIndex();
+		index = trim(index);
+		std::string fullPath = root + index;
+		fullPath = trim(fullPath);
+
+		std::cout << "Fullpath nb1: " << fullPath << std::endl;
+
+		file.open(fullPath.c_str(), std::ifstream::in);
+		if (file.is_open() == false)
+		{
+			std::cout << "Normalement, on redirige" << std::endl;
+			index = _config.getRedirect();
+			index = trim(index);
+			fullPath = root + index;
+			fullPath = trim(fullPath);
+
+			std::cout << "Fullpath nb2: " << fullPath << std::endl;
+			file.open(fullPath.c_str(), std::ifstream::in);
+			if (file.is_open() == false)
+				return 404;
+			file.close();
+			_path = _config.getPath() + index;
+			return 301;
+		}
+		file.close();
+	}
+	return 200;
 }
 
 std::string Request::getDefaultPage()

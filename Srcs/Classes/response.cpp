@@ -45,12 +45,13 @@ Response::Response(Request request)
 
 	if (request.isAcceptedMethod() == false)
 		_statusCode = 501;
-	// else if (_statusCode == 200 && request.isValidVersion() == false)
-	// 	_statusCode = 505;
-	// else if (_statusCode == 200 && request.isValidPath() == false)
-	// 	_statusCode = 404;
-	
-	if (_statusCode != 200)
+	else if (_statusCode == 200 && request.isValidVersion() == false)
+		_statusCode = 505;
+	_statusCode = request.isValidPath();
+
+	std::cout << "Creation de la reponse\nStatus Code: " << _statusCode << std::endl;
+
+	if (_statusCode != 200 && _statusCode != 301)
 	{
 		_path = "Websites/errorPage/" + intToString(_statusCode) + "_page.html";
 		readFile();
@@ -156,7 +157,7 @@ void	Response::getMethod(Request request)
 		_header.setContentType(CT_HTML);
 		_header.setContentLength(intToString(_body.size()));
 	}
-	
+	std::cout << "FIN DE LA REPONSE !!!!\nStatusCode: " << _statusCode << "\n\n\n\n" << std::endl;
 }
 
 /**
@@ -277,7 +278,7 @@ std::string Response::getResponseInString()
 	
 	std::cout << "Content-type in GetResponseINSTRING: " << type << std::endl;
 
-	std::string response = _header.transformHeaderToString(200, type, intToString(_body.size()), "", "", "") + _body;
+	std::string response = _header.transformHeaderToString(_statusCode, type, intToString(_body.size()), "", "", "") + _body;
 	// std::string response = _header.transformHeaderToString(200, "image/jpg", intToString(_body.size()), "", "", "") + _body;
 	// std::string response = _header.transformHeaderToString(200, "image/vnd.microsoft.icon", intToString(_body.size()), "", "", "") + _body;
 

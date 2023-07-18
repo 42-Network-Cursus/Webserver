@@ -150,6 +150,8 @@ Location Server::get_location_config(std::ifstream &file_stream, std::string lin
 			rv.setUploadPath(param_val);
 		else if (param == "auto_index")
 			rv.setAutoIndex(param_val);
+		else if (param == "redirect")
+			rv.setRedirect(param_val);
 		else if (param == "GET")
 			rv.setMethod("GET", stringToBool(param_val));
 		else if (param == "POST")

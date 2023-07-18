@@ -3,6 +3,10 @@
 
 # include <string>
 
+/*		CHECKER				*/
+
+const std::string REQ_INV = "Invalid Request";
+
 /*		ACCEPTED METHODS	*/
 
 const std::string METHOD_GET = "GET";
@@ -16,6 +20,8 @@ const std::string SC_UNKNOWN = "Code Unknown";
 const std::string SC_200 = "OK";
 const std::string SC_201 = "Created";
 const std::string SC_204 = "No Content";
+
+const std::string SC_301 = "Moved Permanently";
 
 const std::string SC_400 = "Bad Request";
 const std::string SC_403 = "Forbidden";
