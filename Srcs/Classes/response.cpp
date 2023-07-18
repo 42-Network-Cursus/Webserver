@@ -86,8 +86,8 @@ void	Response::getMethod(Request request)
 		if (request.getLocationConfig().getScriptPath() != "") {
 			
 			_body = get_body_from_cgi(request.getLocationConfig().getScriptPath());
-			
-			// Can't really return, need to handle if script fails and send an error page
+			_path = request.getLocationConfig().getScriptPath(); // For content type handling (Uses suffix)
+
 			return;
 		}
 		else
@@ -268,6 +268,7 @@ std::string Response::getResponseInString()
 		else
 			type = getExtension(_path);
 		std::cout << "After getEtensionFile : " << type << std::endl;
+		std::cout << _path << std::endl;
 		if (type == "")
 			type = CT_DEFAULT;
 		else
