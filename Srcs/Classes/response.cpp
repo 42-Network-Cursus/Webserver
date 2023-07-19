@@ -49,8 +49,6 @@ Response::Response(Request request)
 		_statusCode = 505;
 	_statusCode = request.isValidPath();
 
-	//std::cout << "Creation de la reponse\nStatus Code: " << _statusCode << std::endl;
-
 	if (_statusCode != 200 && _statusCode != 301)
 	{
 		_path = "Websites/errorPage/" + intToString(_statusCode) + "_page.html";
@@ -80,8 +78,6 @@ void	Response::getMethod(Request request)
 {
 	_path = request.getPath();
 
-	//std::cout << "IN GET METHOD " << _path << std::endl;
-
 	if (_path == request.getLocationConfig().getPath()) {
 		
 		if (request.getLocationConfig().getScriptPath() != "") {
@@ -100,11 +96,8 @@ void	Response::getMethod(Request request)
 		{
 			if (request.getLocationConfig().getAutoIndex())
 			{
-				//std::cout << "PATH IN AUTOINDEX: " << _path << std::endl;
 				_path = request.getLocationConfig().getRoot();
-				//std::cout << "PATH IN AUTOINDEX SECOND ROW !!!! : " << _path << std::endl;
 				_path = trim(_path);
-				// _path.pop_back();
 				_body = generateAutoIndex(_path, request.getLocationConfig().getHostPort());
 				_filename = "autoindex.html";
 				
@@ -114,26 +107,16 @@ void	Response::getMethod(Request request)
 				_path = request.getDefaultPage();
 		}
 	}
-	// if (_path == request.getLocationConfig().getPath())
-	// {
-	// 	//std::cout << "On est ici normalement..." << std::endl;
-	// 	_path = request.getDefaultPage();
-	// }
+	
 	else
 	{
-		//std::cout << "on est bien rentre ici !" << std::endl;
-		//std::cout << _path << " VS " << request.getLocationConfig().getPath() << std::endl;
-
 		size_t pos = _path.find("/"); 
 		size_t pos2 = _path.find("/", pos + 1);
 		if (pos2 == std::string::npos)
 		{
-			//std::cout << "Location Path: " << request.getLocationConfig().getPath() << std::endl;
-			//std::cout << "Root: " << request.getLocationConfig().getRoot() << std::endl;
 			if (_path[0] == '/')
 			{
 				std::string root = request.getLocationConfig().getRoot();
-				// root.pop_back();
 				root = trim(root);
 				_path = root + _path;
 
@@ -141,28 +124,15 @@ void	Response::getMethod(Request request)
 		}
 		else
 		{
-			//std::cout << "On est ici" << std::endl;
 			std::string tmp = _path.substr(pos2 + 1);
-			//std::cout << "tmp: " << tmp << std::endl;
 			std::string root = request.getLocationConfig().getRoot();
-			//std::cout << "Root: " << root << std::endl;
 			root = trim(root);
 			_path = root + tmp;
 		}
 	}
-	
-	//std::cout << "Avant le readFile ==> Path: " << _path  << std::endl;
 	readFile();
 	if (_statusCode == 404)
-	{
-		_path = "Websites/errorPage/" + intToString(_statusCode) + "_page.html";
-		readFile();
-		_path = "";
-		_header = ResponseHeader();
-		_header.setContentType(CT_HTML);
-		_header.setContentLength(intToString(_body.size()));
-	}
-	//std::cout << "FIN DE LA REPONSE !!!!\nStatusCode: " << _statusCode << "\n\n\n\n" << std::endl;
+		generateError();
 }
 
 /**
@@ -187,55 +157,22 @@ void	Response::postMethod(Request request)
 		// getMethod(request);
 		// return ;
 	}
-	// else if (true || request.getContentType() == CT_MULTI) // A changer !!!
 	else if (isFile(request.getContentType()))
 	{
 		int maxSize = sint(request.getLocationConfig().getClientMaxBodySize());
 		if (request.getContentSize() > maxSize)
 		{
 			_statusCode = 413;
-			_path = "Websites/errorPage/" + intToString(_statusCode) + "_page.html";
-			readFile();
-			_path = "";
-			_header = ResponseHeader();
-			_header.setContentType(CT_HTML);
-			_header.setContentLength(intToString(_body.size()));
+			generateError();
 			return ;
 		}
 		_filename = getFilename(request.getBody());
 		std::string fileContent = getContentBody2(request.getBody());
-		// std::string fileContent2 = getContentBody2(request.getBody());
-		// //std::cout << "Filename: " << _filename << "\nfile Content: " << fileContent << std::endl;
-		// if (fileContent.compare(fileContent2))
-		// 	//std::cout << "ALED\nIls sont différents" << std::endl;
-		// request.setPath("/");
-		// getMethod(request);
-		// return ;
-		// Un truc... Encore en train de tout setup
-		// //std::cout << "=============================================================== On va créer le fichier" << std::endl;
-		// if (checkUploadPath(request.getUploadPath()) == false)
-		// {
-		// 	_statusCode = 500;
-		// 	_path = "html/errorPage/" + intToString(_statusCode) + "_page.html";
-		// 	readFile();
-		// 	_path = "";
-		// 	_header = ResponseHeader();
-		// 	_header.setContentType(CT_HTML);
-		// 	_header.setContentLength(intToString(_body.size()));
-		// 	return ;
-		// }
-		// if (request.getUploadPath() != request.getPath())
-		// 	_path = request.getUploadPath() + request.getPath();
 		writeFile(_filename, fileContent);
 		_body = getUploadedFilePage();
 		_filename = "upload.html";
 		return ;
-		// return ;
 	}
-	// //std::cout << "On post !" << std::endl;
-
-	request.setPath("/");
-
 	getMethod(request);
 }
 
@@ -250,7 +187,7 @@ void	Response::deleteMethod(Request request)
 	if (isValidPathFile() == false)
 	{
 		_statusCode = 404;
-		_body = getErrorPage();
+		generateError();
 	}
 	if (std::remove(_path.c_str()) == 0)
 	{
@@ -261,7 +198,7 @@ void	Response::deleteMethod(Request request)
 	else
 	{
 		_statusCode = 404;
-		_body = getErrorPage();
+		generateError();
 	}
 }
 
@@ -273,29 +210,23 @@ std::string Response::getResponseInString()
 {
 	std::string type;
 	
-	//std::cout << "In response STRING" << std::endl;
 
 	if (_statusCode > 400)
 		type = _header.getContentType();
 	else
 	{
-		//std::cout << "Before getExtensionFile" << std::endl;
 		if (_filename != "")
 			type = getExtensionFile(_filename);
 		else
 			type = getExtension(_path);
-		//std::cout << "After getEtensionFile : " << type << std::endl;
+			
 		if (type == "")
 			type = CT_DEFAULT;
 		else
 			type = getContentType(type);
 	}
-	
-	//std::cout << "Content-type in GetResponseINSTRING: " << type << std::endl;
 
 	std::string response = _header.transformHeaderToString(_statusCode, type, intToString(_body.size()), "", "", "") + _body;
-	// std::string response = _header.transformHeaderToString(200, "image/jpg", intToString(_body.size()), "", "", "") + _body;
-	// std::string response = _header.transformHeaderToString(200, "image/vnd.microsoft.icon", intToString(_body.size()), "", "", "") + _body;
 
 	return response;
 }
@@ -318,15 +249,19 @@ void	Response::readFile()
 	if (isValidPathFile() == false)
 	{
 		//std::cout << "NOT VALID PATH ??" << std::endl;
-
+		if (_statusCode != 200)
+		{
+			_body = getErrorPage();
+			_path = "";
+			_header = ResponseHeader();
+			_header.setContentType(CT_HTML);
+			_header.setContentLength(intToString(_body.size()));
+			return ;
+		}
 		_statusCode = 404;
-		_path = "Websites/errorPage/" + intToString(_statusCode) + "_page.html";
-		readFile();
-		_path = "";
+		generateError();
 		return ;
 	}
-
-
 
 	std::ifstream file;
 	std::stringstream buffer;
@@ -335,9 +270,7 @@ void	Response::readFile()
 	if (file.is_open() == false)
 	{
 		_statusCode = 404;
-		_path = "Websites/errorPage/" + intToString(_statusCode) + "_page.html";
-			readFile();
-			_path = "";
+		generateError();
 		return ;
 	}
 	buffer << file.rdbuf();
@@ -366,10 +299,7 @@ void	Response::writeFile(std::string filename, std::string content)
 		{
 			//std::cout << "On est une merde..." << std::endl;
 			_statusCode = 403;
-			_path = "html/errorPage/" + intToString(_statusCode) + "_page.html";
-			readFile();
-			_path = "";
-			return ;
+			generateError();
 		}
 		// //std::cout << "LET'S GO!!!" << std::endl;
 		// file << content;
@@ -383,6 +313,7 @@ void	Response::writeFile(std::string filename, std::string content)
 		if (file.is_open() == false)
 		{
 			_statusCode = 403;
+			generateError();
 			return ;
 		}
 		file << content;
@@ -407,23 +338,6 @@ bool Response::isValidPathFile()
 	// closedir(dir);
 	return true;
 }
-
-/*		V2		*/
-// bool Response::isValidPathFile()
-// {
-// 	struct stat s_stat;
-// 	if (stat(_path.c_str(), &s_stat))
-// 	{
-// 		if (s_stat.st_mode & S_IFDIR)
-// 			return false;
-// 		else if (s_stat.st_mode & S_IFREG)
-// 			return true;
-// 		else
-// 			return false;
-// 	}
-// 	else
-// 		return false;
-// }
 
 /**
  * @brief Generate the error page
@@ -456,4 +370,14 @@ bool Response::checkUploadPath(std::string path)
 		return true;
 	}
 	return false;
+}
+
+void Response::generateError()
+{
+	_path = "Websites/errorPage/" + intToString(_statusCode) + "_page.html";
+	readFile();
+	_path = "";
+	_header = ResponseHeader();
+	_header.setContentType(CT_HTML);
+	_header.setContentLength(intToString(_body.size()));
 }

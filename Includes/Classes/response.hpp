@@ -49,6 +49,8 @@ class Response {
 		std::string getErrorPage();
 		std::string getDeletedFilePage();
 		std::string getUploadedFilePage();
+		void generateError();
+
 };
 
 #endif // RESPONSE_CLASS_HPP
