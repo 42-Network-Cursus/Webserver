@@ -90,6 +90,9 @@ void	Response::getMethod(Request request)
 			
 			_body = get_body_from_cgi(request.getLocationConfig().getScriptPath());
 			_path = request.getLocationConfig().getScriptPath(); // For content type handling (Uses suffix)
+			_header.setContentLength(intToString(_body.length()));
+			std::cout << _body.length() << std::endl;
+			std::cout << "DATA: " << _header.getHeaderData();
 
 			return;
 		}

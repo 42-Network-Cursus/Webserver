@@ -32,6 +32,40 @@ std::string get_body_from_cgi(std::string script, char *env) {
 	std::string CGI;
 	std::string CGI_PATH;
 
+
+	std::string env_vars[2];
+	
+	env_vars[0] = "CONTENT_LENGTH=0";
+	// env_vars[1] = "CONTENT_TYPE=" + request.headers["Content-Type"];
+	// env_vars[1] = "CONTENT_TYPE=text/html";
+	// env_vars[2] = "REQUEST_METHOD=POST";
+	// env_vars[3] = "REDIRECT_STATUS=200";
+	// env_vars[4] = "GATEWAY_INTERFACE=CGI/1.1";
+	// env_vars[5] = "SCRIPT_NAME=";
+	// env_vars[6] = "PATH_INFO=";
+	// env_vars[7] = "PATH_TRANSLATED=";
+	// env_vars[8] = "REMOTE_ADDR=" + request.headers["Origin"];
+	// env_vars[9] = "AUTH_TYPE=" + request.headers["Authorization"];
+	// env_vars[10] = "QUERY_STRING=" + request.query_string; // set only for get requests
+	// env_vars[11] = "REMOTE_USER=" + request.headers["Authorization"];
+	env_vars[1] = "answer=THISISANSWER";
+	// char *tmp[1];
+	//  = {"answer=THISISANSWER", ""};
+	// tmp[0] = str;
+
+	char *new_env[3];
+
+	int i = 0;
+	while (i < 2) {
+		new_env[i] = new char[env_vars[i].size() + 1];
+		strcpy(new_env[i], env_vars[i].c_str());
+		++i;
+	}
+	new_env[i] = NULL;
+
+	// env = tmp;
+	std::cout << "IN CGI \n\n";
+
 	get_cgi(script_path, CGI, CGI_PATH);
 
     // Check if the file was opened successfully
@@ -41,7 +75,7 @@ std::string get_body_from_cgi(std::string script, char *env) {
     }
 
     // Command to execute the PHP script
-    const char* command[] = {CGI.c_str(), "-f", script_path.c_str(), env};
+    const char* command[] = {CGI.c_str(), "-f", script_path.c_str(), NULL};
 
     // Fork a child process
     pid_t work_pid = fork();
@@ -58,10 +92,10 @@ std::string get_body_from_cgi(std::string script, char *env) {
 			exit(EXIT_FAILURE);
 
         // Execute the PHP script
-        execve(CGI_PATH.c_str(), const_cast<char**>(command), NULL);
+        execve(CGI_PATH.c_str(), const_cast<char**>(command), new_env);
         
         // If execve returns, an error occurred
-        // std::cerr << "Failed to execute the PHP script." << std::endl;
+        std::cerr << "Failed to execute the PHP script." << std::endl;
 		exit(EXIT_FAILURE);	
         return "";
     }
@@ -102,7 +136,10 @@ std::string get_body_from_cgi(std::string script, char *env) {
 		}
 			
 		rFile.close();
-		int result = remove("tmpFile.txt");
+		// UNCOMMENT 
+		// int result = remove("tmpFile.txt");
+
+
 		//std::cout << result << std::endl;
 
         // if (WIFEXITED(status) && WEXITSTATUS(status) == 0) {

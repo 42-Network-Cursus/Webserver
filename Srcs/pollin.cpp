@@ -46,7 +46,7 @@ Request readRequest(std::vector<Server> &servers, std::vector<struct pollfd> &al
 		if (bytesRead <= 0)
 
 		{
-			std::cout << "ERROR: " << strerror(errno) << std::endl;
+			// std::cout << "ERROR: " << strerror(errno) << std::endl;
 			if (bytesRead == 0)
 				std::cout << "Pollserver: socket " << all_pfds[idx].fd << " hung up" << std::endl;
 			if (bytesRead < 0)
@@ -73,21 +73,21 @@ Request readRequest(std::vector<Server> &servers, std::vector<struct pollfd> &al
 
 		return Request();
 	}
-	std::cout << "PREMIER Header => \n" << header << "\n\nPOS: " << pos << std::endl;
+	// std::cout << "PREMIER Header => \n" << header << "\n\nPOS: " << pos << std::endl;
 	Request res = Request::parseRequest(header, all_pfds[idx].fd, servers[idx_pair.first]);
 	if (res.getMethod() == METHOD_POST)
 	{
-		std::cout << "\n\n\non a bien une post" << std::endl;
-		std::cout << pos << " VS " << std::string::npos << std::endl;
+		// std::cout << "\n\n\non a bien une post" << std::endl;
+		// std::cout << pos << " VS " << std::string::npos << std::endl;
 		if (pos == std::string::npos)
 		{
-			std::cout << "pos == npos..." << std::endl;
+			// std::cout << "pos == npos..." << std::endl;
 			close(all_pfds[idx].fd);
 			all_pfds.erase(all_pfds.begin() + idx);
 			erase_fd_from_server(all_pfds[idx].fd, servers);
 			return Request();
 		}
-		std::cout << "on a bien un body..." << std::endl;
+		// std::cout << "on a bien un body..." << std::endl;
 		body = header.substr(pos + 4);
 		bufferSize = 8000;
 		char bodyRead[bufferSize];
@@ -101,7 +101,7 @@ Request readRequest(std::vector<Server> &servers, std::vector<struct pollfd> &al
 		}
 		check = true;
 
-		std::cout << "Body: " << body.size() << " VS CONTENT-LENGTH: " << size << std::endl;
+		// std::cout << "Body: " << body.size() << " VS CONTENT-LENGTH: " << size << std::endl;
 		if (body.size() == size)
 		{
 			check = false;
@@ -112,13 +112,13 @@ Request readRequest(std::vector<Server> &servers, std::vector<struct pollfd> &al
 		while (check)
 		{
 			bytesRead = recv(all_pfds[idx].fd, bodyRead, bufferSize, 0);
-			std::cout << "NB READ BODY: " << bytesRead << std::endl;
+			// std::cout << "NB READ BODY: " << bytesRead << std::endl;
 			if (bytesRead == 0)
 			{	
 				std::cout << "On a break ?" << std::endl;
 				break;
 			}
-			std::cout << "On est passe ?" << std::endl;
+			// std::cout << "On est passe ?" << std::endl;
 			if (bytesRead < 0)
 			{
 				std::cout << "Resource temporarily unavailable" << std::endl;
@@ -145,11 +145,11 @@ Request readRequest(std::vector<Server> &servers, std::vector<struct pollfd> &al
 			return Request();
 		res.setContentSize(getContentSize(header));
 		res.setBody(body);
-		std::cout << "Body: \n" << body << std::endl;
+		// std::cout << "Body: \n" << body << std::endl;
 	}
-	std::cout << "On retourne un request correct" << std::endl;
-	std::cout << "============= END\n HEADER:\n" << header << "\n\n BODY:\n" << body << std::endl;
-	std::cout << "\n=================\n\n" << std::endl;
+	// std::cout << "On retourne un request correct" << std::endl;
+	// std::cout << "============= END\n HEADER:\n" << header << "\n\n BODY:\n" << body << std::endl;
+	// std::cout << "\n=================\n\n" << std::endl;
 	// close(all_pfds[idx].fd);
 	// all_pfds.erase(all_pfds.begin() + idx);
 	// erase_fd_from_server(all_pfds[idx].fd, servers);
