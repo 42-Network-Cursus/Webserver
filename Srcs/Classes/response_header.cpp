@@ -128,7 +128,8 @@ std::string ResponseHeader::getHeaderData()
 		res += "Location: " + this->_location + "\r\n";
 	if (this->_server != "")
 		res += "Server: " + this->_server + "\r\n";
-
+	res += "Connection: Keep-Alive\r\n";
+	res += "Keep-Alive: timeout=100, max=100\r\n";
 	res += "\r\n";
 	return res;
 }

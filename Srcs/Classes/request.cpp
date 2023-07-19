@@ -144,8 +144,6 @@ int Request::isValidPath()
 		if (_config.getAutoIndex())
 			return 200;
 
-		//std::cout << "Is VALID PATH !!!!" << std::endl;
-
 		std::ifstream file;
 		std::string root = _config.getRoot();
 		std::string index = _config.getIndex();
@@ -153,18 +151,14 @@ int Request::isValidPath()
 		std::string fullPath = root + index;
 		fullPath = trim(fullPath);
 
-		//std::cout << "Fullpath nb1: " << fullPath << std::endl;
-
 		file.open(fullPath.c_str(), std::ifstream::in);
 		if (file.is_open() == false)
 		{
-			//std::cout << "Normalement, on redirige" << std::endl;
 			index = _config.getRedirect();
 			index = trim(index);
 			fullPath = root + index;
 			fullPath = trim(fullPath);
 
-			//std::cout << "Fullpath nb2: " << fullPath << std::endl;
 			file.open(fullPath.c_str(), std::ifstream::in);
 			if (file.is_open() == false)
 				return 404;
@@ -196,10 +190,11 @@ Request Request::parseRequest(std::string request, int fd, Server server)
 
 	method = request.substr(0, pos);
 	path = request.substr(pos + 1, pos2 - pos - 1);
-	version = request.substr(pos2, request.find("\n", pos2));
+	pos = request.find("HTTP/");
+	pos2 = request.find("\n");
+	version = request.substr(pos, pos2 - pos);
 	version = trim(version);
 
-	// Request res(fd, method, path, version, server);
 	Request res(fd, method, path, version, server, request);
 
 	return res;
@@ -243,11 +238,6 @@ void Request::checkMultiPart()
 	size_t pos = _contentType.find(CT_MULTI);
 	if (pos == std::string::npos)
 		return ;
-	//std::cout << "On est un fichier !" << std::endl;
+	
 	setContentType(CT_MULTI);
-	//std::cout << "ContentType in checkMultiPart: " << _contentType << std::endl;
-	// std::string newType = _contentType.substr(0, CT_MULTI.size());
-	// //std::cout << "New Type ? " << newType << "New Type avec .substr()" <<_contentType.substr(0, CT_MULTI.size()) <<  "ContentType ? " << _contentType << std::endl;
-
-	// _contentType = newType;
 }
