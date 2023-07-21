@@ -48,7 +48,6 @@ int get_request_index(int sockfd, std::vector<Request> requests) {
 		if (it_begin->getSocketFd() == sockfd)
 			j = i ;
 	}
-
 	return j;
 }
 
@@ -60,13 +59,18 @@ void handle_pollout(std::vector<Server> &servers, std::vector<struct pollfd> &al
 	requests[req_idx].print();
 	#endif
 
-	Response response(requests[req_idx]);
-	sendResponse(sockfd, response);
 	
+	std::cout << "On envoie " << req_idx << std::endl;
+	Response response(requests[req_idx]);
+	std::cout << "Reponse OK" << std::endl;
+	sendResponse(sockfd, response);
+	std::cout << "envoie Reponse OK" << std::endl;
 	std::vector<Request>::iterator it_begin = requests.begin();
 	requests.erase(it_begin + req_idx);
 	
 	close(all_pfds[idx].fd);
 	all_pfds.erase(all_pfds.begin() + idx);
+
 	erase_fd_from_server(all_pfds[idx].fd, servers);
+	
 }

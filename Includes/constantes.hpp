@@ -41,7 +41,9 @@ const std::string CT_HTML = "text/html";
 const std::string CT_CSS = "text/css";
 const std::string CT_JS = "text/javascript";
 const std::string CT_PNG = "image/png";
+const std::string CT_JPG = "image/jpeg";
 const std::string CT_ICON = "image/x-icon";
+const std::string CT_MP3 = "audio/mpeg";
 // const std::string CT_ICON = "image/vnd.microsoft.icon";
 const std::string CT_DEFAULT = "text/plain";
 

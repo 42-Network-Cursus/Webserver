@@ -70,7 +70,6 @@ int main(int argc, char *argv[]) {
 		if (G_EXIT) {
 			clean_exit(servers);
 		}
-
 		// last argument is timeout, in millisecs. Neg value for no timeout until response
 		if ( (poll(all_pfds.data(), all_pfds.size(), 1)) == -1) {
 			std::cerr << "\npoll: " << strerror(errno) << std::endl;
@@ -88,15 +87,25 @@ int main(int argc, char *argv[]) {
 					continue ;
 				handle_pollin(servers, all_pfds, idx_pair, requests, i);
 			}
-			
-			// handle POLLOUT event, socket ready to write
+
 			if (all_pfds[i].revents & POLLOUT){
 				if (requests.size() == 0)
 					continue ;
 					
 				handle_pollout(servers, all_pfds, i, requests);				
-			}
-		}		
+			}	
+			
+		}	
+		// for (size_t i = 0; i < all_pfds.size(); i++)
+		// {
+		// // handle POLLOUT event, socket ready to write
+		// 	if (all_pfds[i].revents & POLLOUT){
+		// 		if (requests.size() == 0)
+		// 			continue ;
+					
+		// 		handle_pollout(servers, all_pfds, i, requests);				
+		// 	}	
+		// }
 	}
 	return 0;
 }
