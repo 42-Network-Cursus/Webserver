@@ -27,7 +27,6 @@ Server::Server(const Server &copy)
 {}
 
 Server &Server::operator=(const Server &other) {
-	
 	if (this != &other)
 	{
 		_port = other._port;
@@ -207,21 +206,18 @@ void Server::store_server_configuration(std::ifstream &file_stream) {
 	} // End While
 }
 
-/*
-	*** GETTERS ***
-*/
+/**** GETTERS ****/
+const std::string 			&Server::getPort() const 		{ return _port; }
 
-const std::string 			&Server::getPort() const { return _port; }
+const std::string 			&Server::getHost() const 		{ return _host; }
 
-const std::string 			&Server::getHost() const { return _host; }
+const std::string 			&Server::getServer_name() const	{ return _server_name; }
 
-const std::string 			&Server::getServer_name() const { return _server_name; }
+std::vector<struct pollfd>	&Server::getPfds() 				{ return _pfds; }
 
-std::vector<struct pollfd>	&Server::getPfds() { return _pfds; }
+std::vector<Location> 		&Server::getLocation() 			{ return _locations; }
 
-std::vector<Location> 		&Server::getLocation() { return _locations; }
-
-int 						Server::getSockList() const { return _socklist; }
+int 						Server::getSockList() const 	{ return _socklist; }
 
 Location 					&Server::getLocationFromPath(std::string path) {
 
@@ -245,8 +241,5 @@ Location 					&Server::getLocationFromPath(std::string path) {
 	return *it_start;
 }
 
-/*
-	*** SETTERS ***
-*/
-
+/**** SETTERS ****/
 void Server::setPfds(const std::vector<struct pollfd> &pfds) { _pfds = pfds; }

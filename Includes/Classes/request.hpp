@@ -6,7 +6,6 @@
 # include <sstream>
 
 # include "server.hpp"
-// # include "utils.hpp"
 
 class Request {
 
@@ -36,6 +35,8 @@ class Request {
 		std::string getVersion();
 		std::string getServerName();
 
+		std::string getDefaultPage();
+
 		// SETTERS
 		void		setSocketFd(int socketFd);
 		void		setPath(const std::string &path);
@@ -51,9 +52,6 @@ class Request {
 		bool		isValidVersion();
 		int			isValidPath();
 		
-
-		std::string getDefaultPage();
-		
 		// DEBUG
 		void		printConfig();
 		void print();
@@ -61,16 +59,15 @@ class Request {
 
 	private:
 		int			_socketFd; //-> So we can send corresponding response on correct connection
-		std::string	_method; // GET
-		std::string _path; // 
+		std::string	_method;
+		std::string _path;
 		std::string	_version; // http 1.1
 		Location	_config;
 		std::string	_query;
 		std::string _contentType;
 		std::string _body;
 		int 		_contentSize;
-
-		std::string _serverName; // Maybe used for POST and DELETE, specifies the host name (server name)
+		std::string _serverName;
 		
 		void getQueryFromPath();
 		void getExtraDatas(std::string request);

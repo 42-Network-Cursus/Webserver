@@ -8,8 +8,8 @@
 
 void conf_error(int line_nb, std::string line) {
 	
-	//std::cout << "Detected configuration error at line " << line_nb << ":\n";
-	//std::cout << line << std::endl;
+	std::cout << "Detected configuration error at line " << line_nb << ":\n";
+	std::cout << line << std::endl;
 	exit(1);
 }
 
@@ -35,7 +35,7 @@ void check_conf_file(std::string file_name) {
 
 	// check whether the file is open
 	if (!file_stream.is_open()) { 
-		//std::cout << "Error opening configuration file" << std::endl;
+		std::cout << "Error opening configuration file" << std::endl;
 		exit(1);
 	}
 
@@ -118,7 +118,7 @@ void configure_servers(std::string file_name, std::vector<Server> *servers) {
 
 	// check whether the file is open
 	if (!file_stream.is_open()) { 
-		//std::cout << "Error opening " << file_name << std::endl;
+		std::cout << "Error opening " << file_name << std::endl;
 		exit(1);
 	}
 

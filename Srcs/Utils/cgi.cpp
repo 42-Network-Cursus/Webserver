@@ -25,7 +25,6 @@ void get_cgi(std::string script_path, std::string &CGI, std::string &CGI_PATH) {
 	std::string suffix = script_path.substr(script_path.find_last_of("."));
 
 	if (suffix == ".php") {
-		std::cout << "Found suffix\n";
 		CGI = PHP_CGI;
 		CGI_PATH = PHP_CGI_PATH;
 	}

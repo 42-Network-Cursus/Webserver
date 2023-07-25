@@ -94,55 +94,48 @@ Request::Request(int socketFd, std::string method, std::string path, std::string
 }
 
 // GETTERS
-int 		Request::getSocketFd() { return (_socketFd); }
+int 		Request::getSocketFd() 			{ return (_socketFd); }
 
-std::string Request::getPath() { return (_path); }
+std::string Request::getPath()				{ return (_path); }
 
-std::string Request::getMethod() { return (_method); }
+std::string Request::getMethod()			{ return (_method); }
 
-std::string Request::getQuery() { return (_query); }
+std::string Request::getQuery()				{ return (_query); }
 
-Location 	&Request::getLocationConfig() { return (_config); }
+Location 	&Request::getLocationConfig()	{ return (_config); }
 
-std::string Request::getContentType() { return (_contentType); }
+std::string Request::getContentType() 		{ return (_contentType); }
 
-std::string Request::getBody() { return (_body); }
+std::string Request::getBody() 				{ return (_body); }
 
-int 		Request::getContentSize() { return (_contentSize); }
+int 		Request::getContentSize() 		{ return (_contentSize); }
 
-std::string Request::getRequest() {	return (_config.getRedirect()); }
+std::string Request::getRequest() 			{ return (_config.getRedirect()); }
 
-std::string Request::getVersion() { return _version; }
+std::string Request::getVersion() 			{ return _version; }
 
 // SETTERS
-void		Request::setSocketFd(int socketFd) { this->_socketFd = socketFd; }
+void		Request::setSocketFd(int socketFd) 				{ this->_socketFd = socketFd; }
 
-void		Request::setPath(const std::string &path) { this->_path = path; }
+void		Request::setPath(const std::string &path) 		{ this->_path = path; }
 
-void		Request::setMethod(const std::string &method) { this->_method = method; }
+void		Request::setMethod(const std::string &method)	{ this->_method = method; }
 
-void		Request::setConfig(Location config) { this->_config = config; }
+void		Request::setConfig(Location config) 			{ this->_config = config; }
 
-void	Request::setQuery(const std::string &query) { this->_query = query; }
+void	Request::setQuery(const std::string &query) 		{ this->_query = query; }
 
-void Request::setBody(const std::string &body) { this->_body = body; }
+void Request::setBody(const std::string &body) 				{ this->_body = body; }
 
-void Request::setContentSize(int size) { this->_contentSize = size; }
+void Request::setContentSize(int size) 						{ this->_contentSize = size; }
 
-void Request::setContentType(const std::string &type) { this->_contentType = type; }
+void Request::setContentType(const std::string &type) 		{ this->_contentType = type; }
+
 // METHODS
-bool Request::isAcceptedMethod()
-{
-	return _config.getMethod(_method);
-	// isInVector(_config->getAcceptedMethods(), _method);
-}
+bool Request::isAcceptedMethod() 	{ return _config.getMethod(_method); }
 
 bool Request::isValidVersion()
 {
-	#ifdef DEBUG
-	//std::cout << "Version ? " << _version << std::endl;
-	#endif
-
 	_version = trim(_version);
 	return (_version == "HTTP/1.1" || _version == "HTTP/1.0");	
 }
@@ -201,16 +194,12 @@ Request Request::parseRequest(std::string request, int fd, Server server)
 	method = request.substr(0, pos);
 	path = request.substr(pos + 1, pos2 - pos - 1);
 
-	std::cout << "\n\n PATH FROM SUBSTR: " << path << "\n\n";
-
-
 	pos = request.find("HTTP/");
 	pos2 = request.find("\n");
 	version = request.substr(pos, pos2 - pos);
 	version = trim(version);
 
 	Request res(fd, method, path, version, server, request);
-
 	return res;
 }
 
@@ -234,8 +223,7 @@ void Request::getExtraDatas(std::string request)
 	std::string line;
 
 	while (std::getline(iss, line)) {
-		if (line.compare(0, 13, "Content-Type:") == 0) {
-		
+		if (line.compare(0, 13, "Content-Type:") == 0) {	
 			_contentType = line.substr(14);
 			return ;
 		}

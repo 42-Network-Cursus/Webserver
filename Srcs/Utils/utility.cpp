@@ -135,7 +135,6 @@ std::string deleteWhiteSpace(std::string str)
 }
 
 
-
 // bool isInVector(std::vector<std::string> vector, std::string value)
 // {
 // 	std::vector<std::string>::iterator it = vector.begin();

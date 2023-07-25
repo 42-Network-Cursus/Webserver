@@ -9,20 +9,13 @@ void Response::print() {
 	//std::cout << "Path : " << _path << std::endl;
 }
 
-Response::Response()
-{
+Response::Response() {}
 
-}
+Response::~Response() {}
 
-Response::~Response()
-{
-
-}
-
-Response::Response(const Response &copy) : _statusCode(copy._statusCode), _header(copy._header), _body(copy._body), _path(copy._path), _filename(copy._filename)
-{
-
-}
+Response::Response(const Response &copy)
+: _statusCode(copy._statusCode), _header(copy._header), _body(copy._body), _path(copy._path), _filename(copy._filename)
+{}
 
 Response &Response::operator=(const Response &other)
 {
@@ -39,7 +32,6 @@ Response &Response::operator=(const Response &other)
 
 Response::Response(Request request)
 {
-
 	_statusCode = 200;
 	_filename = "";
 
@@ -83,13 +75,11 @@ void	Response::getMethod(Request request)
 		if (request.getLocationConfig().getScriptPath() != "") {
 
 			// _body = get_body_from_cgi(request.getLocationConfig().getScriptPath(), _body);
-			
 			_body = get_body_from_cgi(request);
 			
 			_path = request.getLocationConfig().getScriptPath(); // For content type handling (Uses suffix)
 			_header.setContentLength(intToString(_body.length()));
-
-			return;
+			return ;
 		}
 		else
 		{
@@ -147,7 +137,6 @@ void	Response::postMethod(Request request)
 	{	
 		request.getLocationConfig().setScriptPath(request.getLocationConfig().getRoot() + "cgi-bin" + request.getPath());
 		request.getLocationConfig().setPath(_path); // Works w/ it, dont know if it breaks something
-		// _body = request.getBody();
 	}
 	else if (isFile(request.getContentType()))
 	{
@@ -202,7 +191,6 @@ std::string Response::getResponseInString()
 {
 	std::string type;
 	
-
 	if (_statusCode > 400)
 		type = _header.getContentType();
 	else
@@ -281,6 +269,7 @@ void	Response::writeFile(std::string filename, std::string content)
 	std::ofstream file;
 
 	std::string filepath = "Websites/upload/" + filename;
+	
 	bool test = true;
 	// if (true || isValidPathFile() == false)
 	if (test) // Si le fichier n'existe pas (function a ajouter par la suite)

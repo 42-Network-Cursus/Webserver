@@ -5,14 +5,13 @@
 # include <map>
 
 class Location {
-
     public:
         Location();
         ~Location();
 		Location(const Location &copy);
 		Location &operator=(const Location &rhs);
 
-        // SETTERS
+    // SETTERS
         void    setPath(std::string val);
         void    setRoot(std::string val);
         void    setIndex(std::string val);
@@ -25,7 +24,7 @@ class Location {
         void    setHostPort(std::string val);
         void    setRedirect(std::string val);
 
-        // GETTERS
+    // GETTERS
         std::string                 getPath() const;
         std::string                 getRoot() const;
         std::string                 getIndex() const;
@@ -39,7 +38,7 @@ class Location {
         std::string                 getHostPort() const;
         std::string                 getRedirect() const;
 		
-		// DEBUG
+	// DEBUG
         void print();
     
 	private:
@@ -54,7 +53,6 @@ class Location {
         std::map<std::string, bool> _methods;
         std::string                 _host_port;
         std::string                 _redirect;
-
 };
 
 #endif // LOCATION_HPP

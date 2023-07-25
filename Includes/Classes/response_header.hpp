@@ -31,7 +31,6 @@ class ResponseHeader
 		std::string getHeaderData();
 
 	private:
-		
 		std::string	_contentType; // Type de contenu de la réponse	
 		std::string	_contentLength; // Taille du body de la réponse
 		std::string	_date; // Date et heure à laquelle la réponse a été généré
