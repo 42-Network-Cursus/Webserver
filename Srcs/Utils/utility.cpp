@@ -308,8 +308,12 @@ std::string getContentType(std::string str)
 		return CT_ICON;
 	else if	(ext == "png")
 		return CT_PNG;
+	else if	(ext == "jpg")
+		return CT_JPG;
 	else if	(ext == "html" || ext == "php")
 		return CT_HTML;
+	else if (ext == "mp3")
+		return CT_MP3;
 	else
 		return CT_DEFAULT;
 }

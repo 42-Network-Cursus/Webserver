@@ -284,7 +284,7 @@ void	Response::readFile()
  */
 void	Response::writeFile(std::string filename, std::string content)
 {
-	// //std::cout << "On tente de creer le fichier" << std::endl;
+	//std::cout << "On tente de creer le fichier" << std::endl;
 	std::ofstream file;
 
 	std::string filepath = "Websites/upload/" + filename;
@@ -292,7 +292,7 @@ void	Response::writeFile(std::string filename, std::string content)
 	// if (true || isValidPathFile() == false)
 	if (test) // Si le fichier n'existe pas (function a ajouter par la suite)
 	{
-		//std::cout << "Filepath ?: " << filepath << std::endl;
+		std::cout << "Filepath ?: " << filepath << std::endl;
 		file.open(filepath.c_str(), std::ofstream::out | std::ofstream::trunc);
 		if (file.is_open() == false)
 		{
@@ -300,8 +300,8 @@ void	Response::writeFile(std::string filename, std::string content)
 			_statusCode = 403;
 			generateError();
 		}
-		// //std::cout << "LET'S GO!!!" << std::endl;
-		// file << content;
+		std::cout << "LET'S GO!!!" << std::endl;
+		file << content;
 		file.write(content.c_str(), content.size());
 		file.close();
 		_statusCode = 201;
