@@ -6,7 +6,7 @@
 # include <sstream>
 
 # include "server.hpp"
-# include "utils.hpp"
+// # include "utils.hpp"
 
 class Request {
 
@@ -33,6 +33,8 @@ class Request {
 		int			getContentSize();
 		std::string	getUploadPath();
 		std::string	getRequest();
+		std::string getVersion();
+		std::string getServerName();
 
 		// SETTERS
 		void		setSocketFd(int socketFd);
@@ -68,7 +70,7 @@ class Request {
 		std::string _body;
 		int 		_contentSize;
 
-		std::string _server_name; // Maybe used for POST and DELETE, specifies the host name (server name)
+		std::string _serverName; // Maybe used for POST and DELETE, specifies the host name (server name)
 		
 		void getQueryFromPath();
 		void getExtraDatas(std::string request);

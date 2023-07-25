@@ -5,6 +5,8 @@
 
 # include "server.hpp"
 # include "constantes.hpp"
+# include "request.hpp"
+
 # include <unistd.h>
 # include <sys/types.h>
 # include <sys/wait.h>
@@ -32,7 +34,7 @@ void 			            configure_servers(std::string file_name, std::vector<Server>
 
 // CGI
 void 		get_cgi(std::string script_path, std::string &CGI, std::string &CGI_PATH);
-std::string get_body_from_cgi(std::string script, std::string postData = "");
+std::string get_body_from_cgi(Request &request);
 
 // Used ?
 std::string	getExtension(std::string str);

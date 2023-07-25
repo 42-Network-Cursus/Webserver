@@ -78,19 +78,16 @@ void	Response::getMethod(Request request)
 {
 	_path = request.getPath();
 
-	// std::cout << "GET METHOD PATH: " << _path << "\n\n";
-	request.print();
-
 	if (_path == request.getLocationConfig().getPath()) {
 		
 		if (request.getLocationConfig().getScriptPath() != "") {
+
+			// _body = get_body_from_cgi(request.getLocationConfig().getScriptPath(), _body);
 			
-			std::cout << "Before : " << _body << "\n\n"; 
-			_body = get_body_from_cgi(request.getLocationConfig().getScriptPath(), _body);
+			_body = get_body_from_cgi(request);
+			
 			_path = request.getLocationConfig().getScriptPath(); // For content type handling (Uses suffix)
 			_header.setContentLength(intToString(_body.length()));
-			
-			// std::cout << _body.length() << std::endl;
 
 			return;
 		}
@@ -143,18 +140,14 @@ void	Response::getMethod(Request request)
  */
 void	Response::postMethod(Request request)
 {
-	//std::cout << "------------------------------ In POSTMETHOD" << std::endl;
-	//std::cout << "ContentType: " << request.getContentType() << std::endl;
 	_path = request.getPath();
 	std::string ext = getExtension(_path);
-	// //std::cout << "POSTMETHOD:\n\nContentType: " << request.getContentType() << std::endl;
-	std::cout << "ISCGI: " << isCGIExtension(ext) << std::endl;
+
 	if (isCGIExtension(ext))
 	{	
-		std::cout << "POST METHOD BODY: " << _body << "\n\n";
 		request.getLocationConfig().setScriptPath(request.getLocationConfig().getRoot() + "cgi-bin" + request.getPath());
 		request.getLocationConfig().setPath(_path); // Works w/ it, dont know if it breaks something
-		_body = request.getBody();
+		// _body = request.getBody();
 	}
 	else if (isFile(request.getContentType()))
 	{

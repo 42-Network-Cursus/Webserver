@@ -11,7 +11,7 @@ void Request::print() {
 	std::cout << "Query : " << _query << std::endl;
 	std::cout << "\nConfig : " << std::endl;
 	_config.print();
-	std::cout << "Server name : " << _server_name << std::endl;
+	std::cout << "Server name : " << _serverName << std::endl;
 	std::cout << "Content-Size: " << _contentSize << std::endl;
 	std::cout << "Content-Type: " << _contentType << std::endl;
 	std::cout << "Body : " << _body << std::endl << std::endl;
@@ -39,6 +39,7 @@ Request::Request(const Request &copy)
 	this->_contentType = copy._contentType;
 	this->_body = copy._body;
 	this->_query = copy._query;
+	this->_serverName = copy._serverName;
 }
 
 Request &Request::operator=(const Request &other)
@@ -54,6 +55,8 @@ Request &Request::operator=(const Request &other)
 		this->_contentType = other._contentType;
 		this->_body = other._body;
 		this->_query = other._query;
+		this->_serverName = other._serverName;
+		
 	}
 	return (*this);
 }
@@ -68,13 +71,14 @@ Request::Request(int socketFd, std::string method, std::string path, std::string
 	_body = "";
 	_contentSize = 0;
 	_contentType = "";
+
+	_serverName = server.getServer_name();
 }
 
 Request::Request(int socketFd, std::string method, std::string path, std::string version, Server server, std::string request)
 : _socketFd(socketFd), _method(method), _path(path), _version(version)
 {
 	
-	std::cout << "\n\nIN REQUEST PATH: " << _path << "\n\n";
 	//substr from "?"
 	_config = server.getLocationFromPath(path);
 	getQueryFromPath();
@@ -85,7 +89,8 @@ Request::Request(int socketFd, std::string method, std::string path, std::string
 	checkMultiPart();
 	_body = "";
 	_contentSize = 0;
-	std::cout << "IN REQUEST PATH AFTER: " << _path << "\n\n";
+	
+	_serverName = server.getServer_name();
 }
 
 // GETTERS
@@ -106,6 +111,8 @@ std::string Request::getBody() { return (_body); }
 int 		Request::getContentSize() { return (_contentSize); }
 
 std::string Request::getRequest() {	return (_config.getRedirect()); }
+
+std::string Request::getVersion() { return _version; }
 
 // SETTERS
 void		Request::setSocketFd(int socketFd) { this->_socketFd = socketFd; }
@@ -238,6 +245,11 @@ void Request::getExtraDatas(std::string request)
 std::string Request::getUploadPath()
 {
 	return _config.getUploadPath();
+}
+
+std::string Request::getServerName() 
+{
+	return _serverName;
 }
 
 void Request::checkMultiPart()
