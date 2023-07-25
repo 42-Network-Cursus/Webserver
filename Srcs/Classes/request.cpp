@@ -3,18 +3,18 @@
 
 // DEBUG
 void Request::print() {
-	//std::cout << "\n\nRequest info: " << std::endl;
-	//std::cout << "Socket : " << _socketFd << std::endl;
-	//std::cout << "Method : " << _method << std::endl;
-	//std::cout << "Path : " << _path << std::endl;
-	//std::cout << "Version : " << _version << std::endl;
-	//std::cout << "Query : " << _query << std::endl;
-	//std::cout << "\nConfig : " << std::endl;
+	std::cout << "\n\nRequest info: " << std::endl;
+	std::cout << "Socket : " << _socketFd << std::endl;
+	std::cout << "Method : " << _method << std::endl;
+	std::cout << "Path : " << _path << std::endl;
+	std::cout << "Version : " << _version << std::endl;
+	std::cout << "Query : " << _query << std::endl;
+	std::cout << "\nConfig : " << std::endl;
 	_config.print();
-	//std::cout << "Server name : " << _server_name << std::endl;
-	//std::cout << "Content-Size: " << _contentSize << std::endl;
-	//std::cout << "Content-Type: " << _contentType << std::endl;
-	//std::cout << "Body : " << _body << std::endl << std::endl;
+	std::cout << "Server name : " << _server_name << std::endl;
+	std::cout << "Content-Size: " << _contentSize << std::endl;
+	std::cout << "Content-Type: " << _contentType << std::endl;
+	std::cout << "Body : " << _body << std::endl << std::endl;
 }
 
 void Request::printConfig()
@@ -74,6 +74,8 @@ Request::Request(int socketFd, std::string method, std::string path, std::string
 : _socketFd(socketFd), _method(method), _path(path), _version(version)
 {
 	
+	std::cout << "\n\nIN REQUEST PATH: " << _path << "\n\n";
+	//substr from "?"
 	_config = server.getLocationFromPath(path);
 	getQueryFromPath();
 	
@@ -83,6 +85,7 @@ Request::Request(int socketFd, std::string method, std::string path, std::string
 	checkMultiPart();
 	_body = "";
 	_contentSize = 0;
+	std::cout << "IN REQUEST PATH AFTER: " << _path << "\n\n";
 }
 
 // GETTERS
@@ -190,6 +193,10 @@ Request Request::parseRequest(std::string request, int fd, Server server)
 
 	method = request.substr(0, pos);
 	path = request.substr(pos + 1, pos2 - pos - 1);
+
+	std::cout << "\n\n PATH FROM SUBSTR: " << path << "\n\n";
+
+
 	pos = request.find("HTTP/");
 	pos2 = request.find("\n");
 	version = request.substr(pos, pos2 - pos);
@@ -208,7 +215,7 @@ void Request::getQueryFromPath()
 	else
 	{
 		_query.assign(_path, pos + 1, std::string::npos);
-		_path = _path.substr(pos);
+		_path = _path.substr(0, pos);
 	}
 }
 
