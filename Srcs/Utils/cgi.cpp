@@ -28,24 +28,6 @@ void get_cgi(std::string script_path, std::string &CGI, std::string &CGI_PATH) {
 	}
 }
 
-std::string url_encode(const std::string value) {
-    std::ostringstream escaped;
-    escaped.fill('0');
-    escaped << std::hex;
-
-    for (char c : value) {
-        // Keep alphanumeric and other safe characters unchanged
-        if (isalnum(c) || c == '-' || c == '_' || c == '.' || c == '~') {
-            escaped << c;
-        } else {
-            // Encode other characters as %XX
-            escaped << '%' << std::setw(2) << static_cast<unsigned>(static_cast<unsigned char>(c));
-        }
-    }
-
-    return escaped.str();
-}
-
 	std::string get_body_from_cgi(std::string script, std::string postData) {
 	
 		FILE 		*tmpFile = fopen("tmpFile.txt", "w");
@@ -55,33 +37,35 @@ std::string url_encode(const std::string value) {
 		std::string CGI_PATH;
 		int pipes[2];
 
-		std::string encodedQueryString = url_encode("name=John&age=30");
-		std::string query_string = "QUERY_STRING=" + encodedQueryString;
-		std::string request_method = "REQUEST_METHOD=GET";
-		
-
-		// force post
-		postData = "answer=thisismyanswer";
-
-		std::cout << "\n IN CGI \n\n";
-
-		if (!postData.empty()) {	
-			encodedQueryString = postData;
-			// url_encode(postData);
-			// query_string = "QUERY_STRING=" + encodedQueryString;
-			request_method = "REQUEST_METHOD=POST";
-		}
+		std::cout << "SCRIPT PATH : " << script_path << "\n\n"; 
+		std::cout << "DATA : " << postData << "\n\n";
+		// postData = "";
+		// postData = "answer=thisismyanswer";
  		
 		std::string env_vars[] = {
-			"CONTENT_LENGTH=" + std::to_string(postData.length()),
-			query_string,
-			request_method,
 			"REDIRECT_STATUS=200",
+			"REQUEST_METHOD=POST",
+			"QUERY_STRING=" + postData,
+			"AUTH_TYPE=",
 			"CONTENT_TYPE=application/x-www-form-urlencoded",
-			"SCRIPT_NAME=/test.php",
-			"GATEWAY_INTERFACE=CGI/1.1"
-			// Websites/website1/default
-			// Websites/website1/default/cgi-bin/
+			"GATEWAY_INTERFACE=CGI/1.1",
+			"SERVER_PROTOCOL=HTTP/1.1",
+			"SERVER_SOFTWARE=webserv/1.0",
+			"CONTENT_LENGTH=" + intToString(postData.length()),
+			"REMOTE_USER=",
+			"REMOTE_IDENT=",
+			"SERVER_PORT=8080",
+			"SERVER_NAME=cgi",
+			"REMOTE_ADDR=127.0.0.1",
+			"REMOTE_HOST=127.0.0.1:8080",
+			"SERVER_PROTOCOL=HTTP/1.1",
+			"SERVER_SOFTWARE=webserv/1.0",
+	
+			"SCRIPT_FILENAME=Websites/website1/default/cgi-bin/test.php",
+			"PATH_TRANSLATED=Websites/website1/cgi/cgi-bin/test.php",
+			"SCRIPT_NAME=/cgi-bin/test.php",
+			"REQUEST_URI=/cgi-bin/test.php",
+			"PATH_INFO=/cgi-bin/test.php"
 		};
 
 		std::cout << "BEFORE\n";
@@ -91,14 +75,6 @@ std::string url_encode(const std::string value) {
 			strcpy(new_env[i], env_vars[i].c_str());
 		}
 		new_env[sizeof(env_vars) / sizeof(env_vars[0]) - 1] = NULL;
-		
-		int i = 0;
-		while (i < 4) {
-			std::cout << new_env[i];
-			i++;
-		}
-		std::cout << "AFTER\n";
-	
 	
 		if (pipe(pipes) == -1) {
 
@@ -106,53 +82,6 @@ std::string url_encode(const std::string value) {
 		}
 
 		write(pipes[1], postData.c_str(), postData.length());
-
-
-		// std::string env_vars[5];
-		
-		// GET
-		// env_vars[0] = "";
-		// // "CONTENT_LENGTH=" + std::to_string(encodedQueryString.length());
-		// env_vars[1] =  "QUERY_STRING=" + encodedQueryString; // We don't need the CONTENT_TYPE for GET requests
-		// env_vars[2] = "REQUEST_METHOD=GET"; // Use GET method for passing parameters in the URL
-		// env_vars[3] = "REDIRECT_STATUS=200";
-		// env_vars[4] = "CONTENT_TYPE=application/x-www-form-urlencoded";
-		
-		
-		// POST
-		// env_vars[0] = "CONTENT_LENGTH=" + std::to_string(postData.length());
-		// env_vars[1] = "";
-		// // "CONTENT_TYPE=application/x-www-form-urlencoded";
-		// //  + request.headers["Content-Type"];
-		// // env_vars[1] = "CONTENT_TYPE=text/html";
-		// env_vars[2] = "REQUEST_METHOD=POST";
-		// env_vars[3] = "REDIRECT_STATUS=200";
-		// env_vars[4] = "PATH_INFO=" + script_path;
-		
-
-		// char *new_env[6];
-		// //  = new char;
-
-		// int i = 0;
-		// while (i < 6) {
-
-		// 	new_env[i] = new char[env_vars[i].size() + 1];
-		// 	strcpy(new_env[i], env_vars[i].c_str());
-		// 	++i;
-		// 	// std::cout << new_env[i] << std::endl;
-		// }
-		// new_env[i] = NULL;
-
-	// 	std::string query = "QUERY_STRING=" + encodedQueryString;
-	// 	 char *new_env[] = {
-    //     (char *)query.c_str(),
-    //     (char *)"REQUEST_METHOD=GET",
-    //     (char *)"REDIRECT_STATUS=200",
-    //     NULL
-    // };
-
-		// env = tmp;
-		// std::cout << "IN CGI \n\n";
 
 		get_cgi(script_path, CGI, CGI_PATH);
 
@@ -163,6 +92,7 @@ std::string url_encode(const std::string value) {
 		}
 
 		// Command to execute the PHP script
+		// const char* command[] = {CGI.c_str(), "-f", script_path.c_str()};
 		const char* command[] = {CGI.c_str(), "-f", script_path.c_str()};
 
 		// Fork a child process
@@ -178,17 +108,19 @@ std::string url_encode(const std::string value) {
 			close(pipes[1]);
 
 			// Redirect the output to the file
-			if ( (dup2(fileno(tmpFile), STDOUT_FILENO) || dup2(pipes[0], STDIN_FILENO) == -1) == -1) // 
+			if (dup2(fileno(tmpFile), STDOUT_FILENO) == -1)
+				exit(EXIT_FAILURE);
+			if (dup2(pipes[0], STDIN_FILENO) == -1)
 				exit(EXIT_FAILURE);
 
 			// Execute the PHP script
-			
 			execve(CGI_PATH.c_str(), const_cast<char**>(command), new_env);
 			// execve(CGI_PATH.c_str(), const_cast<char**>(command), NULL);
+			
 			// If execve returns, an error occurred
 			std::cerr << "Failed to execute the PHP script." << std::endl;
 			exit(EXIT_FAILURE);	
-			return "";
+			// return "";
 		}
 
 		pid_t timeout_pid = fork();
@@ -197,53 +129,49 @@ std::string url_encode(const std::string value) {
 			return "";
 		}
 		else if (timeout_pid == 0) {
-			sleep(5); // In seconds
+			sleep(30); // In seconds
 			_exit(0);
 		}
 
 		pid_t exited_pid = wait(NULL);
 		if (exited_pid == work_pid)
 			kill(timeout_pid, SIGKILL);
-		else {
+		else if (exited_pid == timeout_pid) {
 			std::cerr << "PHP script execution timed out." << std::endl;
 			kill(work_pid, SIGKILL); // Or something less violent if you prefer
 		}
 		wait(NULL); // Collect the other process
 
-		// Parent process
-		// else {
+	
 
-		//     // Wait for the child process to finish
-		//     int status;
-		//     waitpid(work_pid, &status, 0);
-
-			close(pipes[0]);
-			close(pipes[1]);
-			fclose(tmpFile);
+		close(pipes[0]);
+		close(pipes[1]);
+		fclose(tmpFile);
+		
+		std::ifstream rFile("tmpFile.txt");
+		while (!rFile.eof()) {
+			std::string tmp = "";
+			rFile >> tmp;
+			std::cout << tmp;
 			
-			std::ifstream rFile("tmpFile.txt");
-			while (!rFile.eof()) {
-				std::string tmp = "";
-				rFile >> tmp;
-				std::cout << tmp << std::endl;
-				body.append(tmp);
-			}
-				
-			rFile.close();
-			// UNCOMMENT 
-			// int result = remove("tmpFile.txt");
-
-
-			//std::cout << result << std::endl;
-
-			// if (WIFEXITED(status) && WEXITSTATUS(status) == 0) {
-			//     //std::cout << "HTML output has been generated." << std::endl;
-			// } else {
-			//     std::cerr << "PHP script execution failed." << std::endl;
-			//     return "";
-			// }
+			// std::cout << "APPENDING\n";
+			body.append(tmp);
+		}
+		
+		// std::string line;
+		// while (std::getline(rFile, line)) {
+		// 	std::cout << line;
+		// 	body.append(line);
 		// }
+			
+		rFile.close();
 
+		// UNCOMMENT 
+		// int result = remove("tmpFile.txt");
+
+
+		if (body.find("UTF-8") != std::string::npos)
+			body = body.substr(body.find("UTF-8") + 5);
 		return body;
 	}
 

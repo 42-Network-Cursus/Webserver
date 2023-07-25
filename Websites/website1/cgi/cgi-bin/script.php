@@ -1,14 +1,13 @@
 <?php
-echo("<!DOCTYPE html>");
-echo("<html>");
-echo("<head>");
-echo("<title>CGI test page</title>");
-echo("</head>");
-echo("<body>");
-echo("<h1>CGI test page</h1>");
-echo("<p>");
-echo($_GET["answer"]);
-echo("</p>");
-echo("</body>");
-echo("</html>");
+
+    print("<head>");
+    print("<title>CGI test page</title>");
+    print("</head>");
+    print("<body>");
+    print("<h1>CGI test page</h1>");
+    print("<p>");
+    print($_GET["answer"]);
+    print("</p>");
+    print("</body>");
+
 ?>
