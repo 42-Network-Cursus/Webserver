@@ -32,6 +32,12 @@ Response &Response::operator=(const Response &other)
 
 Response::Response(Request request)
 {
+	if (request.getMethod() == REQ_INV)
+	{
+		_statusCode = 400;
+		generateError();
+		return ;
+	}
 	_statusCode = 200;
 	_filename = "";
 

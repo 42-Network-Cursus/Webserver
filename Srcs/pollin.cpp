@@ -27,16 +27,17 @@ Request readRequest(std::vector<Server> &servers, std::vector<struct pollfd> &al
 {
 	std::string		header;
 	std::string body = "";
-	size_t	bufferSize = 32;
+	size_t	bufferSize = 2056;
 	ssize_t 			bytesRead;
-	char 			buffer[bufferSize];
+	unsigned char 			buffer[bufferSize];
 	ssize_t pos;
 	bool check;
 	//std::cout << "\n\nIN read request" << std::endl;
 	while (1)
 	{
 		// //std::cout << "On est la ? " << std::endl;
-		bytesRead = recv(all_pfds[idx].fd, buffer, bufferSize, 0);
+		// bytesRead = recv(all_pfds[idx].fd, buffer, bufferSize, 0);
+		bytesRead = read(all_pfds[idx].fd, buffer, bufferSize);
 		if (bytesRead <= 0)
 
 		{
@@ -46,6 +47,7 @@ Request readRequest(std::vector<Server> &servers, std::vector<struct pollfd> &al
 			if (bytesRead < 0)
 			{
 				std::cout << "Resource temporarily unavailable" << std::endl;
+				std::cout << strerror(errno) << std::endl;
 				break ;
 			}
 			close(all_pfds[idx].fd);
@@ -53,7 +55,7 @@ Request readRequest(std::vector<Server> &servers, std::vector<struct pollfd> &al
 			erase_fd_from_server(all_pfds[idx].fd, servers);
 			break;
 		}
-		header += std::string(buffer, bytesRead);
+		header += std::string(reinterpret_cast<char*>(buffer), bytesRead);
 		memset(buffer, 0, bufferSize);
 		pos = header.find("\r\n\r\n");
 		if (pos >= 0 && pos != std::string::npos)
@@ -67,21 +69,22 @@ Request readRequest(std::vector<Server> &servers, std::vector<struct pollfd> &al
 
 		return Request();
 	}
-	// std::cout << "PREMIER Header => \n" << header << "\n\nPOS: " << pos << std::endl;
+	std::cout << "PREMIER Header => \n" << header << "\n\nPOS: " << pos << std::endl;
 	Request res = Request::parseRequest(header, all_pfds[idx].fd, servers[idx_pair.first]);
 	std::cout << "On bloque ici ?" << std::endl;
 	if (res.getMethod() == METHOD_POST)
 	{
-		if (pos == std::string::npos)
-		{
-			close(all_pfds[idx].fd);
-			all_pfds.erase(all_pfds.begin() + idx);
-			erase_fd_from_server(all_pfds[idx].fd, servers);
-			return Request();
-		}
+		std::cout << "POST METHOD-> READ BODY" << std::endl;
+		// if (pos == std::string::npos)
+		// {
+		// 	close(all_pfds[idx].fd);
+		// 	all_pfds.erase(all_pfds.begin() + idx);
+		// 	erase_fd_from_server(all_pfds[idx].fd, servers);
+		// 	return Request();
+		// }
 		body = header.substr(pos + 4);
 		bufferSize = 8000;
-		char bodyRead[bufferSize];
+		unsigned char bodyRead[bufferSize];
 		int size = getContentSize(header);
 		if (size < -1)
 		{
@@ -99,24 +102,40 @@ Request readRequest(std::vector<Server> &servers, std::vector<struct pollfd> &al
 		}
 		else
 			size -= body.size();
+		
 		while (check)
 		{
+			if (size == 0)
+			{
+				check = false;
+				continue;
+			}
 			std::cout << "On est la ?" << std::endl;
-			bytesRead = recv(all_pfds[idx].fd, bodyRead, bufferSize, 0);
+			// bytesRead = recv(all_pfds[idx].fd, bodyRead, bufferSize, 0);
+			bytesRead = read(all_pfds[idx].fd, bodyRead, bufferSize);
 			if (bytesRead == 0)
 			{	
-				break;
+				check = false;
+				continue ;
 			}
 			if (bytesRead < 0)
 			{
-				close(all_pfds[idx].fd);
-				all_pfds.erase(all_pfds.begin() + idx);
-				erase_fd_from_server(all_pfds[idx].fd, servers);
-				return Request();
+				std::cout << "Body ByteRead: " << bytesRead << std::endl;
+				std::cout << strerror(errno) << std::endl;
+				// int ret = poll(&all_pfds[idx], 1, 1);
+				// if (ret == -1)
+				// {
+					close(all_pfds[idx].fd);
+					all_pfds.erase(all_pfds.begin() + idx);
+					erase_fd_from_server(all_pfds[idx].fd, servers);
+					return Request();
+				// }
+				// continue ;
 			}
-			body += std::string(bodyRead, bytesRead);
+			body += std::string(reinterpret_cast<char*>(bodyRead), bytesRead);
 			memset(bodyRead, 0, bufferSize);
 			size -= bytesRead;
+			std::cout << "Size: " << size << std::endl;
 			if (size < 0)
 			{
 				close(all_pfds[idx].fd);
@@ -124,8 +143,7 @@ Request readRequest(std::vector<Server> &servers, std::vector<struct pollfd> &al
 				erase_fd_from_server(all_pfds[idx].fd, servers);
 				return Request();
 			}
-			if (size == 0)
-				check = false;
+			
 		}
 		if (size != 0)
 			return Request();
@@ -179,12 +197,25 @@ void handle_pollin(std::vector<Server> &servers, std::vector<struct pollfd> &all
 	// Not a listening socket, but ready to read. (Means a request)
 	else {
 		Request req = readRequest(servers, all_pfds, idx_pair, idx);
+		std::cout << "On segfault ici ?" << std::endl;
 		if (req.getMethod() != REQ_INV)
 		{
+			// req.setSocketFd(all_pfds[idx].fd);
 			requests.push_back(req);
 			all_pfds[idx].events = POLLOUT;
 		}
 		else
-			all_pfds[idx].events = POLLIN;
+		{
+			std::cout << "DEBUT DU ELSE" << std::endl;
+			close(all_pfds[idx].fd);
+			all_pfds.erase(all_pfds.begin() + idx);
+			erase_fd_from_server(all_pfds[idx].fd, servers);
+			std::cout << "FIN DU ELSE" << std::endl;
+		}
+		// requests.push_back(req);
+		// all_pfds[idx].events = POLLOUT;
+		// }
+		// else
+		// 	all_pfds[idx].events = POLLIN;
 	}
 }
