@@ -79,8 +79,6 @@ void	Response::getMethod(Request request)
 	if (_path == request.getLocationConfig().getPath()) {
 		
 		if (request.getLocationConfig().getScriptPath() != "") {
-
-			// _body = get_body_from_cgi(request.getLocationConfig().getScriptPath(), _body);
 			_body = get_body_from_cgi(request);
 			
 			_path = request.getLocationConfig().getScriptPath(); // For content type handling (Uses suffix)
@@ -114,7 +112,6 @@ void	Response::getMethod(Request request)
 				std::string root = request.getLocationConfig().getRoot();
 				root = trim(root);
 				_path = root + _path;
-
 			}
 		}
 		else
@@ -142,7 +139,7 @@ void	Response::postMethod(Request request)
 	if (isCGIExtension(ext))
 	{	
 		request.getLocationConfig().setScriptPath(request.getLocationConfig().getRoot() + "cgi-bin" + request.getPath());
-		request.getLocationConfig().setPath(_path); // Works w/ it, dont know if it breaks something
+		request.getLocationConfig().setPath(_path);
 	}
 	else if (isFile(request.getContentType()))
 	{
@@ -234,7 +231,6 @@ void	Response::readFile()
 {
 	if (isValidPathFile() == false)
 	{
-		//std::cout << "NOT VALID PATH ??" << std::endl;
 		if (_statusCode != 200)
 		{
 			_body = getErrorPage();
@@ -271,7 +267,6 @@ void	Response::readFile()
  */
 void	Response::writeFile(std::string filename, std::string content)
 {
-	//std::cout << "On tente de creer le fichier" << std::endl;
 	std::ofstream file;
 
 	std::string filepath = "Websites/upload/" + filename;
@@ -280,15 +275,13 @@ void	Response::writeFile(std::string filename, std::string content)
 	// if (true || isValidPathFile() == false)
 	if (test) // Si le fichier n'existe pas (function a ajouter par la suite)
 	{
-		std::cout << "Filepath ?: " << filepath << std::endl;
 		file.open(filepath.c_str(), std::ofstream::out | std::ofstream::trunc);
 		if (file.is_open() == false)
 		{
-			//std::cout << "On est une merde..." << std::endl;
 			_statusCode = 403;
 			generateError();
 		}
-		std::cout << "LET'S GO!!!" << std::endl;
+
 		file << content;
 		file.write(content.c_str(), content.size());
 		file.close();
@@ -316,13 +309,14 @@ void	Response::writeFile(std::string filename, std::string content)
 /*		V1		*/
 bool Response::isValidPathFile()
 {
-	//std::cout << _path << std::endl;
 	if (access(_path.c_str(), F_OK) != 0 || access(_path.c_str(), R_OK) != 0)
 		return false;
+
 	// DIR *dir = opendir(_path.c_str());
 	// if (dir != NULL)
 	// 	return false;
 	// closedir(dir);
+
 	return true;
 }
 
@@ -349,7 +343,6 @@ std::string Response::getUploadedFilePage()
 bool Response::checkUploadPath(std::string path)
 {
 	path = deleteWhiteSpace(path);
-	// //std::cout << "--------------------------------------------------------------- path directory: " << path << std::endl;
 	DIR* dir = opendir(path.c_str());
 	if (dir != NULL)
 	{

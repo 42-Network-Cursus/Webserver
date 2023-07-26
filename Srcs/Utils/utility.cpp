@@ -167,13 +167,9 @@ std::string deleteWhiteSpace(std::string str)
 bool isFile(std::string str)
 {
 	size_t pos = str.find(CT_MULTI);
-	//std::cout << "POS? : " << pos << std::endl;
 	if (pos == std::string::npos)
-	{
-		//std::cout << "Pas du tout" << std::endl;
 		return false;
-	}
-	//std::cout << "On est bon !" << std::endl;
+
 	return true;
 }
 
@@ -189,7 +185,6 @@ std::string getFilename(std::string body)
 	std::string tmp;
 	while (std::getline(iss, line))
 	{
-		// //std::cout << "======== Check Content-Length: " << line << std::endl;
 		if (line.compare(0, contentSize, content) == 0)
 		{
 			size_t pos = line.find("filename=");
@@ -270,18 +265,15 @@ std::string getContentBody2(std::string body)
 	std::cout << delimiter << std::endl;
 	size_t end = body.rfind(delimiter);
 	start = body.find("\r\n\r\n");
-	std::cout << "Start: " << start << " End: " << end << " Size: " << body.size() << std::endl;
 
 	start += 4;
 	std::string content = body.substr(start, end - start);
-	std::cout << "Content: " << content << std::endl;
 
 	return content;
 }
 
 std::string getExtensionFile(std::string str)
 {
-	//std::cout << "In getEXTENSIONFILE : " << str << std::endl;
 	size_t pos = str.find_last_of(".");
 	if (pos <= 0)
 		return ("");
@@ -295,9 +287,7 @@ std::string getContentType(std::string str)
 	size_t pos = ext.find_last_of("/");
 
 	if (pos == ext.size() - 1)
-	{
 		ext.erase(pos);
-	}
 
 	if	(ext == "css")
 		return CT_CSS;

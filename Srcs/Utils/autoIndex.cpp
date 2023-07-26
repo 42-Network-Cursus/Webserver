@@ -12,6 +12,7 @@ std::string generateAutoIndex(std::string path, std::string host_port)
 {
 	if (path[0] != '.' && path[1] != '/')
 		path = "./" + path;
+	
 	DIR *dir = opendir(path.c_str());
 	if (dir == NULL)
 		return "";
