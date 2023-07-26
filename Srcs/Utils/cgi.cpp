@@ -53,21 +53,22 @@ std::string get_body_from_cgi(Request &request) {
 		data = request.getBody();
 	
 
-	// std::cout << "NAME: " << script_name << "\n";
-	// std::cout << "SCRIPT PATH : " << script_path << "\n"; 
-	// std::cout << "BODY REQUEST : " << request.getBody() << "\n";
-	// std::cout << "VER : " << request.getVersion() << "\n";
-	// std::cout << "METHOD: " << request.getMethod() << "\n";
-	// std::cout << "SERV NAME: " << request.getServerName() << "\n";
-	// std::cout << "host port: " << request.getLocationConfig().getHostPort() << "\n";
+	std::cout << "NAME: " << script_name << "\n";
+	std::cout << "SCRIPT PATH : " << script_path << "\n"; 
+	std::cout << "BODY REQUEST : " << request.getBody() << "\n";
+	std::cout << "VER : " << request.getVersion() << "\n";
+	std::cout << "METHOD: " << request.getMethod() << "\n";
+	std::cout << "SERV NAME: " << request.getServerName() << "\n";
+	std::cout << "host port: " << request.getLocationConfig().getHostPort() << "\n";
+	std::cout << "script name: " << script_name << "\n";
+
 
 	std::string env_vars[] = {
 		"REDIRECT_STATUS=200",
 		"AUTH_TYPE=",
 		"GATEWAY_INTERFACE=CGI/1.1",
 		"SERVER_SOFTWARE=webserv/1.0",
-		"REMOTE_USER=",
-		"REMOTE_IDENT=",
+
 
 		"SERVER_PROTOCOL=" + request.getVersion(),
 		"REQUEST_METHOD=" + request.getMethod(),
@@ -83,11 +84,40 @@ std::string get_body_from_cgi(Request &request) {
 		"SERVER_NAME=" + request.getServerName(),
 
 		"SCRIPT_FILENAME=" + script_path,
-		"PATH_TRANSLATED=" + script_path,
+		// "PATH_TRANSLATED=" + script_path,
 		"SCRIPT_NAME=" + script_name,
-		"REQUEST_URI=" + script_name,
-		"PATH_INFO=" + script_name
+		// "REQUEST_URI=" + script_name,
+		// "PATH_INFO=" + script_name,
+
+		"REMOTE_USER=",
+		"REMOTE_IDENT="
 	};
+
+// std::string env_vars[] = {
+// 			"REDIRECT_STATUS=200",
+// 			"REQUEST_METHOD=POST",
+// 			"QUERY_STRING=" + data,
+// 			"AUTH_TYPE=",
+// 			"CONTENT_TYPE=application/x-www-form-urlencoded",
+// 			"GATEWAY_INTERFACE=CGI/1.1",
+// 			"SERVER_PROTOCOL=HTTP/1.1",
+// 			"SERVER_SOFTWARE=webserv/1.0",
+// 			"CONTENT_LENGTH=" + intToString(data.length()),
+// 			"REMOTE_USER=",
+// 			"REMOTE_IDENT=",
+// 			"SERVER_PORT=8080",
+// 			"SERVER_NAME=cgi",
+// 			"REMOTE_ADDR=127.0.0.1",
+// 			"REMOTE_HOST=127.0.0.1:8080",
+// 			"SERVER_PROTOCOL=HTTP/1.1",
+// 			"SERVER_SOFTWARE=webserv/1.0",
+	
+// 			"SCRIPT_FILENAME=Websites/website1/default/cgi-bin/test.php",
+// 			"PATH_TRANSLATED=Websites/website1/cgi/cgi-bin/test.php",
+// 			"SCRIPT_NAME=/cgi-bin/test.php",
+// 			"REQUEST_URI=/cgi-bin/test.php",
+// 			"PATH_INFO=/cgi-bin/test.php"
+// 		};
 
 	char *new_env[sizeof(env_vars) + 1]; // / sizeof(env_vars[0])
 	for (size_t i = 0; i < env_vars->size(); i++) {
@@ -115,6 +145,9 @@ std::string get_body_from_cgi(Request &request) {
 	// Command to execute the PHP script
 	// const char* command[] = {CGI.c_str(), "-f", script_path.c_str()};
 	const char* command[] = {CGI.c_str(), "-f", script_path.c_str()};
+
+
+	std::cout << "BEFORE FORK\n\n";
 
 	// Fork a child process
 	pid_t work_pid = fork();
@@ -150,7 +183,7 @@ std::string get_body_from_cgi(Request &request) {
 		return "";
 	}
 	else if (timeout_pid == 0) {
-		sleep(30); // In seconds
+		sleep(2); // In seconds
 		_exit(0);
 	}
 
@@ -187,6 +220,8 @@ std::string get_body_from_cgi(Request &request) {
 		
 	rFile.close();
 	int result = remove("tmpFile.txt");
+
+	std::cout << "AFTER FORK\n\n";
 
 	if (body.find("UTF-8") != std::string::npos)
 		body = body.substr(body.find("UTF-8") + 5);
