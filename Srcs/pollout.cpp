@@ -69,8 +69,8 @@ void handle_pollout(std::vector<Server> &servers, std::vector<struct pollfd> &al
 	requests.erase(it_begin + req_idx);
 	
 	close(all_pfds[idx].fd);
-	all_pfds.erase(all_pfds.begin() + idx);
 
 	erase_fd_from_server(all_pfds[idx].fd, servers);
 	
+	all_pfds.erase(all_pfds.begin() + idx);
 }

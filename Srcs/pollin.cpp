@@ -204,14 +204,18 @@ void handle_pollin(std::vector<Server> &servers, std::vector<struct pollfd> &all
 			requests.push_back(req);
 			all_pfds[idx].events = POLLOUT;
 		}
-		else
-		{
-			std::cout << "DEBUT DU ELSE" << std::endl;
-			close(all_pfds[idx].fd);
-			all_pfds.erase(all_pfds.begin() + idx);
-			erase_fd_from_server(all_pfds[idx].fd, servers);
-			std::cout << "FIN DU ELSE" << std::endl;
-		}
+		// else
+		// {
+		// 	std::cout << "DEBUT DU ELSE" << std::endl;
+		// 	close(all_pfds[idx].fd);
+		// 	std::cout << "Avant le ERASE ?" << std::endl;
+		// 	std::cout << "IDX: " << idx;
+		// 	std::cout << " == all_pfds size: " << all_pfds.size() << std::endl;
+		// 	all_pfds.erase(all_pfds.begin() + idx);
+		// 	std::cout << "ICI ?" << std::endl;
+		// 	erase_fd_from_server(all_pfds[idx].fd, servers);
+		// 	std::cout << "FIN DU ELSE" << std::endl;
+		// }
 		// requests.push_back(req);
 		// all_pfds[idx].events = POLLOUT;
 		// }
