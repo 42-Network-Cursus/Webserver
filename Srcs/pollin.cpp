@@ -240,8 +240,10 @@ int readRequest(std::vector<Server> &servers, std::vector<struct pollfd> &all_pf
 		bytesRead = recv(requests[id].getSocketFd(), buffer, bufferSize, 0);
 		if (bytesRead == 0)
 			return (0);
-		if (bytesRead < 0)
+		if (bytesRead < 0) {
+			std::cout << "**** BYTES READ HEADER -1\n\n\n";
 			return (-1);
+		}
 		std::string data = std::string(buffer, bytesRead);
 		requests[id].appendHeader(data);
 		pos = data.find("\r\n\r\n");
@@ -269,17 +271,24 @@ int readRequest(std::vector<Server> &servers, std::vector<struct pollfd> &all_pf
 			char buffer[bufferSize];
 			ssize_t bytesRead;
 
-			bytesRead = recv(requests[id].getSocketFd(), buffer, bufferSize, 0);
-			if (bytesRead == 0)
-				return (0);
-			if (bytesRead < 0)
-			{
-				return (-1);
+			if (data.size() < size) {
+
+			
+				bytesRead = recv(requests[id].getSocketFd(), buffer, bufferSize, 0);
+				if (bytesRead == 0)
+					return (0);
+				if (bytesRead < 0)
+				{
+					std::cout << "**** BYTES READ BODY -1\n\n\n";
+					return (-1);
+				}
+			
+				std::cout << "Bytes Read: " << bytesRead << std::endl;
+				std::cout << "data:\n" << buffer << std::endl;
+				data = std::string(buffer, bytesRead);
+				requests[id].appendBody(data);
 			}
-			std::cout << "Bytes Read: " << bytesRead << std::endl;
-			std::cout << "data:\n" << buffer << std::endl;
-			data = std::string(buffer, bytesRead);
-			requests[id].appendBody(data);
+			
 			if (size == requests[id].getBodySize())
 			{
 				requests[id].setState(ST_R);
@@ -312,6 +321,8 @@ int	handle_pollin(std::vector<Server> &servers, std::vector<struct pollfd> &all_
 	if (servers[idx_pair.first].getPfds()[idx_pair.second].fd == servers[idx_pair.first].getSockList()) {
 		std::cout << "New connection on listening socket " << servers[idx_pair.first].getSockList() << std::endl;
 		add_new_socket_to_pfds(servers, all_pfds, idx_pair.first, idx);
+	}
+
 	// Not a listening socket, but ready to read. (Means a request)
 	else
 	{
