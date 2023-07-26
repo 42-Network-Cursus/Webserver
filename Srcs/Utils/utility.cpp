@@ -212,52 +212,52 @@ std::string getFilename(std::string body)
  * @param body Body of the request
  * @return Content of the body
  */
-std::string getContentBody(std::string body)
-{
-	//std::cout << "In getContentBody\nBody: \n" << body << std::endl;
-	std::istringstream iss(body);
-	std::string line;
+// std::string getContentBody(std::string body)
+// {
+// 	//std::cout << "In getContentBody\nBody: \n" << body << std::endl;
+// 	std::istringstream iss(body);
+// 	std::string line;
 	
 	
-	std::string tmp;
-	std::string delimiter;
-	std::getline(iss, line);
-	delimiter = trim(line);
-	//std::cout << "Delimiter: " << delimiter << std::endl;
-	//std::cout << "First Boucle" << std::endl;
-	while (std::getline(iss, line))
-	{
-		//std::cout << "Line: " << line << " | Size: " << line.size() << std::endl;
-		// if (line.size() == 2 && line == "\r\n")
-		// 	break ;
-		// if (line.size() == 4 && line == "\r\n\r\n")
-		// 	break;
-		if (line.size() == 1)
-			break;
-	}
-	//std::cout << "Second Boucle" << std::endl;
-	std::string res = "";
-	std::string end = "\n";
-	// A garder ?
-	while (std::getline(iss, line))
-	{	
-		//std::cout << "Line: " << line << std::endl;
-		//std::cout << "Deli: " << delimiter << std::endl;
-		//std::cout << "Check: " << (line.compare(0, delimiter.size(), delimiter.c_str())) << std::endl;
-		if (line.find(delimiter) != std::string::npos)
-		{
-			//std::cout << "On break" << std::endl;
-			break;
-		}
-		//std::cout << "On est passé le check ?" << std::endl;
-		line = rtrim(line);
-		// res += line + end;
-		res += line + end;
-		//std::cout << "RES in the boucle: " << res << std::endl;
-	}
-	//std::cout << "RES: \n" << res << std::endl;
-	return res;
-}
+// 	std::string tmp;
+// 	std::string delimiter;
+// 	std::getline(iss, line);
+// 	delimiter = trim(line);
+// 	//std::cout << "Delimiter: " << delimiter << std::endl;
+// 	//std::cout << "First Boucle" << std::endl;
+// 	while (std::getline(iss, line))
+// 	{
+// 		//std::cout << "Line: " << line << " | Size: " << line.size() << std::endl;
+// 		// if (line.size() == 2 && line == "\r\n")
+// 		// 	break ;
+// 		// if (line.size() == 4 && line == "\r\n\r\n")
+// 		// 	break;
+// 		if (line.size() == 1)
+// 			break;
+// 	}
+// 	//std::cout << "Second Boucle" << std::endl;
+// 	std::string res = "";
+// 	std::string end = "\n";
+// 	// A garder ?
+// 	while (std::getline(iss, line))
+// 	{	
+// 		//std::cout << "Line: " << line << std::endl;
+// 		//std::cout << "Deli: " << delimiter << std::endl;
+// 		//std::cout << "Check: " << (line.compare(0, delimiter.size(), delimiter.c_str())) << std::endl;
+// 		if (line.find(delimiter) != std::string::npos)
+// 		{
+// 			//std::cout << "On break" << std::endl;
+// 			break;
+// 		}
+// 		//std::cout << "On est passé le check ?" << std::endl;
+// 		line = rtrim(line);
+// 		// res += line + end;
+// 		res += line + end;
+// 		//std::cout << "RES in the boucle: " << res << std::endl;
+// 	}
+// 	//std::cout << "RES: \n" << res << std::endl;
+// 	return res;
+// }
 
 
 std::string getContentBody2(std::string body)

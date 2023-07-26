@@ -38,8 +38,8 @@ int main(int argc, char *argv[]) {
 	std::vector<Server>			servers;
 	std::vector<Request>		requests;
 	std::vector<struct pollfd> 	all_pfds;
-	std::string 				file_name;
 	
+	std::string 				file_name;
 	if (argc > 2) {
 		std::cout << "Too many args" << std::endl;
 		return 1;
@@ -70,37 +70,35 @@ int main(int argc, char *argv[]) {
 		if (G_EXIT) {
 			clean_exit(servers);
 		}
+
 		// last argument is timeout, in millisecs. Neg value for no timeout until response
-		if ( (poll(all_pfds.data(), all_pfds.size(), 1)) == -1) {
+		if ( (poll(all_pfds.data(), all_pfds.size(), -1)) == -1) {
 			std::cerr << "\npoll: " << strerror(errno) << std::endl;
 			clean_exit(servers);
 		}
 
 		// Run through existing connections to look for data to read
 		for (size_t i = 0; i < all_pfds.size(); i++) {
-		
+
 			// check if someone is ready to read
 			if (all_pfds[i].revents & POLLIN) {
-				std::pair<int, int> idx_pair = get_idx_server_fd(servers, all_pfds[i].fd);
 				
-				if (idx_pair.first == -1 && idx_pair.second == -1) {
-					// DELETE
-					// std::cout << "PAIR ERROR" << std::endl;
+				std::pair<int, int> idx_pair = get_idx_server_fd(servers, all_pfds[i].fd);
+				if (idx_pair.first == -1 && idx_pair.second == -1)
 					continue ;
-				}
+			
 				handle_pollin(servers, all_pfds, idx_pair, requests, i);
 			}
 
 			if (all_pfds[i].revents & POLLOUT){
-				if (requests.size() == 0) {
-					// DELETE
-					std::cout << "request empty" << std::endl;
+				if (requests.size() == 0)
 					continue ;
-				}
+				
+				// DELETE
 				std::cout << "POLLOUT on fd " << all_pfds[i].fd << std::endl;
+
 				handle_pollout(servers, all_pfds, i, requests);				
-			}	
-			
+			}		
 		}	
 	}
 	return 0;

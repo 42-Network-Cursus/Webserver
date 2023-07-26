@@ -60,6 +60,14 @@ Request readRequest(std::vector<Server> &servers, std::vector<struct pollfd> &al
 		pos = header.find("\r\n\r\n");
 		if (pos >= 0 && pos != std::string::npos)
 			check = false;
+
+				// DELETE
+		if (pos == std::string::npos || pos == 140732672054904) {
+
+			std::cout << "SEGFAULTING POS" << std::endl;
+			// continue ;
+		}
+
 	}
 	if (check)
 	{
@@ -70,6 +78,9 @@ Request readRequest(std::vector<Server> &servers, std::vector<struct pollfd> &al
 		return Request();
 	}
 	std::cout << "PREMIER Header => \n" << header << "\n\nPOS: " << pos << std::endl;
+
+
+
 	Request res = Request::parseRequest(header, all_pfds[idx].fd, servers[idx_pair.first]);
 	std::cout << "On bloque ici ?" << std::endl;
 	if (res.getMethod() == METHOD_POST)
@@ -172,6 +183,11 @@ void add_new_socket_to_pfds(std::vector<Server> &servers, std::vector<struct pol
 	addrlen = sizeof(remoteaddr);
 	new_fd = accept(all_pfds[idx].fd, (struct sockaddr *)&remoteaddr, &addrlen);
 	
+	// USEFULL ??
+	int n = 1;
+	setsockopt(new_fd, SOL_SOCKET, SO_REUSEADDR, &n, sizeof(n));
+
+
 	fcntl(new_fd, F_SETFL, O_NONBLOCK);
 
 	if (new_fd == -1)
@@ -180,7 +196,8 @@ void add_new_socket_to_pfds(std::vector<Server> &servers, std::vector<struct pol
 		struct pollfd new_pfd;
 
 		new_pfd.fd = new_fd;
-		new_pfd.events = POLLIN;
+		// new_pfd.events = POLLIN;
+		new_pfd.events = POLLIN | POLLOUT | POLLERR | POLLHUP;
 
 		all_pfds.push_back(new_pfd);
 		servers[idx_serv].getPfds().push_back(new_pfd);
