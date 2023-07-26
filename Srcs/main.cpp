@@ -94,10 +94,6 @@ int main(int argc, char *argv[]) {
 			if (all_pfds[i].revents & POLLOUT){
 				if (requests.size() == 0)
 					continue ;
-				
-				// DELETE
-				std::cout << "POLLOUT on fd " << all_pfds[i].fd << std::endl;
-
 				handle_pollout(servers, all_pfds, i, requests);				
 			}		
 		}	

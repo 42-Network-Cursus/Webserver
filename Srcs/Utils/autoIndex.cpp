@@ -14,12 +14,7 @@ std::string generateAutoIndex(std::string path, std::string host_port)
 		path = "./" + path;
 	DIR *dir = opendir(path.c_str());
 	if (dir == NULL)
-	{
-		//std::cout << path.c_str() << std::endl;
-		//std::cout << "Error Open directory in generate AutoIndex" << std::endl;
-		////std::cout << strerror(errno) << std::endl;
 		return "";
-	}
 	
 	std::string page = "<!DOCTYPE html><html><head><title>" + path + "</title></head><body>";
 

@@ -1,4 +1,0 @@
-X-Powered-By: PHP/8.2.8
-Content-type: text/html; charset=UTF-8
-
-<head><title>CGI test page</title></head><body><h1>CGI test page</h1><p>test</p></body>

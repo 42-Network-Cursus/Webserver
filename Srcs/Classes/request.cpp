@@ -86,12 +86,8 @@ Request::Request(int socketFd, std::string method, std::string path, std::string
 Request::Request(int socketFd, std::string method, std::string path, std::string version, Server server, std::string request)
 : _socketFd(socketFd), _method(method), _path(path), _version(version)
 {
-	
-	//substr from "?"
 	_config = server.getLocationFromPath(path);
 	getQueryFromPath();
-	
-	//std::cout << "\n\n ROOT **" << _config.getRoot() <<  "\n\n\n";
 
 	getExtraDatas(request);
 	checkMultiPart();
@@ -267,9 +263,6 @@ void Request::appendHeader(std::string data)
 
 void Request::appendBody(std::string data)
 {
-	// std::string tmp = _body;
-	// tmp += data;
-	// _body = tmp;
 	_body += data;
 }
 

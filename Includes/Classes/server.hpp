@@ -24,8 +24,7 @@ class Server {
 		void 		get_listening_socket();
 		void 		close_fds();
 
-
-		// GETTERS
+		/*** GETTERS ***/
 		const std::string 			&getPort() const;
 		const std::string 			&getHost() const;
 		const std::string 			&getServer_name() const;
@@ -34,10 +33,10 @@ class Server {
 		Location 					&getLocationFromPath(std::string path);
 		int 						getSockList() const;
 
-		// SETTERS
+		/*** SETTERS ***/
 		void setPfds(const std::vector<struct pollfd> &pfds);
 
-		// DEBUG
+		/*** DEBUG ***/
 		void print();
 
 	private:
