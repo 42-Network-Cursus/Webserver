@@ -63,6 +63,7 @@ int main(int argc, char *argv[]) {
 	}
 
 	signal(SIGINT, &exit_bool);
+	signal(SIGQUIT, &exit_bool);
 
 	// main loop
 	while(1) { 

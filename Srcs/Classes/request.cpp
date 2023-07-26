@@ -14,7 +14,7 @@ void Request::print() {
 	std::cout << "Server name : " << _serverName << std::endl;
 	std::cout << "Content-Size: " << _contentSize << std::endl;
 	std::cout << "Content-Type: " << _contentType << std::endl;
-	std::cout << "Body : " << _body << std::endl << std::endl;
+	// std::cout << "Body : " << _body << std::endl << std::endl;
 }
 
 void Request::printConfig()

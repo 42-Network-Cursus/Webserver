@@ -60,11 +60,11 @@ void handle_pollout(std::vector<Server> &servers, std::vector<struct pollfd> &al
 	#endif
 
 	
-	std::cout << "On envoie " << req_idx << std::endl;
+	// std::cout << "On envoie " << req_idx << std::endl;
 	Response response(requests[req_idx]);
 	std::cout << "Reponse OK" << std::endl;
 	sendResponse(sockfd, response);
-	std::cout << "envoie Reponse OK" << std::endl;
+	// std::cout << "envoie Reponse OK" << std::endl;
 	std::vector<Request>::iterator it_begin = requests.begin();
 	requests.erase(it_begin + req_idx);
 	
