@@ -72,7 +72,7 @@ int main(int argc, char *argv[]) {
 			clean_exit(servers);
 		}
 		// last argument is timeout, in millisecs. Neg value for no timeout until response
-		if ( (poll(all_pfds.data(), all_pfds.size(), 1)) == -1) {
+		if ( (poll(all_pfds.data(), all_pfds.size(), -1)) == -1) {
 			std::cerr << "\npoll: " << strerror(errno) << std::endl;
 			clean_exit(servers);
 		}
@@ -86,7 +86,9 @@ int main(int argc, char *argv[]) {
 				
 				if (idx_pair.first == -1 && idx_pair.second == -1)
 					continue ;
-				handle_pollin(servers, all_pfds, idx_pair, requests, i);
+				int ret = handle_pollin(servers, all_pfds, idx_pair, requests, i);
+				if (ret == -2)
+					break ;
 			}
 
 			if (all_pfds[i].revents & POLLOUT){

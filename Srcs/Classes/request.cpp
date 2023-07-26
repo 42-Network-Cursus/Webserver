@@ -40,6 +40,8 @@ Request::Request(const Request &copy)
 	this->_body = copy._body;
 	this->_query = copy._query;
 	this->_serverName = copy._serverName;
+	this->_state = copy._state;
+	this->_header = copy._header;
 }
 
 Request &Request::operator=(const Request &other)
@@ -56,11 +58,17 @@ Request &Request::operator=(const Request &other)
 		this->_body = other._body;
 		this->_query = other._query;
 		this->_serverName = other._serverName;
+		this->_state = other._state;
+		this->_header = other._header;
 		
 	}
 	return (*this);
 }
 
+Request::Request(int socketFd) : _socketFd(socketFd)
+{
+	_state = ST_H;
+}
 
 // Constructor w/ request
 Request::Request(int socketFd, std::string method, std::string path, std::string version, Server server)
@@ -200,6 +208,7 @@ Request Request::parseRequest(std::string request, int fd, Server server)
 	version = trim(version);
 
 	Request res(fd, method, path, version, server, request);
+	res.setState(ST_R);
 	return res;
 }
 
@@ -247,4 +256,39 @@ void Request::checkMultiPart()
 		return ;
 	
 	setContentType(CT_MULTI);
+}
+
+void Request::appendHeader(std::string data)
+{
+	std::string tmp = _header;
+	tmp += data;
+	_header = tmp;
+}
+
+void Request::appendBody(std::string data)
+{
+	// std::string tmp = _body;
+	// tmp += data;
+	// _body = tmp;
+	_body += data;
+}
+
+std::string Request::getHeader()
+{
+	return _header;
+}
+
+int Request::getBodySize()
+{
+	return (_body.size());
+}
+
+std::string Request::getState()
+{
+	return _state;
+}
+
+void Request::setState(std::string state)
+{
+	_state = state;
 }

@@ -7,6 +7,10 @@
 
 const std::string REQ_INV = "Invalid Request";
 
+const std::string ST_H = "HEADER";
+const std::string ST_B = "BODY";
+const std::string ST_R = "READY";
+
 /*		ACCEPTED METHODS	*/
 
 const std::string METHOD_GET = "GET";
