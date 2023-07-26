@@ -16,6 +16,7 @@ class Request {
 		Request &operator=(const Request &other);
 
 		// CONSTRUCTORS
+		Request(int socketFd);
 		Request(int socketFd, std::string method, std::string path, std::string version, Server server);
 		Request(int socketFd, std::string method, std::string path, std::string version, Server server, std::string request);
 
@@ -36,6 +37,8 @@ class Request {
 		std::string getServerName();
 
 		std::string getDefaultPage();
+		std::string getState();
+		std::string getHeader();
 
 		// SETTERS
 		void		setSocketFd(int socketFd);
@@ -46,12 +49,18 @@ class Request {
 		void		setBody(const std::string &body);
 		void		setContentSize(int size);
 		void		setContentType(const std::string &type);
+		void		setState(std::string state);
 
 		// Check function
 		bool		isAcceptedMethod();
 		bool		isValidVersion();
 		int			isValidPath();
 		
+
+		void	appendHeader(std::string data);
+		void	appendBody(std::string data);
+		int		getBodySize();
+
 		// DEBUG
 		void		printConfig();
 		void print();
@@ -68,6 +77,8 @@ class Request {
 		std::string _body;
 		int 		_contentSize;
 		std::string _serverName;
+		std::string	_state;
+		std::string _header;
 		
 		void getQueryFromPath();
 		void getExtraDatas(std::string request);

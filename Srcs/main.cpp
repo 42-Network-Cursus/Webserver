@@ -86,8 +86,9 @@ int main(int argc, char *argv[]) {
 				std::pair<int, int> idx_pair = get_idx_server_fd(servers, all_pfds[i].fd);
 				if (idx_pair.first == -1 && idx_pair.second == -1)
 					continue ;
-			
-				handle_pollin(servers, all_pfds, idx_pair, requests, i);
+				int ret = handle_pollin(servers, all_pfds, idx_pair, requests, i);
+				if (ret == -2)
+					break ;
 			}
 
 			if (all_pfds[i].revents & POLLOUT){
