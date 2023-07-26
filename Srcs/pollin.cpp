@@ -161,9 +161,9 @@ Request readRequest(std::vector<Server> &servers, std::vector<struct pollfd> &al
 // }
 void add_new_socket_to_pfds(std::vector<Server> &servers, std::vector<struct pollfd> &all_pfds, int idx_serv, int idx) {
 	int 						new_fd;
+	socklen_t 					addrlen; 	// length of remoteaddr
 	struct sockaddr_storage 	remoteaddr; // client's info, using
-	//  sockaddr_storage because big enough to contain either IPv4 or IPv6
-	socklen_t 					addrlen; // length of remoteaddr
+											//  sockaddr_storage because big enough to contain either IPv4 or IPv6
 
 	#ifdef DEBUG
 	//std::cout << "Connection from server " << servers[idx_serv].getServer_name() << std::endl << std::endl;
@@ -191,8 +191,10 @@ void add_new_socket_to_pfds(std::vector<Server> &servers, std::vector<struct pol
 void handle_pollin(std::vector<Server> &servers, std::vector<struct pollfd> &all_pfds, std::pair<int, int> idx_pair, std::vector<Request> &requests, int idx) {
 	
 	// check if listening socket received a connection	
-	if (servers[idx_pair.first].getPfds()[idx_pair.second].fd == servers[idx_pair.first].getSockList())
+	if (servers[idx_pair.first].getPfds()[idx_pair.second].fd == servers[idx_pair.first].getSockList()) {
+		std::cout << "New connection on listening socket " << servers[idx_pair.first].getSockList() << std::endl;
 		add_new_socket_to_pfds(servers, all_pfds, idx_pair.first, idx);
+	}
 	
 	// Not a listening socket, but ready to read. (Means a request)
 	else {
@@ -207,9 +209,9 @@ void handle_pollin(std::vector<Server> &servers, std::vector<struct pollfd> &all
 		else
 		{
 			std::cout << "DEBUT DU ELSE" << std::endl;
-			close(all_pfds[idx].fd);
-			all_pfds.erase(all_pfds.begin() + idx);
-			erase_fd_from_server(all_pfds[idx].fd, servers);
+			// close(all_pfds[idx].fd);
+			// all_pfds.erase(all_pfds.begin() + idx);
+			// erase_fd_from_server(all_pfds[idx].fd, servers);
 			std::cout << "FIN DU ELSE" << std::endl;
 		}
 		// requests.push_back(req);

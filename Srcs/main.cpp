@@ -40,9 +40,8 @@ int main(int argc, char *argv[]) {
 	std::vector<struct pollfd> 	all_pfds;
 	std::string 				file_name;
 	
-
 	if (argc > 2) {
-		//std::cout << "Too many args" << std::endl;
+		std::cout << "Too many args" << std::endl;
 		return 1;
 	}
 	if (argc < 2)
@@ -84,29 +83,25 @@ int main(int argc, char *argv[]) {
 			if (all_pfds[i].revents & POLLIN) {
 				std::pair<int, int> idx_pair = get_idx_server_fd(servers, all_pfds[i].fd);
 				
-				if (idx_pair.first == -1 && idx_pair.second == -1)
+				if (idx_pair.first == -1 && idx_pair.second == -1) {
+					// DELETE
+					// std::cout << "PAIR ERROR" << std::endl;
 					continue ;
+				}
 				handle_pollin(servers, all_pfds, idx_pair, requests, i);
 			}
 
 			if (all_pfds[i].revents & POLLOUT){
-				if (requests.size() == 0)
+				if (requests.size() == 0) {
+					// DELETE
+					std::cout << "request empty" << std::endl;
 					continue ;
-					
+				}
+				std::cout << "POLLOUT on fd " << all_pfds[i].fd << std::endl;
 				handle_pollout(servers, all_pfds, i, requests);				
 			}	
 			
 		}	
-		// for (size_t i = 0; i < all_pfds.size(); i++)
-		// {
-		// // handle POLLOUT event, socket ready to write
-		// 	if (all_pfds[i].revents & POLLOUT){
-		// 		if (requests.size() == 0)
-		// 			continue ;
-					
-		// 		handle_pollout(servers, all_pfds, i, requests);				
-		// 	}	
-		// }
 	}
 	return 0;
 }

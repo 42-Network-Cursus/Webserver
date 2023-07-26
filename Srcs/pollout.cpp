@@ -8,6 +8,10 @@ void erase_fd_from_server(int fd, std::vector<Server> &servers) {
 
 			for (size_t j = 0; j < test.size() ; j++) {
 				
+				
+				if (fd == test[j].fd)
+					std::cout << "Erase fd " << test[j].fd << " from server" << std::endl;
+				
 				if (fd != test[j].fd)
 					tmp.push_back(test[j]);
 			}
@@ -59,18 +63,21 @@ void handle_pollout(std::vector<Server> &servers, std::vector<struct pollfd> &al
 	requests[req_idx].print();
 	#endif
 
-	
 	// std::cout << "On envoie " << req_idx << std::endl;
 	Response response(requests[req_idx]);
 	std::cout << "Reponse OK" << std::endl;
 	sendResponse(sockfd, response);
 	// std::cout << "envoie Reponse OK" << std::endl;
 	std::vector<Request>::iterator it_begin = requests.begin();
-	requests.erase(it_begin + req_idx);
-	
-	close(all_pfds[idx].fd);
-	all_pfds.erase(all_pfds.begin() + idx);
 
+	requests.erase(it_begin + req_idx);
+
+	std::cout << "Pollout: Close fd " << all_pfds[idx].fd << std::endl;
+	close(all_pfds[idx].fd);
+
+	std::cout << "Pollout: Erase fd " << all_pfds[idx].fd << " from server" << std::endl;
 	erase_fd_from_server(all_pfds[idx].fd, servers);
-	
+
+	std::cout << "Pollout: Erase fd " << (*(all_pfds.begin() + idx)).fd <<  "from all_pfds" << std::endl;
+	all_pfds.erase(all_pfds.begin() + idx);
 }

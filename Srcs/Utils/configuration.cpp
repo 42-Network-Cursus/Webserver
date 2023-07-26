@@ -40,7 +40,6 @@ void check_conf_file(std::string file_name) {
 	}
 
 	while (file_stream) {
-		
 		std::getline(file_stream, line);
 		line = trim(line);
 		line_nb++;
@@ -123,7 +122,6 @@ void configure_servers(std::string file_name, std::vector<Server> *servers) {
 	}
 
 	while (file_stream) {
-		
 		std::getline(file_stream, line);
 		if (skip_line(line))
 			continue;
