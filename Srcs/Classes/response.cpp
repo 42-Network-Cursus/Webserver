@@ -173,6 +173,7 @@ void	Response::deleteMethod(Request request)
 		_statusCode = 404;
 		generateError();
 	}
+	
 	if (std::remove(_path.c_str()) == 0)
 	{
 		_statusCode = 204;

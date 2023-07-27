@@ -13,7 +13,7 @@
 
 #define PORT "3490"
 #define MAXDATASIZE 100
-#define HOST "www.example.com"
+#define HOST "127.0.0.1"
 
 // Handle chuncked data when using send()
 int sendAll(int s, char *buf, int *len) {
@@ -55,7 +55,7 @@ int main() {
 	hints.ai_socktype = SOCK_STREAM; // TCP stream socket
 	hints.ai_flags = AI_PASSIVE; // use my IP
 
-	if ((rv = getaddrinfo(NULL, PORT, &hints, &servinfo)) != 0) {
+	if ((rv = getaddrinfo(HOST, PORT, &hints, &servinfo)) != 0) {
 		std::cerr << "getaddrinfo error: " << gai_strerror(rv) << std::endl;
 		return 1;
 	}
@@ -98,8 +98,12 @@ int main() {
 
 	// //std::cout << "Client: received " << buf << std::endl;
 
-	char msg[5] = "test";
-	int *len = new int(5);
+
+	
+
+
+	char msg[24] = "DELETE /delete HTTP/1.1";
+	int *len = new int(24);
 	
 	sendAll(sockfd, msg, len);
 	

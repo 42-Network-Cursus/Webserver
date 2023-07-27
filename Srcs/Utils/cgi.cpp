@@ -68,8 +68,8 @@ std::string get_body_from_cgi(Request &request) {
 	new_env[17] = NULL;
 
 	if (pipe(pipes) == -1) {
-
-		// error
+		std::cerr << "Failed to open pipes." << std::endl;
+		return "";
 	}
 
 	write(pipes[1], data.c_str(), data.length());

@@ -1,9 +1,10 @@
-DELETE method
+
 
 RESPONSE.CPP 
     * line 275
 
-CGI.CPP
-	* line 70 ERROR CHECK
 
 POLLIN.CPP cleanup
+
+*DELETE method
+*Try to send unknown request
