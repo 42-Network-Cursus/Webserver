@@ -102,8 +102,8 @@ int main() {
 	
 
 
-	char msg[24] = "DELETE /delete HTTP/1.1";
-	int *len = new int(24);
+	char msg[28] = "DELETE /delete HTTP/1.1\r\n\r\n";
+	int *len = new int(28);
 	
 	sendAll(sockfd, msg, len);
 	
