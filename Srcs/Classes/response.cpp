@@ -289,7 +289,6 @@ void	Response::writeFile(std::string filename, std::string content)
 		}
 
 		file << content;
-		file.write(content.c_str(), content.size());
 		file.close();
 		_statusCode = 201;
 	}
