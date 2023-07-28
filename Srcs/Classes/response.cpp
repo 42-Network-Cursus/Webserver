@@ -167,7 +167,12 @@ void	Response::postMethod(Request request)
  */
 void	Response::deleteMethod(Request request)
 {
+
+
+
 	_path = request.getPath();
+	
+	_path = request.getLocationConfig().getRoot() + _path;
 
 	if (_path == request.getLocationConfig().getPath())
 		_path = request.getDefaultPage();
@@ -314,8 +319,15 @@ void	Response::writeFile(std::string filename, std::string content)
 /*		V1		*/
 bool Response::isValidPathFile()
 {
-	if (access(_path.c_str(), F_OK) != 0 || access(_path.c_str(), R_OK) != 0)
+	_path = trim(_path);
+	
+	
+	if (access(_path.c_str(), F_OK) != 0)
 		return false;
+	
+	if (access(_path.c_str(), R_OK) != 0)
+		return false;
+
 	if (checkUploadPath(_path))
 		return false;
 
