@@ -306,10 +306,14 @@ int readRequest(std::vector<Server> &servers, std::vector<struct pollfd> &all_pf
 	}
 	if (requests[id].getState() == ST_R)
 	{
+		std::cout << "Request header: " << requests[id].getHeader() << std::endl;
 		Request ready = Request::parseRequest(requests[id].getHeader(),requests[id].getSocketFd(), servers[idx_pair.first]);
 		ready.setBody(requests[id].getBody());
 		ready.setContentSize(getContentSize(requests[id].getHeader()));
 		requests[id] = ready;
+		std::cout << "Check Method: " << requests[id].getMethod() << std::endl;
+		std::cout << "Path: " << requests[id].getPath() << std::endl;
+		std::cout << "Version: " << requests[id].getVersion() << std::endl;
 		return (1);
 	}
 	return (-2);
@@ -328,7 +332,7 @@ int	handle_pollin(std::vector<Server> &servers, std::vector<struct pollfd> &all_
 	{
 		std::cout << "On lit la requete" << std::endl;
 		int ret = readRequest(servers, all_pfds, idx_pair, requests, idx);
-		std::cout << "Ret: " << ret << std::endl;
+		std::cout << "ReadRequest Ret: " << ret << std::endl;
 		if (ret == -2)
 			return (ret);
 		else if (ret <= 0)
@@ -345,6 +349,13 @@ int	handle_pollin(std::vector<Server> &servers, std::vector<struct pollfd> &all_
 			erase_fd_from_server(all_pfds[idx].fd, servers);
 			all_pfds.erase(all_pfds.begin() + idx);
 			return (-1);
+		}
+		if (ret == 1)
+		{
+			int id = isContainsRequest(requests, all_pfds[idx].fd);
+			std::cout << "Check Method: " << requests[id].getMethod() << std::endl;
+			std::cout << "Path: " << requests[id].getPath() << std::endl;
+			std::cout << "Version: " << requests[id].getVersion() << std::endl;
 		}
 		all_pfds[idx].events = POLLOUT;
 		// Request req = readRequest(servers, all_pfds, idx_pair, idx);

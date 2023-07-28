@@ -168,10 +168,15 @@ void	Response::postMethod(Request request)
 void	Response::deleteMethod(Request request)
 {
 	_path = request.getPath();
+
+	if (_path == request.getLocationConfig().getPath())
+		_path = request.getDefaultPage();
+
 	if (isValidPathFile() == false)
 	{
 		_statusCode = 404;
 		generateError();
+		return ;
 	}
 	
 	if (std::remove(_path.c_str()) == 0)
@@ -312,11 +317,8 @@ bool Response::isValidPathFile()
 {
 	if (access(_path.c_str(), F_OK) != 0 || access(_path.c_str(), R_OK) != 0)
 		return false;
-
-	// DIR *dir = opendir(_path.c_str());
-	// if (dir != NULL)
-	// 	return false;
-	// closedir(dir);
+	if (checkUploadPath(_path))
+		return false;
 
 	return true;
 }
