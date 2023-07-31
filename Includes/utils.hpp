@@ -9,8 +9,6 @@
 # include <sys/types.h>
 # include <sys/wait.h>
 
-// # include "utils.tpp" 
-
 /*** DEBUG ***/
 void	print_server_list(std::vector<Server> servers);
 
@@ -37,28 +35,13 @@ std::string get_body_from_cgi(Request &request);
 std::string	getExtension(std::string str);
 bool		isCGIExtension(std::string ext);
 
-
-
 size_t 		getContentSize(std::string request);
 bool		isFile(std::string str);
 
 std::string getFilename(std::string body);
 std::string getContentBody(std::string body);
-std::string getContentBody2(std::string body);
 
 std::string getExtensionFile(std::string str);
 std::string getContentType(std::string str);
-
-// DELETE
-
-// std::string getCGIbyExtension(std::string ext);
-
-// template<typename T>
-// bool containsValue(const std::vector<T> &vect, const T &value);
-
-// bool isInVector(std::vector<std::string> vector, std::string value);
-// void readBody(std::string str);
-
-
 
 #endif // UTILS_HPP

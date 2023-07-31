@@ -17,12 +17,6 @@ void Request::print() {
 	// std::cout << "Body : " << _body << std::endl << std::endl;
 }
 
-void Request::printConfig()
-{
-	// _config->print();
-	//std::cout << "\n\nPath: " << _path << "\nQuery: " << _query << "\nContent-Type: " << _contentType << std::endl;
-}
-
 // CONSTRUCTORS
 Request::Request()
 {
@@ -79,7 +73,6 @@ Request::Request(int socketFd, std::string method, std::string path, std::string
 	_body = "";
 	_contentSize = 0;
 	_contentType = "";
-
 	_serverName = server.getServer_name();
 }
 
@@ -99,41 +92,25 @@ Request::Request(int socketFd, std::string method, std::string path, std::string
 
 // GETTERS
 int 		Request::getSocketFd() 			{ return (_socketFd); }
-
 std::string Request::getPath()				{ return (_path); }
-
 std::string Request::getMethod()			{ return (_method); }
-
 std::string Request::getQuery()				{ return (_query); }
-
 Location 	&Request::getLocationConfig()	{ return (_config); }
-
 std::string Request::getContentType() 		{ return (_contentType); }
-
 std::string Request::getBody() 				{ return (_body); }
-
 int 		Request::getContentSize() 		{ return (_contentSize); }
-
 std::string Request::getRequest() 			{ return (_config.getRedirect()); }
-
 std::string Request::getVersion() 			{ return _version; }
 
 // SETTERS
-void		Request::setSocketFd(int socketFd) 				{ this->_socketFd = socketFd; }
-
-void		Request::setPath(const std::string &path) 		{ this->_path = path; }
-
-void		Request::setMethod(const std::string &method)	{ this->_method = method; }
-
-void		Request::setConfig(Location config) 			{ this->_config = config; }
-
-void	Request::setQuery(const std::string &query) 		{ this->_query = query; }
-
-void Request::setBody(const std::string &body) 				{ this->_body = body; }
-
-void Request::setContentSize(int size) 						{ this->_contentSize = size; }
-
-void Request::setContentType(const std::string &type) 		{ this->_contentType = type; }
+void Request::setSocketFd(int socketFd) 				{ this->_socketFd = socketFd; }
+void Request::setPath(const std::string &path) 			{ this->_path = path; }
+void Request::setMethod(const std::string &method)		{ this->_method = method; }
+void Request::setConfig(Location config) 				{ this->_config = config; }
+void Request::setQuery(const std::string &query) 		{ this->_query = query; }
+void Request::setBody(const std::string &body) 			{ this->_body = body; }
+void Request::setContentSize(int size) 					{ this->_contentSize = size; }
+void Request::setContentType(const std::string &type)	{ this->_contentType = type; }
 
 // METHODS
 bool Request::isAcceptedMethod() 	{ return _config.getMethod(_method); }
@@ -162,6 +139,8 @@ int Request::isValidPath()
 		if (file.is_open() == false)
 		{
 			index = _config.getRedirect();
+			if (index.size() == 0)
+				return 200;
 			index = trim(index);
 			fullPath = root + index;
 			fullPath = trim(fullPath);

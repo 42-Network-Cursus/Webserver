@@ -34,6 +34,7 @@ Response::Response(Request request)
 {
 	if (request.getMethod() == REQ_INV)
 	{
+		std::cout << "Invalid request." << std::endl;
 		_statusCode = 400;
 		generateError();
 		return ;
@@ -41,11 +42,14 @@ Response::Response(Request request)
 	_statusCode = 200;
 	_filename = "";
 
-	if (request.isAcceptedMethod() == false)
+	if (request.isAcceptedMethod() == false) {
+		std::cout << "Unauthorized method." << std::endl;
 		_statusCode = 501;
-	else if (_statusCode == 200 && request.isValidVersion() == false)
+	}
+	if (_statusCode == 200 && request.isValidVersion() == false)
 		_statusCode = 505;
-	_statusCode = request.isValidPath();
+	if (_statusCode == 200)
+		_statusCode = request.isValidPath();
 
 	if (_statusCode != 200 && _statusCode != 301)
 	{
@@ -91,7 +95,7 @@ void	Response::getMethod(Request request)
 			{
 				_path = request.getLocationConfig().getRoot();
 				_path = trim(_path);
-				_body = generateAutoIndex(_path, request.getLocationConfig().getHostPort());
+				_body = generateAutoIndex(_path);
 				_filename = "autoindex.html";
 				
 				return ;
@@ -151,7 +155,7 @@ void	Response::postMethod(Request request)
 			return ;
 		}
 		_filename = getFilename(request.getBody());
-		std::string fileContent = getContentBody2(request.getBody());
+		std::string fileContent = getContentBody(request.getBody());
 		writeFile(_filename, fileContent);
 		_body = getUploadedFilePage();
 		_filename = "upload.html";
@@ -167,11 +171,7 @@ void	Response::postMethod(Request request)
  */
 void	Response::deleteMethod(Request request)
 {
-
-
-
 	_path = request.getPath();
-	
 	_path = request.getLocationConfig().getRoot() + _path;
 
 	if (_path == request.getLocationConfig().getPath())
@@ -221,7 +221,6 @@ std::string Response::getResponseInString()
 	}
 
 	std::string response = _header.transformHeaderToString(_statusCode, type, intToString(_body.size()), "", "", "") + _body;
-
 	return response;
 }
 
@@ -242,15 +241,6 @@ void	Response::readFile()
 {
 	if (isValidPathFile() == false)
 	{
-		if (_statusCode != 200)
-		{
-			_body = getErrorPage();
-			_path = "";
-			_header = ResponseHeader();
-			_header.setContentType(CT_HTML);
-			_header.setContentLength(intToString(_body.size()));
-			return ;
-		}
 		_statusCode = 404;
 		generateError();
 		return ;
@@ -278,38 +268,19 @@ void	Response::readFile()
  */
 void	Response::writeFile(std::string filename, std::string content)
 {
-	std::ofstream file;
-
-	std::string filepath = "Websites/upload/" + filename;
+	std::ofstream 	file;
+	std::string		filepath = "Websites/upload/" + filename;
 	
-	bool test = true;
-	// if (true || isValidPathFile() == false)
-	if (test) // Si le fichier n'existe pas (function a ajouter par la suite)
+	file.open(filepath.c_str(), std::ofstream::out | std::ofstream::trunc);
+	if (file.is_open() == false)
 	{
-		file.open(filepath.c_str(), std::ofstream::out | std::ofstream::trunc);
-		if (file.is_open() == false)
-		{
-			_statusCode = 403;
-			generateError();
-		}
+		_statusCode = 403;
+		generateError();
+	}
 
-		file << content;
-		file.close();
-		_statusCode = 201;
-	}
-	else
-	{
-		file.open(_path.c_str());
-		if (file.is_open() == false)
-		{
-			_statusCode = 403;
-			generateError();
-			return ;
-		}
-		file << content;
-		file.close();
-		_statusCode = 204;
-	}
+	file << content;
+	file.close();
+	_statusCode = 201;
 }
 
 /**
@@ -320,7 +291,6 @@ void	Response::writeFile(std::string filename, std::string content)
 bool Response::isValidPathFile()
 {
 	_path = trim(_path);
-	
 	
 	if (access(_path.c_str(), F_OK) != 0)
 		return false;
@@ -339,11 +309,6 @@ bool Response::isValidPathFile()
  * 
  * @return Error page in HTML 
  */
-std::string Response::getErrorPage()
-{
-	return "<!DOCTYPE html>\n<html><title>Error Page... Nique Ta Mere Salope</title><body><h1>It's a basic error page.</h1><h5>Don't read the title.</h5></body></html>\n";
-}
-
 std::string Response::getDeletedFilePage()
 {
 	return "<!DOCTYPE html>\n<html><title>Deleted file</title><body><h1>Deleted file</h1></body></html>\n";
@@ -374,4 +339,8 @@ void Response::generateError()
 	_header = ResponseHeader();
 	_header.setContentType(CT_HTML);
 	_header.setContentLength(intToString(_body.size()));
+}
+
+int	Response::getStatusCode() {
+	return _statusCode;
 }

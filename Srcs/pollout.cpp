@@ -20,6 +20,7 @@ void sendResponse(int fd, Response response) {
 	int 		bytesLeft = msg.length(); // Bytes left to send
 	int 		bytesRead = 0;
 
+	std::cout << "Response status code: " << response.getStatusCode() << std::endl;
 	while (total < msg.length()) {
 		bytesRead = send(fd, msg.c_str() + total, bytesLeft, 0);
 
@@ -64,12 +65,8 @@ void handle_pollout(std::vector<Server> &servers, std::vector<struct pollfd> &al
 	std::vector<Request>::iterator it_begin = requests.begin();
 	requests.erase(it_begin + req_idx);
 
-	// std::cout << "Pollout: Close fd " << all_pfds[idx].fd << std::endl;
+	std::cout << "Pollout: Close fd " << all_pfds[idx].fd << std::endl;
 	close(all_pfds[idx].fd);
-
-	// std::cout << "Pollout: Erase fd " << all_pfds[idx].fd << " from server" << std::endl;
 	erase_fd_from_server(all_pfds[idx].fd, servers);
-
-	// std::cout << "Pollout: Erase fd " << (*(all_pfds.begin() + idx)).fd <<  " from all_pfds" << std::endl;
 	all_pfds.erase(all_pfds.begin() + idx);
 }

@@ -4,21 +4,17 @@
 # include <string>
 
 /*		CHECKER				*/
-
 const std::string REQ_INV = "Invalid Request";
-
 const std::string ST_H = "HEADER";
 const std::string ST_B = "BODY";
 const std::string ST_R = "READY";
 
 /*		ACCEPTED METHODS	*/
-
 const std::string METHOD_GET = "GET";
 const std::string METHOD_POST = "POST";
 const std::string METHOD_DELETE = "DELETE";
 
 /*		STATUS CODE			*/
-
 const std::string SC_UNKNOWN = "Code Unknown";
 
 const std::string SC_200 = "OK";
@@ -40,39 +36,27 @@ const std::string SC_505 = "HTTP Version not supported";
 
 /*		Content Type		*/
 /*	Les normes -> https://www.iana.org/assignments/media-types/media-types.xhtml		*/
-
 const std::string CT_HTML = "text/html";
 const std::string CT_CSS = "text/css";
 const std::string CT_JS = "text/javascript";
 const std::string CT_PNG = "image/png";
 const std::string CT_JPG = "image/jpeg";
 const std::string CT_ICON = "image/x-icon";
-const std::string CT_MP3 = "audio/mpeg";
-// const std::string CT_ICON = "image/vnd.microsoft.icon";
 const std::string CT_DEFAULT = "text/plain";
-
 const std::string CT_MULTI = "multipart/form-data;";
-/*		CGI PATH			*/
 
+/*		CGI PATH			*/
 const std::string CGI_PHP = "/cgi/cgi.php";
 const std::string CGI_PY = "/cgi/cgi.py";
 const std::string CGI_UNKNOWN = "Unknown CGI";
 
 
 /*		ERROR MESSAGE		*/
-
 const std::string ERR_CONVERSION_ITS = "Error: Conversion int to string failed";
-
 const std::string INVALID_HEADER = "Invalid Header";
 
 /*			   CGI			*/
-
 const std::string PHP_CGI_PATH = "/Users/cwastche/.brew/Cellar/php/8.2.8/bin/php-cgi";
-// const std::string PHP_CGI_PATH = "/usr/bin/php-cgi";
 const std::string PHP_CGI = "php-cgi";
-
-// IF WE CAN ADD IT
-// const char PY_CGI_PATH[] = ""; 
-// const char PY_CGI[] = "";
 
 #endif

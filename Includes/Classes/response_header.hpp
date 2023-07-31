@@ -38,7 +38,6 @@ class ResponseHeader
 		std::string _server; // Nom du logiciel serveur
 		std::string _location; // Utilisé lors d'une redirection pour indiquer l'URL vers laquelle le client doit être redirigé
 
-		// std::string getHeaderData();
 		void initValues();
 };
 

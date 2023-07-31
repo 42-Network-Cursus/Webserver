@@ -5,6 +5,6 @@
 # include <dirent.h>
 # include <iostream>
 
-std::string generateAutoIndex(std::string path, std::string host_port);
+std::string generateAutoIndex(std::string path);
 
 # endif

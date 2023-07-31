@@ -3,16 +3,16 @@
 
 // Debugging
 void Server::print() {
-	//std::cout << "port: " << _port << std::endl;
-	//std::cout << "host: "<< _host << std::endl;
-	//std::cout << "server name: " << _server_name << std::endl;
-	//std::cout << "pfds size: " << _pfds.size() << std::endl;
-	//std::cout << "Locations: " << std::endl;
+	std::cout << "port: " << _port << std::endl;
+	std::cout << "host: "<< _host << std::endl;
+	std::cout << "server name: " << _server_name << std::endl;
+	std::cout << "pfds size: " << _pfds.size() << std::endl;
+	std::cout << "Locations: " << std::endl;
 	std::vector<Location>::iterator loc_begin = _locations.begin();
 	std::vector<Location>::iterator loc_end = _locations.end();
 	for (; loc_begin != loc_end; loc_begin++) {
 		loc_begin->print();
-		//std::cout << std::endl;
+		std::cout << std::endl;
 	}
 }
 
@@ -40,35 +40,15 @@ Server &Server::operator=(const Server &other) {
 }
 
 void Server::get_listening_socket() {
-	
-	/*
-		int getaddrinfo(
-			const char *node, -> host name / IP address to connect to (ex: www.ex.com / IP) IF NULL, fills hints with our IP
-			const char *service, -> port number
-			const struct addrinfo *hints, -> prob no need, send an empty one
-			struct addrinfo **res -> fills your given pointer with result
-		)
-
-		struct addrinfo {
-			int              ai_flags;
-			int              ai_family;
-			int              ai_socktype;
-			int              ai_protocol;
-			socklen_t        ai_addrlen;
-			struct sockaddr *ai_addr;
-			char            *ai_canonname;
-			struct addrinfo *ai_next;
-		};
-	*/
-
 	struct addrinfo hints, *ai, *p;
-	int yes = 1;
-	int rv;
+	int 			yes = 1;
+	int 			rv;
 
-	memset(&hints, 0, sizeof(hints)); // To make sure it is empty
-	hints.ai_family = AF_UNSPEC; // either IPV4 or 6, no need to specify
-	hints.ai_socktype = SOCK_STREAM; // TCP stream socket
-	hints.ai_flags = AI_PASSIVE; // use my IP
+	memset(&hints, 0, sizeof(hints));  // To make sure it is empty
+	
+	hints.ai_family 	= AF_UNSPEC;   // either IPV4 or 6, no need to specify
+	hints.ai_socktype	= SOCK_STREAM; // TCP stream socket
+	hints.ai_flags 		= AI_PASSIVE;  // use my IP
 
 	if ((rv = getaddrinfo(_host.c_str(), _port.c_str(), &hints, &ai)) != 0) {
 		std::cerr << "getaddrinfo error " << rv << ": " << gai_strerror(rv) << std::endl;
@@ -208,15 +188,10 @@ void Server::store_server_configuration(std::ifstream &file_stream) {
 
 /**** GETTERS ****/
 const std::string 			&Server::getPort() const 		{ return _port; }
-
 const std::string 			&Server::getHost() const 		{ return _host; }
-
 const std::string 			&Server::getServer_name() const	{ return _server_name; }
-
 std::vector<struct pollfd>	&Server::getPfds() 				{ return _pfds; }
-
 std::vector<Location> 		&Server::getLocation() 			{ return _locations; }
-
 int 						Server::getSockList() const 	{ return _socklist; }
 
 Location 					&Server::getLocationFromPath(std::string path) {

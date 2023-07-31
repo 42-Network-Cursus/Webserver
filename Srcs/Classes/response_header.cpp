@@ -2,15 +2,14 @@
 
 // DEBUG
 void ResponseHeader::print() {
-	//std::cout << "Response header: " << std::endl;
-	//std::cout << " * Content type: " << _contentType << std::endl;
-	//std::cout << " * Content length: " << _contentLength << std::endl;
-	//std::cout << " * Date: " << _date << std::endl;
-	//std::cout << " * Last Modified: " << _lastModified << std::endl;
-	//std::cout << " * Server: " << _server << std::endl;
-	//std::cout << " * Location: " << _location << std::endl;
+	std::cout << "Response header: " << std::endl;
+	std::cout << " * Content type: " << _contentType << std::endl;
+	std::cout << " * Content length: " << _contentLength << std::endl;
+	std::cout << " * Date: " << _date << std::endl;
+	std::cout << " * Last Modified: " << _lastModified << std::endl;
+	std::cout << " * Server: " << _server << std::endl;
+	std::cout << " * Location: " << _location << std::endl;
 }
-
 
 /* ********************************************************************************************* */
 /* ***************************************** CANONIC FORM ************************************** */

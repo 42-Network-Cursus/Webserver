@@ -17,7 +17,9 @@ void get_cgi(std::string script_path, std::string &CGI, std::string &CGI_PATH) {
 std::string get_body_from_cgi(Request &request) {
 
 	FILE 		*tmpFile = fopen("tmpFile.txt", "w");
-	if (!tmpFile) { // Check if the file was opened successfully
+	
+	// Check if the file was opened successfully
+	if (!tmpFile) { 
 		std::cout << "Failed to open the output file." << std::endl;
 		return "";
 	}
@@ -78,9 +80,7 @@ std::string get_body_from_cgi(Request &request) {
 	// Command to execute the PHP script
 	const char* command[] = {CGI.c_str(), "-f", script_path.c_str()};
 
-	// Fork a child process
 	pid_t work_pid = fork();
-
 	if (work_pid == -1) {
 		std::cerr << "Failed to fork a child process." << std::endl;
 		return "";
@@ -137,7 +137,7 @@ std::string get_body_from_cgi(Request &request) {
 	}
 
 	rFile.close();
-	int result = remove("tmpFile.txt");
+	std::remove("tmpFile.txt");
 
 	if (body.find("UTF-8") != std::string::npos)
 		body = body.substr(body.find("UTF-8") + 5);
@@ -159,14 +159,3 @@ bool isCGIExtension(std::string ext)
 {
 	return (ext == "php" || ext == "py");
 }
-
-
-// std::string getCGIbyExtension(std::string ext)
-// {
-// 	if (ext == "php")
-// 		return CGI_PHP;
-// 	else if (ext =="py")
-// 		return CGI_PY;
-// 	else
-// 		return CGI_UNKNOWN;
-// }

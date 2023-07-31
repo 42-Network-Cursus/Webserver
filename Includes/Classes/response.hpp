@@ -26,6 +26,7 @@ class Response {
 		void	deleteMethod(Request request);
 
 		std::string getResponseInString();
+		int			getStatusCode();
 
 		void setBody(const std::string &body);
 		
@@ -42,15 +43,11 @@ class Response {
 		bool	isValidPathFile();
 		void	readFile();
 		void	writeFile(std::string filename, std::string content);
+		bool 	checkUploadPath(std::string path);
 
-		std::string getPageErrorStatus(int statusCode);
-		bool 		checkUploadPath(std::string path);
-		bool 		createDirectory(std::string path);
-		std::string getErrorPage();
 		std::string getDeletedFilePage();
 		std::string getUploadedFilePage();
-		void generateError();
-
+		void 		generateError();
 };
 
 #endif // RESPONSE_CLASS_HPP

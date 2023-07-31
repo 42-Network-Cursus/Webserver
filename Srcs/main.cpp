@@ -71,7 +71,6 @@ int main(int argc, char *argv[]) {
 			clean_exit(servers);
 		}
 
-		// last argument is timeout, in millisecs. Neg value for no timeout until response
 		if ( (poll(all_pfds.data(), all_pfds.size(), -1)) == -1) {
 			std::cerr << "\npoll: " << strerror(errno) << std::endl;
 			clean_exit(servers);
@@ -80,7 +79,6 @@ int main(int argc, char *argv[]) {
 		// Run through existing connections to look for data to read
 		for (size_t i = 0; i < all_pfds.size(); i++) {
 
-			// check if someone is ready to read
 			if (all_pfds[i].revents & POLLIN) {
 				
 				std::pair<int, int> idx_pair = get_idx_server_fd(servers, all_pfds[i].fd);

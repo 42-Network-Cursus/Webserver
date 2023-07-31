@@ -35,7 +35,6 @@ class Request {
 		std::string	getRequest();
 		std::string getVersion();
 		std::string getServerName();
-
 		std::string getDefaultPage();
 		std::string getState();
 		std::string getHeader();
@@ -62,7 +61,6 @@ class Request {
 		int		getBodySize();
 
 		// DEBUG
-		void		printConfig();
 		void print();
 
 

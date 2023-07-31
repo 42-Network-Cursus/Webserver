@@ -21,24 +21,14 @@ extern bool G_EXIT;
 void exit_bool(int);
 void clean_exit(std::vector<Server> &servers);
 
-/*** POLLIN ***/
-size_t	getContentSize(std::string request);
-Request readRequest(std::vector<Server> &servers, std::vector<struct pollfd> &all_pfds, std::pair<int, int> idx_pair, int idx);
-void 	add_new_socket_to_pfds(std::vector<Server> &servers, std::vector<struct pollfd> &all_pfds, int idx_serv, int idx);
+/*** POLLIN && POLLOUT ***/
 int 	handle_pollin(std::vector<Server> &servers, std::vector<struct pollfd> &all_pfds, std::pair<int, int> idx_pair, std::vector<Request> &requests, int idx);
-
-/*** POLLOUT ***/
-void	erase_fd_from_server(int fd, std::vector<Server> &servers);
-void 	sendResponse(int fd, Response response);
-int 	get_request_index(int sockfd, std::vector<Request> requests);
 void	handle_pollout(std::vector<Server> &servers, std::vector<struct pollfd> &all_pfds, int idx, std::vector<Request> &requests);
-
+void	erase_fd_from_server(int fd, std::vector<Server> &servers);
 
 bool		isFile(std::string str);
 std::string getFilename(std::string body);
-// std::string getContentBody(std::string body);
-std::string getContentBody2(std::string body);
-
+std::string getContentBody(std::string body);
 
 std::string getExtensionFile(std::string str);
 std::string getContentType(std::string str);

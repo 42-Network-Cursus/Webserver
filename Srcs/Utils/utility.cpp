@@ -7,10 +7,10 @@ void		print_server_list(std::vector<Server> servers) {
 	std::vector<Server>::iterator it_begin = servers.begin();
 	std::vector<Server>::iterator it_end = servers.end();
 
-	//std::cout << "Number of servers: " << servers.size() << std::endl << std::endl;
+	std::cout << "Number of servers: " << servers.size() << std::endl << std::endl;
 	for (; it_begin != it_end; it_begin++) {
 		it_begin->print();
-		//std::cout << std::endl;
+		std::cout << std::endl;
 	}
 }
 
@@ -134,36 +134,6 @@ std::string deleteWhiteSpace(std::string str)
 	return res;
 }
 
-
-// bool isInVector(std::vector<std::string> vector, std::string value)
-// {
-// 	std::vector<std::string>::iterator it = vector.begin();
-// 	std::vector<std::string>::iterator end = vector.end();
-
-// 	while(it != end)
-// 	{
-// 		if (*it == value)
-// 			return true;
-// 		++it;
-// 	}
-// 	// //std::cout << "FALSE" << std::endl;
-// 	return false;
-// }
-
-// void readBody(std::string str)
-// {
-// 	std::istringstream iss(str);
-// 	std::string line;
-
-// 	int i = 0;
-
-// 	while (std::getline(iss, line) && i < 2)
-// 	{
-// 		//std::cout << line << std::endl;
-// 		i++;
-// 	}
-// }
-
 bool isFile(std::string str)
 {
 	size_t pos = str.find(CT_MULTI);
@@ -207,55 +177,7 @@ std::string getFilename(std::string body)
  * @param body Body of the request
  * @return Content of the body
  */
-// std::string getContentBody(std::string body)
-// {
-// 	//std::cout << "In getContentBody\nBody: \n" << body << std::endl;
-// 	std::istringstream iss(body);
-// 	std::string line;
-	
-	
-// 	std::string tmp;
-// 	std::string delimiter;
-// 	std::getline(iss, line);
-// 	delimiter = trim(line);
-// 	//std::cout << "Delimiter: " << delimiter << std::endl;
-// 	//std::cout << "First Boucle" << std::endl;
-// 	while (std::getline(iss, line))
-// 	{
-// 		//std::cout << "Line: " << line << " | Size: " << line.size() << std::endl;
-// 		// if (line.size() == 2 && line == "\r\n")
-// 		// 	break ;
-// 		// if (line.size() == 4 && line == "\r\n\r\n")
-// 		// 	break;
-// 		if (line.size() == 1)
-// 			break;
-// 	}
-// 	//std::cout << "Second Boucle" << std::endl;
-// 	std::string res = "";
-// 	std::string end = "\n";
-// 	// A garder ?
-// 	while (std::getline(iss, line))
-// 	{	
-// 		//std::cout << "Line: " << line << std::endl;
-// 		//std::cout << "Deli: " << delimiter << std::endl;
-// 		//std::cout << "Check: " << (line.compare(0, delimiter.size(), delimiter.c_str())) << std::endl;
-// 		if (line.find(delimiter) != std::string::npos)
-// 		{
-// 			//std::cout << "On break" << std::endl;
-// 			break;
-// 		}
-// 		//std::cout << "On est passé le check ?" << std::endl;
-// 		line = rtrim(line);
-// 		// res += line + end;
-// 		res += line + end;
-// 		//std::cout << "RES in the boucle: " << res << std::endl;
-// 	}
-// 	//std::cout << "RES: \n" << res << std::endl;
-// 	return res;
-// }
-
-
-std::string getContentBody2(std::string body)
+std::string getContentBody(std::string body)
 {
 	size_t start;
 
@@ -297,12 +219,10 @@ std::string getContentType(std::string str)
 		return CT_ICON;
 	else if	(ext == "png")
 		return CT_PNG;
-	else if	(ext == "jpg")
+	else if	(ext == "jpg" || ext == "jpeg")
 		return CT_JPG;
 	else if	(ext == "html" || ext == "php")
 		return CT_HTML;
-	else if (ext == "mp3")
-		return CT_MP3;
 	else
 		return CT_DEFAULT;
 }
