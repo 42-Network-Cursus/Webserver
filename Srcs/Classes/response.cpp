@@ -53,7 +53,7 @@ Response::Response(Request request)
 
 	if (_statusCode != 200 && _statusCode != 301)
 	{
-		_path = "Websites/errorPage/" + intToString(_statusCode) + "_page.html";
+		_path = "webSrcs/errorPage/" + intToString(_statusCode) + "_page.html";
 		readFile();
 		_path = "";
 		_header = ResponseHeader();
@@ -269,7 +269,7 @@ void	Response::readFile()
 void	Response::writeFile(std::string filename, std::string content)
 {
 	std::ofstream 	file;
-	std::string		filepath = "Websites/upload/" + filename;
+	std::string		filepath = "webSrcs/upload/" + filename;
 	
 	file.open(filepath.c_str(), std::ofstream::out | std::ofstream::trunc);
 	if (file.is_open() == false)
@@ -333,7 +333,7 @@ bool Response::checkUploadPath(std::string path)
 
 void Response::generateError()
 {
-	_path = "Websites/errorPage/" + intToString(_statusCode) + "_page.html";
+	_path = "webSrcs/errorPage/" + intToString(_statusCode) + "_page.html";
 	readFile();
 	_path = "";
 	_header = ResponseHeader();
