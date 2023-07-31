@@ -30,10 +30,10 @@ void                        check_conf_file(std::string file_name);
 void 			            configure_servers(std::string file_name, std::vector<Server> *servers);
 
 /*** CGI ***/
-void 		get_cgi(std::string script_path, std::string &CGI, std::string &CGI_PATH);
-std::string get_body_from_cgi(Request &request);
-std::string	getExtension(std::string str);
-bool		isCGIExtension(std::string ext);
+void 						get_cgi(std::string script_path, std::string &CGI, std::string &CGI_PATH);
+std::pair<std::string, int> get_body_from_cgi(Request &request);
+std::string					getExtension(std::string str);
+bool						isCGIExtension(std::string ext);
 
 size_t 		getContentSize(std::string request);
 bool		isFile(std::string str);

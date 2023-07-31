@@ -14,14 +14,18 @@ void get_cgi(std::string script_path, std::string &CGI, std::string &CGI_PATH) {
 	}
 }
 
-std::string get_body_from_cgi(Request &request) {
+std::pair<std::string, int> get_body_from_cgi(Request &request) {
 
 	FILE 		*tmpFile = fopen("tmpFile.txt", "w");
-	
+	std::pair<std::string, int> r_pair;
+
+	r_pair.first = "";
+	r_pair.second = 500;
+
 	// Check if the file was opened successfully
 	if (!tmpFile) { 
-		std::cout << "Failed to open the output file." << std::endl;
-		return "";
+		r_pair.first = "Failed to open the output file.";
+		return r_pair;
 	}
 
 	std::string body = "";
@@ -70,8 +74,8 @@ std::string get_body_from_cgi(Request &request) {
 	new_env[17] = NULL;
 
 	if (pipe(pipes) == -1) {
-		std::cerr << "Failed to open pipes." << std::endl;
-		return "";
+		r_pair.first = "Failed to open pipes.";
+		return r_pair;
 	}
 
 	write(pipes[1], data.c_str(), data.length());
@@ -82,8 +86,8 @@ std::string get_body_from_cgi(Request &request) {
 
 	pid_t work_pid = fork();
 	if (work_pid == -1) {
-		std::cerr << "Failed to fork a child process." << std::endl;
-		return "";
+		r_pair.first = "Failed to fork a child process.";
+		return r_pair;
 	} 
 	// Work child process
 	else if (work_pid == 0) {
@@ -101,16 +105,16 @@ std::string get_body_from_cgi(Request &request) {
 		
 		// If execve returns, an error occurred
 		std::cerr << "Failed to execute the PHP script." << std::endl;
-		exit(EXIT_FAILURE);	
+		exit(EXIT_FAILURE);
 	}
 
 	pid_t timeout_pid = fork();
 	if (timeout_pid == -1) {
-		std::cerr << "Failed to fork a child process." << std::endl;
-		return "";
+		r_pair.first = "Failed to fork a child process.";
+		return r_pair;
 	}
 	else if (timeout_pid == 0) {
-		sleep(10); // In seconds
+		sleep(1); // In seconds
 		_exit(0);
 	}
 
@@ -118,8 +122,9 @@ std::string get_body_from_cgi(Request &request) {
 	if (exited_pid == work_pid)
 		kill(timeout_pid, SIGKILL);
 	else if (exited_pid == timeout_pid) {
-		std::cerr << "PHP script execution timed out." << std::endl;
+		r_pair.first = "PHP script execution timed out.";
 		kill(work_pid, SIGKILL);
+		return r_pair;
 	}
 	wait(NULL); // Collect the other process
 
@@ -131,8 +136,6 @@ std::string get_body_from_cgi(Request &request) {
 	while (!rFile.eof()) {
 		std::string tmp = "";
 		rFile >> tmp;
-		std::cout << tmp;
-		
 		body.append(tmp);
 	}
 
@@ -143,7 +146,14 @@ std::string get_body_from_cgi(Request &request) {
 		body = body.substr(body.find("UTF-8") + 5);
 	if (body.find("Warning") != std::string::npos)
 		body = body.substr(0, body.find("Warning"));
-	return body;
+		
+	if (body.find("Parseerror") != std::string::npos) {
+		r_pair.first = "PHP Script syntax error";
+		return r_pair;
+	}
+	r_pair.first = body;
+	r_pair.second = 200;
+	return r_pair;
 }
 
 std::string getExtension(std::string str)

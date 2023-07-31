@@ -1,0 +1,34 @@
+h1
+{
+	font-size: 24px;
+	color: purple;
+	margin-bottom: 10px;
+}
+
+label
+{
+	font-size: 15px;
+	color: grey;
+	margin-right: 5px;
+}
+
+input[type="radio"]
+{
+	margin-right: 10%;
+}
+
+input[type="submit"]
+{
+	width: 50%;
+	margin-left: 10%;
+	background-color: purple;
+	color: black;
+}
+
+form
+{
+	display: flex;
+	flex-direction: column;
+	height: 250px;
+	width: 1000px;
+}

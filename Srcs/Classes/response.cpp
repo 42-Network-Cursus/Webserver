@@ -83,10 +83,17 @@ void	Response::getMethod(Request request)
 	if (_path == request.getLocationConfig().getPath()) {
 		
 		if (request.getLocationConfig().getScriptPath() != "") {
-			_body = get_body_from_cgi(request);
+			std::pair<std::string, int> cgi_pair = get_body_from_cgi(request);
 			
+			_body = cgi_pair.first;
+			_statusCode = cgi_pair.second;
+			// if (_statusCode != 200)
+				// std::cout << _body << std::endl;
+
 			_path = request.getLocationConfig().getScriptPath(); // For content type handling (Uses suffix)
 			_header.setContentLength(intToString(_body.length()));
+
+			std::remove("tmpFile.txt");
 			return ;
 		}
 		else
