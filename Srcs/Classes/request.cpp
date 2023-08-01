@@ -81,15 +81,12 @@ Request::Request(int socketFd, std::string method, std::string path, std::string
 : _socketFd(socketFd), _method(method), _path(path), _version(version)
 {
 	getHost(request);
-	std::cout << "========= Host: " << _host << std::endl;
 	if (_host.compare(0, 9, "localhost") == 0)
 	{
 		std::string tmp = _host.substr(9);
-		std::cout << "TMP: " << tmp << std::endl;
 		_host = "127.0.0.1" + tmp;
-		std::cout << "New host: " << _host << std::endl;
 	}
-	//_config = server.getLocationFromPathAndHost(path, _host);
+
 	getQueryFromPath();
 
 	getContentType(request);
@@ -178,9 +175,6 @@ std::string Request::getDefaultPage()
 
 Request Request::parseRequest(std::string request, int fd, Server server)
 {
-	std::cout << "========= PARSE REQUEST" << std::endl;
-	std::cout << "========= Request" << std::endl;
-	std::cout << request << std::endl;
 	std::string method = "";
 	std::string path = "";
 	std::string version = "";

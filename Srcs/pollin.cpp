@@ -60,6 +60,9 @@ Location getLocationByHostNameAndPath(std::vector<Server> &servers, std::string 
 					return *s_loca;
 				++s_loca;
 			}
+			if (s_loca == e_loca)
+				s_loca = s_begin->getLocation().begin();
+			return *s_loca;
 		}
 		++s_begin;
 	}

@@ -229,7 +229,6 @@ Location 					&Server::getLocationFromPathAndHost(std::string path, std::string 
 	{
 		tmp = it_start->getPath();
 		tmp2 = it_start->getHostPort();
-		std::cout << " *-*-*-*- HOSTPORT: " << tmp2 << std::endl;
 		if (path.compare(0, tmp.length(), tmp) == 0 && tmp != "/" && path != "/" && tmp2.compare(0, host.length(), host) == 0)
 			break;
 		if (path == "/")
