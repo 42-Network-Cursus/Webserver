@@ -69,6 +69,7 @@ Request::Request(int socketFd, std::string method, std::string path, std::string
 : _socketFd(socketFd), _method(method), _path(path), _version(version)
 {
 	_config = server.getLocationFromPath(path);
+
 	getQueryFromPath();
 	_body = "";
 	_contentSize = 0;
@@ -79,10 +80,20 @@ Request::Request(int socketFd, std::string method, std::string path, std::string
 Request::Request(int socketFd, std::string method, std::string path, std::string version, Server server, std::string request)
 : _socketFd(socketFd), _method(method), _path(path), _version(version)
 {
-	_config = server.getLocationFromPath(path);
+	getHost(request);
+	std::cout << "========= Host: " << _host << std::endl;
+	if (_host.compare(0, 9, "localhost") == 0)
+	{
+		std::string tmp = _host.substr(9);
+		std::cout << "TMP: " << tmp << std::endl;
+		_host = "127.0.0.1" + tmp;
+		std::cout << "New host: " << _host << std::endl;
+	}
+	//_config = server.getLocationFromPathAndHost(path, _host);
 	getQueryFromPath();
 
-	getExtraDatas(request);
+	getContentType(request);
+	
 	checkMultiPart();
 	_body = "";
 	_contentSize = 0;
@@ -167,6 +178,9 @@ std::string Request::getDefaultPage()
 
 Request Request::parseRequest(std::string request, int fd, Server server)
 {
+	std::cout << "========= PARSE REQUEST" << std::endl;
+	std::cout << "========= Request" << std::endl;
+	std::cout << request << std::endl;
 	std::string method = "";
 	std::string path = "";
 	std::string version = "";
@@ -201,7 +215,7 @@ void Request::getQueryFromPath()
 
 
 
-void Request::getExtraDatas(std::string request)
+void Request::getContentType(std::string request)
 {
 	std::istringstream iss(request);
 	std::string line;
@@ -209,6 +223,19 @@ void Request::getExtraDatas(std::string request)
 	while (std::getline(iss, line)) {
 		if (line.compare(0, 13, "Content-Type:") == 0) {	
 			_contentType = line.substr(14);
+			return ;
+		}
+	}
+}
+
+void Request::getHost(std::string request)
+{
+	std::istringstream iss(request);
+	std::string line;
+
+	while (std::getline(iss, line)) {
+		if (line.compare(0, 5, "Host:") == 0) {	
+			_host = line.substr(6);
 			return ;
 		}
 	}
@@ -268,4 +295,9 @@ void Request::setState(std::string state)
 std::string Request::getDefaultErrorPage()
 {
 	return _config.getErrorPagePath();
+}
+
+std::string Request::getHost()
+{
+	return _host;
 }

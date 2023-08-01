@@ -22,6 +22,51 @@ size_t getContentSize(std::string request)
 	return (res);
 }
 
+Location getLocationByHostNameAndPath(std::vector<Server> &servers, std::string host, std::string path)
+{
+	std::vector<Server>::iterator s_begin = servers.begin();
+	std::vector<Server>::iterator s_end = servers.end();
+
+	std::vector<Location>::iterator s_loca;
+	std::vector<Location>::iterator e_loca;
+
+	host = trim(host);
+	path = trim (path);
+	std::string serverHost;
+	std::string serverPort;
+	std::string locaPath;
+	while (s_begin != s_end)
+	{
+		serverHost = s_begin->getHost();
+		serverHost = trim(serverHost);
+		
+		serverPort = s_begin->getPort();
+		serverPort = trim(serverPort);
+
+		serverHost = serverHost + ":" + serverPort;
+		if (host.compare(0, serverHost.length(), serverHost) == 0)
+		{
+			s_loca = s_begin->getLocation().begin();
+			e_loca = s_begin->getLocation().end();
+
+			while (s_loca != e_loca)
+			{
+				locaPath = s_loca->getPath();
+				if (path.compare(0, locaPath.length(), locaPath) == 0 && locaPath != "/" && path != "/")
+				{
+					return *s_loca;
+				}
+				if (path == "/")
+					return *s_loca;
+				++s_loca;
+			}
+		}
+		++s_begin;
+	}
+	if (s_begin == s_end)
+		s_begin = servers.begin();
+	return *(s_begin->getLocation().begin());
+}
 
 void add_new_socket_to_pfds(std::vector<Server> &servers, std::vector<struct pollfd> &all_pfds, int idx_serv, int idx) {
 	int 						new_fd;
@@ -150,8 +195,10 @@ int readRequest(std::vector<Server> &servers, std::vector<struct pollfd> &all_pf
 	if (requests[id].getState() == ST_R)
 	{
 		Request ready = Request::parseRequest(requests[id].getHeader(),requests[id].getSocketFd(), servers[idx_pair.first]);
+		Location loca = getLocationByHostNameAndPath(servers, ready.getHost(), ready.getPath());
 		ready.setBody(requests[id].getBody());
 		ready.setContentSize(getContentSize(requests[id].getHeader()));
+		ready.setConfig(loca);
 		requests[id] = ready;
 
 		return (1);

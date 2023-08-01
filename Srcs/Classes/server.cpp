@@ -48,7 +48,7 @@ void Server::get_listening_socket() {
 	
 	hints.ai_family 	= AF_UNSPEC;   // either IPV4 or 6, no need to specify
 	hints.ai_socktype	= SOCK_STREAM; // TCP stream socket
-	hints.ai_flags 		= AI_PASSIVE;  // use my IP
+	// hints.ai_flags 		= AI_PASSIVE;  // use my IP
 
 	if ((rv = getaddrinfo(_host.c_str(), _port.c_str(), &hints, &ai)) != 0) {
 		std::cerr << "getaddrinfo error " << rv << ": " << gai_strerror(rv) << std::endl;
@@ -205,6 +205,32 @@ Location 					&Server::getLocationFromPath(std::string path) {
 	{
 		tmp = it_start->getPath();
 		if (path.compare(0, tmp.length(), tmp) == 0 && tmp != "/" && path != "/")
+			break;
+		if (path == "/")
+			break ;
+		++it_start;
+	}
+
+	if (it_start == it_end)
+		it_start = _locations.begin();
+	return *it_start;
+}
+
+Location 					&Server::getLocationFromPathAndHost(std::string path, std::string host) {
+
+	std::vector<Location>::iterator it_start = _locations.begin();
+	std::vector<Location>::iterator it_end = _locations.end();
+
+	std::string tmp;
+	std::string tmp2;
+	path = trim(path);
+	host = trim(host);
+	while (it_start != it_end)
+	{
+		tmp = it_start->getPath();
+		tmp2 = it_start->getHostPort();
+		std::cout << " *-*-*-*- HOSTPORT: " << tmp2 << std::endl;
+		if (path.compare(0, tmp.length(), tmp) == 0 && tmp != "/" && path != "/" && tmp2.compare(0, host.length(), host) == 0)
 			break;
 		if (path == "/")
 			break ;

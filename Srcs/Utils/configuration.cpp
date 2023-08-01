@@ -150,12 +150,12 @@ void configure_servers(std::string file_name, std::vector<Server> *servers) {
 			while (skip_line(line))
 				std::getline(file_stream, line);
 			
-			Server *server = new Server();
+			Server server = Server();
 
-			server->store_server_configuration(file_stream);
-			server->get_listening_socket();
+			server.store_server_configuration(file_stream);
+			server.get_listening_socket();
 
-			servers->push_back(*server);
+			servers->push_back(server);
 		}
 	}
 	file_stream.close();

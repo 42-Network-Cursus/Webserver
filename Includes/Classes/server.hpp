@@ -31,6 +31,7 @@ class Server {
 		std::vector<struct pollfd>	&getPfds();
 		std::vector<Location> 		&getLocation();
 		Location 					&getLocationFromPath(std::string path);
+		Location 					&getLocationFromPathAndHost(std::string path, std::string host);
 		int 						getSockList() const;
 
 		/*** SETTERS ***/

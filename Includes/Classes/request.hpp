@@ -39,6 +39,7 @@ class Request {
 		std::string getState();
 		std::string getHeader();
 		std::string getDefaultErrorPage();
+		std::string getHost();
 
 		// SETTERS
 		void		setSocketFd(int socketFd);
@@ -78,9 +79,11 @@ class Request {
 		std::string _serverName;
 		std::string	_state;
 		std::string _header;
+		std::string	_host;
 		
 		void getQueryFromPath();
-		void getExtraDatas(std::string request);
+		void getContentType(std::string request);
+		void getHost(std::string request);
 		void checkMultiPart();
 };
 
