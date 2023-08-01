@@ -14,7 +14,7 @@ Response::Response() {}
 Response::~Response() {}
 
 Response::Response(const Response &copy)
-: _statusCode(copy._statusCode), _header(copy._header), _body(copy._body), _path(copy._path), _filename(copy._filename)
+: _statusCode(copy._statusCode), _header(copy._header), _body(copy._body), _path(copy._path), _filename(copy._filename), _defaultErrorPage(copy._defaultErrorPage)
 {}
 
 Response &Response::operator=(const Response &other)
@@ -26,6 +26,7 @@ Response &Response::operator=(const Response &other)
 		this->_body = other._body;
 		this->_path = other._path;
 		this->_filename = other._filename;
+		this->_defaultErrorPage = other._defaultErrorPage;
 	}
 	return (*this);
 }
@@ -41,6 +42,7 @@ Response::Response(Request request)
 	}
 	_statusCode = 200;
 	_filename = "";
+	_defaultErrorPage = request.getDefaultErrorPage();
 
 	if (request.isAcceptedMethod() == false) {
 		std::cout << "Unauthorized method." << std::endl;
@@ -78,7 +80,10 @@ Response::Response(Request request)
  */
 void	Response::getMethod(Request request)
 {
-	_path = request.getPath();
+	if (_statusCode == 301)
+		_path = request.getLocationConfig().getRedirect();
+	else
+		_path = request.getPath();
 
 	if (_path == request.getLocationConfig().getPath()) {
 		
@@ -87,8 +92,6 @@ void	Response::getMethod(Request request)
 			
 			_body = cgi_pair.first;
 			_statusCode = cgi_pair.second;
-			// if (_statusCode != 200)
-				// std::cout << _body << std::endl;
 
 			_path = request.getLocationConfig().getScriptPath(); // For content type handling (Uses suffix)
 			_header.setContentLength(intToString(_body.length()));
@@ -111,12 +114,10 @@ void	Response::getMethod(Request request)
 				_path = request.getDefaultPage();
 		}
 	}
-	
 	else
 	{
-		size_t pos = _path.find("/"); 
-		size_t pos2 = _path.find("/", pos + 1);
-		if (pos2 == std::string::npos)
+		size_t pos = _path.rfind("/");
+		if (pos == std::string::npos)
 		{
 			if (_path[0] == '/')
 			{
@@ -124,10 +125,16 @@ void	Response::getMethod(Request request)
 				root = trim(root);
 				_path = root + _path;
 			}
+			else
+			{
+				std::string root = request.getLocationConfig().getRoot();
+				root = trim(root);
+				_path = root + trim(_path);
+			}
 		}
 		else
 		{
-			std::string tmp = _path.substr(pos2 + 1);
+			std::string tmp = _path.substr(pos + 1);
 			std::string root = request.getLocationConfig().getRoot();
 			root = trim(root);
 			_path = root + tmp;
@@ -340,7 +347,11 @@ bool Response::checkUploadPath(std::string path)
 
 void Response::generateError()
 {
-	_path = "webSrcs/errorPage/" + intToString(_statusCode) + "_page.html";
+	_path = _defaultErrorPage;
+	
+	if (_path == "" || isValidPathFile() == false)
+		_path = "webSrcs/errorPage/" + intToString(_statusCode) + "_page.html";
+
 	readFile();
 	_path = "";
 	_header = ResponseHeader();

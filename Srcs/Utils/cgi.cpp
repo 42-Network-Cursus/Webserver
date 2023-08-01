@@ -73,6 +73,8 @@ std::pair<std::string, int> get_body_from_cgi(Request &request) {
 	}
 	new_env[17] = NULL;
 
+	get_cgi(script_path, CGI, CGI_PATH);
+
 	if (pipe(pipes) == -1) {
 		r_pair.first = "Failed to open pipes.";
 		return r_pair;
@@ -80,9 +82,8 @@ std::pair<std::string, int> get_body_from_cgi(Request &request) {
 
 	write(pipes[1], data.c_str(), data.length());
 	
-	get_cgi(script_path, CGI, CGI_PATH);
 	// Command to execute the PHP script
-	const char* command[] = {CGI.c_str(), "-f", script_path.c_str()};
+	const char* command[] = {CGI.c_str(), "-f", script_path.c_str(), NULL};
 
 	pid_t work_pid = fork();
 	if (work_pid == -1) {
@@ -114,7 +115,7 @@ std::pair<std::string, int> get_body_from_cgi(Request &request) {
 		return r_pair;
 	}
 	else if (timeout_pid == 0) {
-		sleep(1); // In seconds
+		sleep(5); // In seconds
 		_exit(0);
 	}
 

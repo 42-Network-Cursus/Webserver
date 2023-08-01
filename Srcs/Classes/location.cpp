@@ -30,7 +30,7 @@ Location::Location(const Location &copy) {
     _root                   = copy.getRoot();
     _index                  = copy.getIndex();
     _client_max_body_size   = copy.getClientMaxBodySize();
-    _error_page_path        = copy.getErrorPagePath();
+    _error_page_path        = copy._error_page_path;
     _script_path            = copy.getScriptPath();
     _upload_path            = copy.getUploadPath();
     _auto_index             = copy.getAutoIndex();
@@ -46,7 +46,7 @@ Location &Location::operator=(const Location &rhs) {
         this->_root                   = rhs.getRoot();
         this->_index                  = rhs.getIndex();
         this->_client_max_body_size   = rhs.getClientMaxBodySize();
-        this->_error_page_path        = rhs.getErrorPagePath();
+        this->_error_page_path        = rhs._error_page_path;
 		this->_script_path            = rhs.getScriptPath();
         this->_upload_path            = rhs.getUploadPath();
         this->_auto_index             = rhs.getAutoIndex();
@@ -80,7 +80,11 @@ std::string                 Location::getPath() const               { return _pa
 std::string                 Location::getRoot() const               { return _root; }
 std::string                 Location::getIndex() const              { return _index; }
 std::string                 Location::getClientMaxBodySize() const  { return _client_max_body_size; }
-std::string                 Location::getErrorPagePath() const      { return _error_page_path; }
+std::string                 Location::getErrorPagePath()
+{ 
+	std::string res = trim(_root) + trim(_error_page_path);
+	return res;
+}
 std::string                 Location::getScriptPath() const         { return _script_path; }
 std::string                 Location::getUploadPath() const         { return _upload_path; }
 bool                        Location::getAutoIndex() const          { return _auto_index; }

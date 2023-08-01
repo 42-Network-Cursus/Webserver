@@ -176,11 +176,6 @@ int	handle_pollin(std::vector<Server> &servers, std::vector<struct pollfd> &all_
 			return (ret);
 		else if (ret <= 0)
 		{
-			if (ret == 0)
-				std::cout << "Good Close" << std::endl;
-			if (ret == -1)
-				std::cout << "Not Good close" << std::endl;
-			
 			int id = isContainsRequest(requests, all_pfds[idx].fd);
 			requests.erase(requests.begin() + id);
 

@@ -38,6 +38,7 @@ class Request {
 		std::string getDefaultPage();
 		std::string getState();
 		std::string getHeader();
+		std::string getDefaultErrorPage();
 
 		// SETTERS
 		void		setSocketFd(int socketFd);

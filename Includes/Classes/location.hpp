@@ -29,7 +29,7 @@ class Location {
         std::string                 getRoot() const;
         std::string                 getIndex() const;
         std::string                 getClientMaxBodySize() const;
-        std::string                 getErrorPagePath() const;
+        std::string                 getErrorPagePath();
         std::string                 getScriptPath() const;
         std::string                 getUploadPath() const;
         bool                        getAutoIndex() const;

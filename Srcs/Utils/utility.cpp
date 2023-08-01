@@ -184,7 +184,6 @@ std::string getContentBody(std::string body)
 	start = body.find("\n");
 	std::string delimiter = body.substr(0, start);
 	delimiter = trim(delimiter);
-	std::cout << delimiter << std::endl;
 	size_t end = body.rfind(delimiter);
 	start = body.find("\r\n\r\n");
 

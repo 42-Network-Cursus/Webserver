@@ -1,6 +1,6 @@
 #include <iostream>
-#include <sstream>
 #include <fstream>
+#include <sstream>
 #include <stdlib.h>
 #include <string>
 
@@ -100,6 +100,22 @@ void check_conf_file(std::string file_name) {
 				std::vector<std::string> tokens = tokenize_string(line);
 				if (tokens.size() != 2)
 					conf_error(line_nb, line);
+
+				if (line.find("client_max_body_size") != std::string::npos) {
+// 
+					std::istringstream iss(line.substr(line.find(" ")));
+
+					int strToInt;
+
+					if (iss >> strToInt)
+					{
+						if (strToInt < 0)
+							conf_error(line_nb, line);
+					}
+					else
+						conf_error(line_nb, line);
+				}
+
 			}
 		}
 	}

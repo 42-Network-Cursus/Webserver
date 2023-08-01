@@ -136,7 +136,7 @@ int Request::isValidPath()
 		fullPath = trim(fullPath);
 
 		file.open(fullPath.c_str(), std::ifstream::in);
-		if (file.is_open() == false)
+		if (file.is_open() == false || index.size() == 0)
 		{
 			index = _config.getRedirect();
 			if (index.size() == 0)
@@ -263,4 +263,9 @@ std::string Request::getState()
 void Request::setState(std::string state)
 {
 	_state = state;
+}
+
+std::string Request::getDefaultErrorPage()
+{
+	return _config.getErrorPagePath();
 }

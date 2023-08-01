@@ -39,6 +39,7 @@ class Response {
 		std::string 	_body;
 		std::string 	_path;
 		std::string 	_filename;
+		std::string		_defaultErrorPage;
 
 		bool	isValidPathFile();
 		void	readFile();
