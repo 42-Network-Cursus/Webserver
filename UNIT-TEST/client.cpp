@@ -80,18 +80,15 @@ int main() {
 		return 2;
 	}
 
-	inet_ntop(p->ai_family, get_in_addr((struct sockaddr *)&p->ai_addr), s, sizeof(s));
-	std::cout << "Client: connecting to " << s << std::endl;
-
 	freeaddrinfo(servinfo);
 
 
-
-	// char msg[37] = "DELETE /delete/Rubi.txt HTTP/1.1\r\n\r\n";
-	char msg[37] = "GET /upload HTTP/1.1\r\n\r\n";
+	// char msg[60] = "UNKNOWN /delete/img2.jpg HTTP/1.1\r\nHost: 127.0.0.1:3490\r\n\r\n";
+	char msg[59] = "DELETE /delete/img2.jpg HTTP/1.1\r\nHost: 127.0.0.1:3490\r\n\r\n";
+	// char msg[44] = "GET /upload HTTP/1.1\r\nHost: 127.0.0.1:3490\r\n\r\n";
 	
 	
-	int *len = new int(37);
+	int *len = new int(59);
 	sendAll(sockfd, msg, len);
 	
 	close(sockfd);

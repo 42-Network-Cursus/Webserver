@@ -7,8 +7,10 @@ echo("</head>");
 echo("<body>");
 echo("<div>");
 while (1)
-    echo("<h1>CGI test page</h1>");
-
+    $myvar++;
+echo("<p>");
+echo($myvar);
+echo("</p>");
 echo("</div>");
 echo("</body>");
 echo("</html>");

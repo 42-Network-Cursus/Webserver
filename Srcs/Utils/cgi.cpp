@@ -80,7 +80,11 @@ std::pair<std::string, int> get_body_from_cgi(Request &request) {
 		return r_pair;
 	}
 
-	write(pipes[1], data.c_str(), data.length());
+	int ret = write(pipes[1], data.c_str(), data.length());
+	if (ret <= 0) {
+		r_pair.first = "Failed to write.";
+		return r_pair;
+	}
 	
 	// Command to execute the PHP script
 	const char* command[] = {CGI.c_str(), "-f", script_path.c_str(), NULL};
@@ -115,19 +119,30 @@ std::pair<std::string, int> get_body_from_cgi(Request &request) {
 		return r_pair;
 	}
 	else if (timeout_pid == 0) {
-		sleep(5); // In seconds
+		sleep(2); // In seconds
 		_exit(0);
 	}
 
-	pid_t exited_pid = wait(NULL);
-	if (exited_pid == work_pid)
+	int status;
+	pid_t pid;
+
+	while ((pid = waitpid(work_pid, &status, WNOHANG)) == 0 && (pid = waitpid(timeout_pid, &status, WNOHANG)) == 0)
+		usleep(50);
+
+	if (pid == work_pid)
 		kill(timeout_pid, SIGKILL);
-	else if (exited_pid == timeout_pid) {
-		r_pair.first = "PHP script execution timed out.";
+	
+	if (pid == timeout_pid) {
 		kill(work_pid, SIGKILL);
+		r_pair.first = "PHP script execution timed out.";
+		
+		close(pipes[0]);
+		close(pipes[1]);
+		fclose(tmpFile);
+
 		return r_pair;
 	}
-	wait(NULL); // Collect the other process
+
 
 	close(pipes[0]);
 	close(pipes[1]);
