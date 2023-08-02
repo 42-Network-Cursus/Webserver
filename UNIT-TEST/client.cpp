@@ -15,7 +15,6 @@
 #define MAXDATASIZE 100
 #define HOST "127.0.0.1"
 
-// Handle chuncked data when using send()
 int sendAll(int s, char *buf, int *len) {
 	int total = 0; // Bytes sent
 	int bytesLeft = *len; // Bytes left to send
@@ -60,7 +59,6 @@ int main() {
 		return 1;
 	}
 
-	// Loop through all results and bind to the first one available
 	for (p = servinfo; p != NULL; p = p->ai_next) {
 
 		if ((sockfd = socket(p->ai_family, p->ai_socktype, p->ai_protocol)) == -1) {
@@ -83,29 +81,17 @@ int main() {
 	}
 
 	inet_ntop(p->ai_family, get_in_addr((struct sockaddr *)&p->ai_addr), s, sizeof(s));
-	//std::cout << "Client: connecting to " << s << std::endl;
+	std::cout << "Client: connecting to " << s << std::endl;
 
 	freeaddrinfo(servinfo);
 
-	
-
-	// if ((numbytes = recv(sockfd, buf, MAXDATASIZE-1, 0)) == -1) {
-	// 	std::cerr << strerror(errno) << std::endl;
-	// 	exit(1);
-	// }
-
-	// buf[numbytes] = '\0';
-
-	// //std::cout << "Client: received " << buf << std::endl;
-
-
-	
 
 
 	// char msg[37] = "DELETE /delete/Rubi.txt HTTP/1.1\r\n\r\n";
 	char msg[37] = "GET /upload HTTP/1.1\r\n\r\n";
-	int *len = new int(37);
 	
+	
+	int *len = new int(37);
 	sendAll(sockfd, msg, len);
 	
 	close(sockfd);

@@ -153,10 +153,21 @@ void configure_servers(std::string file_name, std::vector<Server> *servers) {
 			Server server = Server();
 
 			server.store_server_configuration(file_stream);
-			server.get_listening_socket();
+			
+			if (server.getLocation().size() == 0) {
+				std::cout << "Empty server configured, no locations found" << std::endl;
+				exit(1);
+			}
 
 			servers->push_back(server);
 		}
 	}
+
+	std::vector<Server>::iterator it_b = servers->begin();
+	std::vector<Server>::iterator it_e = servers->end();
+	
+	for (; it_b != it_e; it_b++)
+		it_b->get_listening_socket();
+	
 	file_stream.close();
 }

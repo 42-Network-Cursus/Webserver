@@ -34,8 +34,8 @@ std::pair<std::string, int> get_body_from_cgi(Request &request) {
 	int 		pipes[2];
 	
 	std::string script_path = request.getLocationConfig().getScriptPath();
-	std::string script_name = script_path.substr(script_path.find_last_of("/", script_path.find_last_of("/") - 1));
 	script_path = trim(script_path);
+	std::string script_name = script_path.substr(script_path.find_last_of("/", script_path.find_last_of("/") - 1));
 	script_name = trim(script_name);
 
 	std::string host_port = request.getLocationConfig().getHostPort();

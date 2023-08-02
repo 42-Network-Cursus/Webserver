@@ -126,7 +126,7 @@ Location Server::get_location_config(std::ifstream &file_stream, std::string lin
 		else if (param == "error_page")
 			rv.setErrorPagePath(param_val);
 		else if (param == "script_path")
-			rv.setScriptPath(rv.getRoot() + trim(param_val));
+			rv.setScriptPath(trim(param_val));
 		else if (param == "upload_path")
 			rv.setUploadPath(param_val);
 		else if (param == "auto_index")
@@ -140,6 +140,10 @@ Location Server::get_location_config(std::ifstream &file_stream, std::string lin
 		else if (param == "DELETE")
 			rv.setMethod("DELETE", stringToBool(param_val));
 	}
+	
+	if (rv.getScriptPath().size() != 0)
+		rv.setScriptPath(rv.getRoot() + rv.getScriptPath());
+
 	rv.setHostPort(trim(_host) + ":" + trim(_port));
 	return rv;
 }

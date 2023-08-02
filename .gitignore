@@ -3,3 +3,4 @@ a.out
 *.gch
 webserv
 Objs
+.DS_Store
